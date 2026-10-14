@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experimento autoresearch</title>
+<meta name="description" content="Ideas a probar, experimentos corridos y resultados del autoresearch para predecir BAJA+2.">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #fcfcfb; --surface: #ffffff; --surface-2: #f4f3f0; --border: #e4e2dd; --grid: #ebeae6;
+  --text: #0b0b0b; --text-2: #52514e; --muted: #75746f;
+  --accent: #2a78d6; --accent-soft: #e6effb; --punto: #a3a29d;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --add: #e7f5e7; --del: #fbe9e9;
+  --radio: 10px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #131312; --surface: #1a1a19; --surface-2: #232321; --border: #34342f; --grid: #2b2b28;
+    --text: #f0efec; --text-2: #c3c2b7; --muted: #94938b;
+    --accent: #3987e5; --accent-soft: #1d2a3b; --punto: #6f6e68;
+    --add: #17301a; --del: #3a1d1d;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #131312; --surface: #1a1a19; --surface-2: #232321; --border: #34342f; --grid: #2b2b28;
+  --text: #f0efec; --text-2: #c3c2b7; --muted: #94938b;
+  --accent: #3987e5; --accent-soft: #1d2a3b; --punto: #6f6e68;
+  --add: #17301a; --del: #3a1d1d;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, pre, .mono { font-family: var(--mono); font-size: 12.5px; }
+.envoltura { max-width: 1180px; margin: 0 auto; padding: 0 16px 64px; }
+header.tope { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(6px); border-bottom: 1px solid var(--border); }
+header.tope .envoltura { display: flex; align-items: center; gap: 16px; padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap; }
+header.tope strong { font-size: 15px; }
+nav { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; }
+nav a { color: var(--text-2); }
+.espacio { flex: 1; }
+button, .boton { font: inherit; border-radius: 8px; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); padding: 7px 12px; cursor: pointer; }
+button.primario { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+button:hover { border-color: var(--text-2); }
+h1 { font-size: 28px; margin: 32px 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 19px; margin: 40px 0 6px; }
+.sub { color: var(--text-2); margin: 0; max-width: 820px; }
+.meta { color: var(--muted); font-size: 13px; margin-top: 8px; }
+.tarjeta { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radio); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 20px; }
+.tile { padding: 14px 16px; }
+.tile .etq { color: var(--text-2); font-size: 13px; }
+.tile .val { font-size: 26px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .det { color: var(--muted); font-size: 12.5px; }
+.form { padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--text-2); }
+.form .ancho { grid-column: 1 / -1; }
+.form input, .form textarea, .form select, .filtros input, .filtros select {
+  font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+.form textarea { min-height: 76px; resize: vertical; }
+.form .acciones { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.nota { color: var(--muted); font-size: 13px; }
+.filtros { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 10px 0; }
+.chip-filtro { border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+.chip-filtro[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.tabla-env { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-weight: 600; color: var(--text-2); font-size: 12.5px; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.fila-exp { cursor: pointer; }
+tr.fila-exp:hover td { background: var(--surface-2); }
+tr.vigente td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+.id { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
+.det-idea { color: var(--text-2); font-size: 13px; }
+.estado { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; white-space: nowrap;
+  padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text); }
+.estado i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--punto); flex: none; }
+.estado.bien i { background: var(--good); } .estado.aviso i { background: var(--warning); }
+.estado.mal i { background: var(--critical); } .estado.curso i { background: var(--accent); }
+.positivo { color: var(--good); } .negativo { color: var(--critical); }
+.vacio { padding: 28px; text-align: center; color: var(--text-2); }
+.vacio code { background: var(--surface-2); padding: 2px 6px; border-radius: 6px; }
+.detalle td { background: var(--surface-2); padding: 0; }
+.detalle .caja { padding: 16px; display: grid; gap: 14px; }
+.detalle h4 { margin: 0 0 6px; font-size: 13px; color: var(--text-2); font-weight: 600; }
+.enlaces { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13.5px; }
+.pestanas { display: flex; gap: 6px; }
+.pestanas button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); }
+pre.bloque { margin: 0; max-height: 420px; overflow: auto; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; line-height: 1.45; }
+pre.bloque .mas { background: var(--add); display: block; } pre.bloque .menos { background: var(--del); display: block; }
+pre.bloque .arr { color: var(--muted); display: block; }
+.grafico { padding: 12px 8px 4px; position: relative; }
+.grafico svg { width: 100%; height: auto; display: block; overflow: visible; }
+.grafico text { fill: var(--text-2); font-size: 11.5px; }
+.leyenda { display: flex; gap: 18px; font-size: 13px; color: var(--text-2); padding: 0 12px 10px; flex-wrap: wrap; }
+.leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.lk-linea { width: 18px; height: 2px; background: var(--accent); display: inline-block; }
+.lk-punto { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.tooltip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 4px 16px rgba(0,0,0,.12); max-width: 280px; display: none; z-index: 3; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.card-hpo { padding: 14px 16px; font-size: 14px; }
+.medidor { height: 8px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; margin-top: 6px; }
+.medidor div { height: 100%; background: var(--accent); }
+.pasos { color: var(--text-2); font-size: 14px; padding-left: 18px; }
+.pasos li { margin: 4px 0; }
+footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
+@media (max-width: 640px) {
+  .form { grid-template-columns: 1fr; }
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .tile .val { font-size: 22px; }
+  h1 { font-size: 23px; }
+  nav { display: none; }
+}
+</style>
+</head>
+<body>
+<header class="tope"><div class="envoltura">
+  <strong>expautoresearch</strong>
+  <nav>
+    <a href="#proponer">Proponer</a><a href="#cola">Cola</a><a href="#evolucion">Evolución</a>
+    <a href="#experimentos">Experimentos</a><a href="#busquedas">Búsquedas</a><a href="#sellado">Test sellado</a>
+  </nav>
+  <span class="espacio"></span>
+  <button id="tema" type="button" aria-label="Cambiar tema">Tema</button>
+</div></header>
+
+<main class="envoltura">
+  <h1>Experimento autoresearch</h1>
+  <p class="sub" id="objetivo"></p>
+  <div class="meta" id="meta"></div>
+  <div class="tiles" id="tiles"></div>
+
+  <h2 id="proponer">Proponer algo para probar</h2>
+  <p class="sub">La idea se crea como issue en GitHub con la etiqueta <code>idea</code>. El loop la trae con
+    <code>python tools/ideas.py sync</code> y, cuando la prueba, la comenta y la cierra con el resultado.</p>
+  <form class="tarjeta form" id="form-idea" style="margin-top:12px">
+    <label class="ancho">Título
+      <input name="titulo" required maxlength="120" placeholder="Ej.: deltas interanuales de los montos"></label>
+    <label class="ancho">Qué probar
+      <textarea name="que" required placeholder="Qué cambiar en el modelo o en el proceso"></textarea></label>
+    <label class="ancho">Por qué debería mejorar
+      <textarea name="porque" placeholder="Hipótesis: qué esperás ver y en qué folds"></textarea></label>
+    <label>Fuente
+      <input name="fuente" list="fuentes" placeholder="Paper, clase, intuición…"></label>
+    <label>Prioridad
+      <select name="prioridad"><option>alta</option><option selected>media</option><option>baja</option></select></label>
+    <datalist id="fuentes"></datalist>
+    <div class="acciones">
+      <button class="primario" type="submit">Crear la idea en GitHub</button>
+      <span class="nota">Se abre GitHub con todo completado: falta tocar «Submit new issue».</span>
+    </div>
+  </form>
+  <p class="nota" id="cli-idea"></p>
+
+  <h2 id="cola">Cola de ideas</h2>
+  <p class="sub">El plan inicial (<a id="link-plan" href="#">experimentos.md</a>) más lo que se propone acá. Lo de la
+    página aparece apenas se crea el issue, aunque el loop todavía no lo haya sincronizado.</p>
+  <div class="filtros" id="filtros-ideas"></div>
+  <div class="tarjeta tabla-env"><table id="tabla-ideas"></table></div>
+
+  <h2 id="evolucion">Evolución</h2>
+  <p class="sub">Ganancia del ensamble, promedio de los folds de selección, en millones. La línea es el modelo vigente
+    (el último confirmado); cada punto, un experimento.</p>
+  <div class="tarjeta" id="grafico-caja" style="margin-top:12px"></div>
+
+  <h2 id="experimentos">Experimentos</h2>
+  <p class="sub">Cada experimento guarda el <code>train.py</code> exacto que corrió, el diff contra el vigente, el log
+    completo y el resultado. Tocá una fila para ver el detalle.</p>
+  <div class="filtros">
+    <select id="filtro-estado" aria-label="Estado">
+      <option value="">Todos los estados</option><option value="vigente">Vigente</option>
+      <option value="a_confirmar">A confirmar</option><option value="confirmado">Confirmados</option>
+      <option value="descartado">Descartados</option><option value="rechazado">Rechazados</option>
+      <option value="error">Con error</option>
+    </select>
+    <input id="buscar" type="search" placeholder="Buscar descripción o idea" aria-label="Buscar">
+  </div>
+  <div class="tarjeta tabla-env"><table id="tabla-exp"></table></div>
+
+  <h2 id="busquedas">Búsquedas de hiperparámetros</h2>
+  <p class="sub">Optuna (TPE) sobre el <code>train.py</code> de un experimento. El ganador se copia a
+    <code>train.py</code> y se corre como experimento: no se adopta solo.</p>
+  <div id="hpo" class="grid2" style="margin-top:12px"></div>
+
+  <h2 id="sellado">Test sellado (202108) y modelo de referencia</h2>
+  <p class="sub">El loop nunca ve la clase de 202108. Al final se eligen hasta 3 finalistas, se decide entre ellos con
+    el fold de reserva y recién ahí se mide el test, con el corte fijado de antemano.</p>
+  <div id="sellado-caja" style="margin-top:12px"></div>
+
+  <footer id="pie"></footer>
+</main>
+<div class="tooltip" id="tooltip" role="tooltip"></div>
+
+<script type="application/json" id="datos">{"generado": "2026-10-14 13:26", "repo": "emavaldez/expautoresearch", "config": {"folds_seleccion": [202104, 202105, 202106], "folds_control": [202008], "folds_reserva": [202103], "mes_test": 202108, "ganancia": 1072500, "costo": 27500, "max_lecturas": 3, "umbral": 3000000}, "estado": {"vigente": null, "lecturas_test": 0}, "ideas": [{"id": "P1", "origen": "plan", "titulo": "Variables rotas por mes", "detalle": "tools/fase0.py: variables todas en cero, vacías o constantes en algún mes; pasarlas a NA en ese mes.", "fuente": "Fase 0", "prioridad": "fase 0", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "P2", "origen": "plan", "titulo": "Deriva de montos", "detalle": "tools/fase0.py: montos que se corren más de 25% contra los 12 meses anteriores (inflación, aguinaldo).", "fuente": "Fase 0", "prioridad": "fase 0", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "P3", "origen": "plan", "titulo": "Control de fuga temporal", "detalle": "tools/fuga.py cada vez que cambie make_features; sin variables que identifiquen el mes.", "fuente": "Hidden Costs of 99% Accuracy (2610.00118)", "prioridad": "fase 0", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "P4", "origen": "plan", "titulo": "BAJA+2 por mes y estacionalidad", "detalle": "tools/fase0.py: tasa por mes y razón contra dos meses antes, en todos los años.", "fuente": "Fase 0", "prioridad": "fase 0", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "B0", "origen": "plan", "titulo": "Base: modelo del curso", "detalle": "Variables crudas, un mes de entrenamiento, binaria BAJA+2, hiperparámetros del notebook de la materia.", "fuente": "Curso", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "B1", "origen": "plan", "titulo": "Clase objetivo", "detalle": "BAJA+2 sola / BAJA+1 ∪ BAJA+2 / multiclase P(B2)+α·P(B1) / peso de BAJA+1 0,25 y 0,5.", "fuente": "Curso", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "B2", "origen": "plan", "titulo": "Lags y deltas de 1 y 2 meses", "detalle": "Lag y x − lag de todas las variables; HISTORIA_MESES = 2.", "fuente": "Curso", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "B3", "origen": "plan", "titulo": "Submuestreo de CONTINUA", "detalle": "1,0 / 0,5 / 0,2 / 0,1 con prepare.muestra_continua; mirar ganancia y tiempo.", "fuente": "Curso", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E1", "origen": "plan", "titulo": "Meses de entrenamiento", "detalle": "1 / 3 / 6 / 12 / 24 / todos; escalar min_data_in_leaf con las filas.", "fuente": "Rolling-window (2606.06776)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E2", "origen": "plan", "titulo": "Sin meses atípicos", "detalle": "Con 12+ meses, sacar del entrenamiento abril a diciembre de 2020 si están en el rango.", "fuente": "Rolling-window (2606.06776)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E3", "origen": "plan", "titulo": "Peso por antigüedad del mes", "detalle": "Peso = 0,5^(edad/h), h en {3, 6, 12}.", "fuente": "Rolling-window (2606.06776)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E4", "origen": "plan", "titulo": "Largo de la ventana de features", "detalle": "Lags 1..k (k = 2, 3, 6, 12) y promedio, mínimo, máximo y tendencia en 3, 6 y 12 meses; reportar la curva.", "fuente": "How Early Is Early Enough? (2607.00473)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E5", "origen": "plan", "titulo": "Memoria larga", "detalle": "Caída contra el máximo de 12 meses y meses desde el último sueldo.", "fuente": "How Early Is Early Enough? (2607.00473)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E6", "origen": "plan", "titulo": "Deltas interanuales", "detalle": "x − lag12 y x / lag12 de montos y conteos; variantes sobre el percentil del mes.", "fuente": "Seasonal false alarms (2608.18174)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E7", "origen": "plan", "titulo": "Corte con estacionalidad", "detalle": "Envíos según la razón de BAJA+2 de los mismos meses de años anteriores; validar en 202008.", "fuente": "Seasonal false alarms (2608.18174)", "prioridad": "alta", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E8", "origen": "plan", "titulo": "Espacio de búsqueda ampliado", "detalle": "El agente diseña hpo/espacio_ampliado.json con justificación; comparar contra el base con los mismos trials.", "fuente": "Agentic Search Spaces (2609.16309)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E9", "origen": "plan", "titulo": "Arranque desde el vigente", "detalle": "TPE con y sin la configuración vigente como primer trial.", "fuente": "When Is an LLM Worth It for HPO? (2606.21641)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E10", "origen": "plan", "titulo": "Híbrido agente + TPE", "detalle": "Cada 10 trials el agente lee estado.md y propone hasta 2; comparar contra TPE puro.", "fuente": "LLMs vs HPO clásico en autoresearch (2603.24647)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E11", "origen": "plan", "titulo": "Variables generadas por roles con memoria", "detalle": "4 roles, 2 por ronda, 4 rondas; entra si supera a los canaritos y suma en el ensamble; registro en features_probadas.tsv.", "fuente": "MALMAS (2604.20261)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E12", "origen": "plan", "titulo": "Agregados por grupo sin fuga", "detalle": "Tasa histórica de BAJA+2 del grupo del cliente con clase hasta m − 2.", "fuente": "MALMAS (2604.20261)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E13", "origen": "plan", "titulo": "Corte por probabilidad calibrada", "detalle": "Isotónica fuera de muestra y estimular si P > 2,56%; comparar contra E7.", "fuente": "Calibrated cost-sensitive ensemble (Frontiers 2026)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E14", "origen": "plan", "titulo": "Tamaño del semillerío", "detalle": "Curva del ensamble con 5, 10, 20, 40 y 60 semillas; N por la curva.", "fuente": "Hidden Costs of 99% Accuracy (2610.00118)", "prioridad": "media", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E15", "origen": "plan", "titulo": "Ordenar la cola por predicción", "detalle": "El agente ordena las ideas por ganancia esperada y anota la predicción; sólo ordena, no descarta.", "fuente": "FOREAGENT (2601.05930)", "prioridad": "baja", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}, {"id": "E16", "origen": "plan", "titulo": "Volver atrás", "detalle": "Con 5 descartes seguidos, retomar la segunda mejor rama.", "fuente": "Recovering Wasted Compute (2608.10424)", "prioridad": "baja", "estado": "pendiente", "experimentos": "", "actualizado": "2026-10-14 13:09"}], "experimentos": [], "hpo": [], "sellado": {"reserva": [], "test": []}}</script>
+<script>
+(function () {
+  "use strict";
+  const D = JSON.parse(document.getElementById("datos").textContent);
+  const REPO = D.repo, BLOB = "https://github.com/" + REPO + "/blob/main/";
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const num = (x, d = 1) => (x == null || x === "" || isNaN(x)) ? "–" :
+    (Number(x) / 1e6).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d }) + "M";
+  const signo = (x) => (x == null || x === "" || isNaN(x)) ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + num(Math.abs(x));
+  const ent = (x) => (x == null || x === "") ? "–" : Number(x).toLocaleString("es-AR");
+
+  // ---------------------------------------------------------------- tema
+  const raiz = document.documentElement;
+  try { const t = localStorage.getItem("tema"); if (t) raiz.dataset.theme = t; } catch (e) {}
+  $("#tema").addEventListener("click", () => {
+    const oscuro = raiz.dataset.theme ? raiz.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    raiz.dataset.theme = oscuro ? "light" : "dark";
+    try { localStorage.setItem("tema", raiz.dataset.theme); } catch (e) {}
+    dibujarGrafico();
+  });
+
+  // ---------------------------------------------------------------- estados
+  const ESTADOS = {
+    base: ["bien", "Base"], confirmado: ["bien", "Confirmado"], a_confirmar: ["aviso", "A confirmar"],
+    descartado: ["", "Descartado"], rechazado: ["", "Rechazado"], error: ["mal", "Error"],
+    fuera_de_presupuesto: ["mal", "Fuera de tiempo"],
+    pendiente: ["", "Pendiente"], "en-curso": ["curso", "En curso"], probada: ["bien", "Probada"], descartada: ["", "Descartada"]
+  };
+  const chip = (e, extra) => { const [c, t] = ESTADOS[e] || ["", e || "–"]; return `<span class="estado ${c}"><i></i>${esc(extra || t)}</span>`; };
+  const vigente = D.estado.vigente;
+
+  // ---------------------------------------------------------------- encabezado
+  const cfg = D.config;
+  $("#objetivo").textContent = `Buscar con autoresearch el mejor modelo para marcar qué clientes de ${cfg.mes_test} son BAJA+2, ` +
+    `con 36 meses de historia. Ganancia: +${ent(cfg.ganancia)} por BAJA+2 estimulado, −${ent(cfg.costo)} por estímulo.`;
+  $("#meta").innerHTML = `Actualizado ${esc(D.generado)} · folds de selección ${cfg.folds_seleccion.join(", ")} · control ` +
+    `${cfg.folds_control.join(", ")} · reserva ${cfg.folds_reserva.join(", ")} · <a href="https://github.com/${REPO}">repositorio</a>`;
+  $("#link-plan").href = BLOB + "experimentos.md";
+
+  const exps = D.experimentos;
+  const porId = Object.fromEntries(exps.map((e) => [e.id, e]));
+  const vig = vigente ? porId[vigente] : null;
+  const confirmados = exps.filter((e) => e.estado === "confirmado").length;
+  const tiles = [
+    ["Experimentos corridos", ent(exps.length), `${confirmados} confirmados`],
+    ["Vigente", vig ? num(vig.media_seleccion) : "–", vig ? `${vig.id} · ${vig.descripcion}` : "Todavía no hay base"],
+    ["Mejora sobre la base", (vig && exps.length) ? signo(vig.media_seleccion - exps[0].media_seleccion) : "–", exps.length ? `contra ${exps[0].id}` : ""],
+    ["Ideas pendientes", "…", "plan + página"],
+    ["Lecturas del test", `${D.estado.lecturas_test || 0} de ${cfg.max_lecturas}`, "candidatos medidos en 202108"],
+  ];
+  $("#tiles").innerHTML = tiles.map(([e, v, d], i) =>
+    `<div class="tarjeta tile"><div class="etq">${esc(e)}</div><div class="val" ${i === 3 ? 'id="tile-pend"' : ""}>${esc(v)}</div>` +
+    `<div class="det">${esc(d)}</div></div>`).join("");
+
+  // ---------------------------------------------------------------- proponer
+  const fuentes = new Set(D.ideas.map((i) => i.fuente).filter(Boolean));
+  $("#fuentes").innerHTML = [...fuentes].map((f) => `<option value="${esc(f)}">`).join("");
+  $("#form-idea").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const f = new FormData(ev.target);
+    const cuerpo = `**Qué probar**\n${f.get("que")}\n\n**Por qué**\n${f.get("porque") || "-"}\n\n` +
+      `**Fuente**\n${f.get("fuente") || "-"}\n\n**Prioridad**: ${f.get("prioridad")}\n`;
+    const url = `https://github.com/${REPO}/issues/new?labels=idea&title=${encodeURIComponent("[idea] " + f.get("titulo"))}` +
+      `&body=${encodeURIComponent(cuerpo)}`;
+    window.open(url, "_blank", "noopener");
+    $("#cli-idea").innerHTML = `Desde la terminal también se puede: <code>python tools/ideas.py nueva ${esc(JSON.stringify(f.get("titulo")))} ` +
+      `--detalle ${esc(JSON.stringify(f.get("que")))} --prioridad ${esc(f.get("prioridad"))} --issue</code>`;
+  });
+
+  // ---------------------------------------------------------------- cola de ideas
+  let ideas = D.ideas.slice();
+  let filtroIdeas = "abiertas";
+  const FILTROS = [["abiertas", "Pendientes y en curso"], ["probada", "Probadas"], ["descartada", "Descartadas"], ["todas", "Todas"]];
+  $("#filtros-ideas").innerHTML = FILTROS.map(([k, t]) =>
+    `<button type="button" class="chip-filtro" data-f="${k}" aria-pressed="${k === filtroIdeas}">${t}</button>`).join("");
+  $("#filtros-ideas").addEventListener("click", (ev) => {
+    const b = ev.target.closest("button"); if (!b) return;
+    filtroIdeas = b.dataset.f;
+    document.querySelectorAll("#filtros-ideas button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    pintarIdeas();
+  });
+  const ORDEN = { "fase 0": 0, alta: 1, media: 2, baja: 3 };
+  function pintarIdeas() {
+    const visibles = ideas.filter((i) => filtroIdeas === "todas" ? true :
+      filtroIdeas === "abiertas" ? (i.estado === "pendiente" || i.estado === "en-curso") : i.estado === filtroIdeas)
+      .sort((a, b) => (ORDEN[a.prioridad] ?? 9) - (ORDEN[b.prioridad] ?? 9) || (a.origen === "plan") - (b.origen === "plan"));
+    $("#tile-pend").textContent = ent(ideas.filter((i) => i.estado === "pendiente" || i.estado === "en-curso").length);
+    if (!visibles.length) { $("#tabla-ideas").innerHTML = `<tr><td class="vacio">No hay ideas en este estado.</td></tr>`; return; }
+    $("#tabla-ideas").innerHTML = `<thead><tr><th>Id</th><th>Idea</th><th>Fuente</th><th>Prioridad</th><th>Estado</th><th>Experimentos</th></tr></thead><tbody>` +
+      visibles.map((i) => {
+        const id = i.url ? `<a href="${esc(i.url)}">${esc(i.id)}</a>` : esc(i.id);
+        const exps = (i.experimentos || "").split(",").filter(Boolean).map((e) => `<a href="#exp-${esc(e)}" data-abrir="${esc(e)}">${esc(e)}</a>`).join(" ");
+        return `<tr><td class="id">${id}</td><td><div>${esc(i.titulo)}</div><div class="det-idea">${esc(i.detalle)}</div>` +
+          (i.sin_sync ? `<div class="nota">desde la página · el loop todavía no la sincronizó</div>` : "") +
+          `</td><td class="det-idea">${esc(i.fuente || "–")}</td><td>${esc(i.prioridad)}</td><td>${chip(i.estado)}</td><td>${exps || "–"}</td></tr>`;
+      }).join("") + "</tbody>";
+  }
+  pintarIdeas();
+  // ideas nuevas creadas desde la página (issues), aunque todavía no estén en ideas.tsv
+  fetch(`https://api.github.com/repos/${REPO}/issues?labels=idea&state=all&per_page=100`)
+    .then((r) => r.ok ? r.json() : [])
+    .then((issues) => {
+      const conocidas = new Map(ideas.map((i) => [i.id, i]));
+      for (const it of issues) {
+        if (it.pull_request) continue;
+        const id = "#" + it.number;
+        const etiquetas = (it.labels || []).map((l) => l.name);
+        const est = it.state === "closed" ? (etiquetas.includes("descartada") ? "descartada" : "probada")
+          : etiquetas.includes("en-curso") ? "en-curso" : "pendiente";
+        const campo = (n) => { const m = (it.body || "").match(new RegExp("(?:\\*\\*|###\\s*)" + n + "[^\\n*]*(?:\\*\\*)?:?\\s*\\n?([\\s\\S]*?)(?=\\n(?:\\*\\*|###)|$)", "i")); return m ? m[1].trim() : ""; };
+        const prev = conocidas.get(id);
+        if (prev) { prev.url = it.html_url; prev.estado = est; continue; }
+        ideas.push({ id, url: it.html_url, origen: "página", titulo: it.title.replace(/^\[idea\]\s*/i, ""),
+          detalle: campo("Qué probar") || it.body || "", fuente: campo("Fuente").replace("_No response_", ""), prioridad: (campo("Prioridad") || "media").split(/\s/)[0],
+          estado: est, experimentos: "", sin_sync: true });
+      }
+      pintarIdeas();
+    }).catch(() => {});
+
+  // ---------------------------------------------------------------- gráfico
+  function dibujarGrafico() {
+    const caja = $("#grafico-caja");
+    const pts = exps.filter((e) => e.media_seleccion != null);
+    if (!pts.length) {
+      caja.innerHTML = `<div class="vacio">Todavía no se corrió ningún experimento. El primero es la base: <code>python run.py "base: modelo del curso" --idea B0</code></div>`;
+      return;
+    }
+    const css = getComputedStyle(raiz);
+    const col = (v) => css.getPropertyValue(v).trim();
+    const W = 900, H = 300, m = { l: 56, r: 92, t: 16, b: 34 };
+    let linea = [], actual = null;
+    for (const e of exps) {
+      if (e.estado === "base" || e.estado === "confirmado") actual = e.media_seleccion;
+      linea.push(actual);
+    }
+    const valores = pts.map((e) => e.media_seleccion).concat(linea.filter((x) => x != null));
+    let lo = Math.min(...valores), hi = Math.max(...valores);
+    if (hi === lo) { lo -= 1e6; hi += 1e6; }
+    const paso = niceStep((hi - lo) / 4);
+    lo = Math.floor(lo / paso) * paso; hi = Math.ceil(hi / paso) * paso;
+    const n = exps.length;
+    const x = (i) => m.l + (n === 1 ? (W - m.l - m.r) / 2 : i * (W - m.l - m.r) / (n - 1));
+    const y = (v) => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Ganancia media de selección por experimento">`;
+    for (let v = lo; v <= hi + 1; v += paso) {
+      s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="${col("--grid")}" stroke-width="1"/>`;
+      s += `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${num(v, 0)}</text>`;
+    }
+    const cadaTanto = Math.max(1, Math.ceil(n / 12));
+    exps.forEach((e, i) => { if (i % cadaTanto === 0 || i === n - 1) s += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${esc(e.id)}</text>`; });
+    let d = "";
+    linea.forEach((v, i) => {
+      if (v == null) return;
+      if (!d) d = `M${x(i)},${y(v)}`;
+      else d += ` H${x(i)} V${y(v)}`;
+    });
+    if (d) s += `<path d="${d} H${x(n - 1)}" fill="none" stroke="${col("--accent")}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const ultimo = linea[n - 1];
+    if (ultimo != null) s += `<text x="${x(n - 1) + 10}" y="${y(ultimo) + 4}" style="fill:${col("--text")}">Vigente ${num(ultimo)}</text>`;
+    exps.forEach((e, i) => {
+      if (e.media_seleccion == null) return;
+      const lleno = e.estado === "base" || e.estado === "confirmado";
+      s += `<circle cx="${x(i)}" cy="${y(e.media_seleccion)}" r="5" fill="${lleno ? col("--accent") : col("--punto")}" stroke="${col("--surface")}" stroke-width="2"/>`;
+      s += `<circle cx="${x(i)}" cy="${y(e.media_seleccion)}" r="14" fill="transparent" data-i="${i}" style="cursor:pointer"/>`;
+    });
+    s += `</svg>`;
+    caja.innerHTML = `<div class="grafico">${s}</div><div class="leyenda"><span><i class="lk-linea"></i>Vigente</span>` +
+      `<span><i class="lk-punto" style="background:var(--accent)"></i>Base o confirmado</span>` +
+      `<span><i class="lk-punto" style="background:var(--punto)"></i>Otro experimento</span></div>`;
+    const tip = $("#tooltip");
+    caja.querySelectorAll("circle[data-i]").forEach((c) => {
+      const e = exps[+c.dataset.i];
+      c.addEventListener("mouseenter", () => {
+        tip.innerHTML = `<strong>${esc(e.id)}</strong> · ${chip(e.estado)}<br>${esc(e.descripcion)}<br>` +
+          `Media de selección: <strong>${num(e.media_seleccion)}</strong>` + (e.delta != null ? `<br>Δ vs vigente: ${signo(e.delta)}` : "");
+        tip.style.display = "block";
+      });
+      c.addEventListener("mousemove", (ev) => { tip.style.left = (ev.pageX + 14) + "px"; tip.style.top = (ev.pageY + 14) + "px"; });
+      c.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+      c.addEventListener("click", () => abrir(e.id));
+    });
+  }
+  function niceStep(r) {
+    const p = Math.pow(10, Math.floor(Math.log10(r)));
+    const f = r / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+  dibujarGrafico();
+
+  // ---------------------------------------------------------------- experimentos
+  function pintarExperimentos() {
+    const fe = $("#filtro-estado").value, q = $("#buscar").value.toLowerCase();
+    const lista = exps.slice().reverse().filter((e) =>
+      (!fe || (fe === "vigente" ? e.id === vigente : e.estado === fe || (fe === "error" && e.estado === "fuera_de_presupuesto"))) &&
+      (!q || (e.descripcion + " " + e.idea + " " + e.id).toLowerCase().includes(q)));
+    if (!exps.length) {
+      $("#tabla-exp").innerHTML = `<tr><td class="vacio">Sin experimentos todavía.</td></tr>`;
+      return;
+    }
+    $("#tabla-exp").innerHTML = `<thead><tr><th>Id</th><th>Experimento</th><th class="num">Media selección</th>` +
+      `<th class="num">Δ vs vigente</th><th class="num">Folds</th><th class="num">Control</th><th class="num">Tiempo</th><th>Estado</th></tr></thead><tbody>` +
+      (lista.length ? lista.map((e) => {
+        const d = e.delta;
+        return `<tr class="fila-exp ${e.id === vigente ? "vigente" : ""}" id="exp-${esc(e.id)}" data-id="${esc(e.id)}" tabindex="0">` +
+          `<td class="id">${esc(e.id)}</td><td><div>${esc(e.descripcion)}</div><div class="det-idea">${e.idea ? "idea " + esc(e.idea) + " · " : ""}${esc(e.fecha)}</div></td>` +
+          `<td class="num">${num(e.media_seleccion)}</td><td class="num ${d > 0 ? "positivo" : d < 0 ? "negativo" : ""}">${signo(d)}</td>` +
+          `<td class="num">${esc(e.folds_ganados || "–")}</td><td class="num">${num(e.control)}</td><td class="num">${e.segundos != null ? Math.round(e.segundos) + " s" : "–"}</td>` +
+          `<td>${chip(e.estado, e.id === vigente ? "Vigente" : null)}</td></tr>`;
+      }).join("") : `<tr><td colspan="8" class="vacio">Nada coincide con el filtro.</td></tr>`) + "</tbody>";
+  }
+  function detalle(e) {
+    const filas = e.folds.map((f) => `<tr><td class="id">${f.mes}</td><td>${f.tipo}</td><td class="mono">${esc((f.train_meses || []).join(", "))}</td>` +
+      `<td class="num">${ent(f.baja2)}</td><td class="num">${num(f.ensamble)}</td><td class="num">${ent(f.envios)}</td>` +
+      `<td class="num">${num(f.sueltos_media)} ± ${num(f.sueltos_sd)}</td></tr>`).join("");
+    const conf = e.confirmacion ? `<div><h4>Confirmación con ${e.confirmacion.semillas.length} semillas frescas contra ${esc(e.confirmacion.a)}</h4>` +
+      `Ensamble: ${num(e.confirmacion.ensamble_a)} → ${num(e.confirmacion.ensamble_b)} · pareado ${signo(e.confirmacion.pareado.media)} ± ${num(e.confirmacion.pareado.se)} ` +
+      `(${e.confirmacion.pareado.gana}/${e.confirmacion.pareado.n} semillas) · ${chip(e.confirmacion.decision)}</div>` : "";
+    const comp = e.comparacion ? `<div><h4>Contra ${esc(e.comparacion.vigente)} (screening, 5 semillas)</h4>Media ${signo(e.comparacion.delta_media)} · ` +
+      `pareado ${signo(e.comparacion.pareado_media)} ± ${num(e.comparacion.pareado_se)} · folds ganados ${e.comparacion.folds_ganados}</div>` : "";
+    const enl = [["train.py", "Código"], ["cambios.diff", "Diff"], ["log.txt", "Log"], ["resultado.json", "Resultado"]]
+      .filter(([f]) => e.archivos.includes(f)).map(([f, t]) => `<a href="${BLOB}experimentos/${encodeURIComponent(e.carpeta)}/${f}">${t}</a>`).join("") +
+      e.archivos.filter((f) => f.startsWith("confirmacion")).map((f) => `<a href="${BLOB}experimentos/${encodeURIComponent(e.carpeta)}/${esc(f)}">${esc(f)}</a>`).join("");
+    const diff = (e.diff || "").split("\n").map((l) => `<span class="${l.startsWith("+") && !l.startsWith("+++") ? "mas" : l.startsWith("-") && !l.startsWith("---") ? "menos" : l.startsWith("@@") ? "arr" : ""}">${esc(l) || " "}</span>`).join("");
+    return `<div class="caja">` +
+      (e.hipotesis ? `<div><h4>Hipótesis</h4>${esc(e.hipotesis)}</div>` : "") +
+      (e.error ? `<div><h4>Error</h4><pre class="bloque">${esc(e.error)}</pre></div>` : "") +
+      (filas ? `<div class="tabla-env"><table><thead><tr><th>Mes</th><th>Fold</th><th>Entrena con</th><th class="num">BAJA+2</th><th class="num">Ensamble</th><th class="num">Envíos</th><th class="num">Sueltos</th></tr></thead><tbody>${filas}</tbody></table></div>` : "") +
+      comp + conf +
+      `<div class="enlaces">${enl}</div>` +
+      `<div class="pestanas" role="tablist"><button type="button" role="tab" aria-selected="true" data-p="log">Log</button>` +
+      (e.diff ? `<button type="button" role="tab" aria-selected="false" data-p="diff">Cambios contra ${esc(e.vigente_al_correr || "")}</button>` : "") + `</div>` +
+      `<pre class="bloque" data-v="log">${esc(e.log)}</pre>` + (e.diff ? `<pre class="bloque" data-v="diff" hidden>${diff}</pre>` : "") + `</div>`;
+  }
+  function abrir(id) {
+    $("#filtro-estado").value = ""; $("#buscar").value = ""; pintarExperimentos();
+    const tr = document.getElementById("exp-" + id); if (!tr) return;
+    alternar(tr, true); tr.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function alternar(tr, abrirSiempre) {
+    const sig = tr.nextElementSibling;
+    if (sig && sig.classList.contains("detalle")) { if (!abrirSiempre) sig.remove(); return; }
+    const e = porId[tr.dataset.id];
+    const d = document.createElement("tr"); d.className = "detalle";
+    d.innerHTML = `<td colspan="8">${detalle(e)}</td>`;
+    tr.after(d);
+    d.querySelector(".pestanas").addEventListener("click", (ev) => {
+      const b = ev.target.closest("button"); if (!b) return;
+      d.querySelectorAll(".pestanas button").forEach((x) => x.setAttribute("aria-selected", x === b));
+      d.querySelectorAll("pre[data-v]").forEach((p) => p.hidden = p.dataset.v !== b.dataset.p);
+    });
+  }
+  $("#tabla-exp").addEventListener("click", (ev) => {
+    if (ev.target.closest("a, .detalle")) return;
+    const tr = ev.target.closest("tr.fila-exp"); if (tr) alternar(tr);
+  });
+  $("#tabla-exp").addEventListener("keydown", (ev) => {
+    const tr = ev.target.closest("tr.fila-exp"); if (tr && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); alternar(tr); }
+  });
+  $("#filtro-estado").addEventListener("change", pintarExperimentos);
+  $("#buscar").addEventListener("input", pintarExperimentos);
+  document.addEventListener("click", (ev) => { const a = ev.target.closest("[data-abrir]"); if (a) { ev.preventDefault(); abrir(a.dataset.abrir); } });
+  pintarExperimentos();
+
+  // ---------------------------------------------------------------- búsquedas
+  $("#hpo").innerHTML = D.hpo.length ? D.hpo.map((h) =>
+    `<div class="tarjeta card-hpo"><div><strong>${esc(h.nombre)}</strong> · sobre ${esc(h.base || "–")}</div>` +
+    `<div class="nota">${ent(h.trials)} trials · mejor ${num(h.mejor)}${h.arranque != null ? " · arranque " + num(h.arranque) : ""}</div>` +
+    (h.mejores_params ? `<pre class="bloque" style="margin-top:8px">${esc(h.mejores_params)}</pre>` : "") +
+    `<div class="enlaces" style="margin-top:8px"><a href="${BLOB}hpo/${encodeURIComponent(h.nombre)}/estado.md">Estado</a>` +
+    `<a href="${BLOB}hpo/${encodeURIComponent(h.nombre)}/trials.tsv">Trials</a><a href="${BLOB}hpo/${encodeURIComponent(h.nombre)}/espacio.json">Espacio</a>` +
+    `<a href="${BLOB}hpo/${encodeURIComponent(h.nombre)}/log.txt">Log</a></div></div>`).join("")
+    : `<div class="tarjeta vacio">Todavía no hay búsquedas. Ver E8 a E10 en el plan.</div>`;
+
+  // ---------------------------------------------------------------- sellado
+  const S = D.sellado, usadas = D.estado.lecturas_test || 0;
+  const ref = S.test.filter((t) => t.tipo === "referencia");
+  const cand = S.test.filter((t) => t.tipo !== "referencia");
+  const tablaTest = (rows) => `<div class="tabla-env"><table><thead><tr><th>Fecha</th><th>Modelo</th><th>Corte</th><th class="num">Envíos</th>` +
+    `<th class="num">BAJA+2 en la lista</th><th class="num">Ganancia</th></tr></thead><tbody>` +
+    rows.map((t) => `<tr><td>${esc(t.fecha)}</td><td class="id">${esc(t.nombre)}</td><td>${esc(t.corte)}</td><td class="num">${ent(t.envios)}</td>` +
+      `<td class="num">${ent(t.baja2_en_lista)} de ${ent(t.baja2_total)}</td><td class="num"><strong>${num(t.ganancia_corte)}</strong></td></tr>`).join("") + `</tbody></table></div>`;
+  $("#sellado-caja").innerHTML = `<div class="grid2">` +
+    `<div class="tarjeta card-hpo"><div class="etq">Lecturas del test para candidatos</div><div class="val" style="font-size:22px;font-weight:600">${usadas} de ${cfg.max_lecturas}</div>` +
+    `<div class="medidor"><div style="width:${Math.min(100, 100 * usadas / cfg.max_lecturas)}%"></div></div></div>` +
+    `<div class="tarjeta card-hpo"><div class="etq">Modelo de referencia</div>` +
+    (ref.length ? `<div class="val" style="font-size:22px;font-weight:600">${num(ref[ref.length - 1].ganancia_corte)}</div><div class="nota">${esc(ref[ref.length - 1].nombre)} · ${ent(ref[ref.length - 1].envios)} envíos</div>`
+      : `<div class="val" style="font-size:22px;font-weight:600">Pendiente</div><div class="nota">Se agrega cuando esté disponible (<a href="${BLOB}base/README.md">cómo</a>).</div>`) + `</div></div>` +
+    (S.reserva.length ? `<h3 style="font-size:15px;margin:20px 0 6px">Reserva (${cfg.folds_reserva.join(", ")})</h3><div class="tarjeta tabla-env"><table><thead><tr><th>Fecha</th><th>Experimento</th><th class="num">Ganancia</th><th>Elegido</th></tr></thead><tbody>` +
+      S.reserva.map((r) => `<tr><td>${esc(r.fecha)}</td><td class="id">${esc(r.experimento)}</td><td class="num">${num(r.ganancia_ensamble)}</td><td>${r.elegido ? chip("confirmado", "Elegido") : ""}</td></tr>`).join("") + `</tbody></table></div>` : "") +
+    (S.test.length ? `<h3 style="font-size:15px;margin:20px 0 6px">Resultados en ${cfg.mes_test}</h3><div class="tarjeta">${tablaTest(cand.concat(ref))}</div>`
+      : `<p class="nota" style="margin-top:14px">Todavía no se midió nada en ${cfg.mes_test}.</p>`);
+
+  $("#pie").innerHTML = `Generado por <code>tools/pagina.py</code>. ` +
+    `<a href="${BLOB}README.md">README</a> · <a href="${BLOB}program.md">Instrucciones del loop</a> · <a href="${BLOB}experimentos.md">Plan</a> · ` +
+    `<a href="${BLOB}resultados.tsv">resultados.tsv</a> · <a href="${BLOB}ideas.tsv">ideas.tsv</a>`;
+})();
+</script>
+</body>
+</html>

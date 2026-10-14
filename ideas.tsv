@@ -1,0 +1,25 @@
+id	origen	titulo	detalle	fuente	prioridad	estado	experimentos	actualizado
+P1	plan	Variables rotas por mes	tools/fase0.py: variables todas en cero, vacías o constantes en algún mes; pasarlas a NA en ese mes.	Fase 0	fase 0	pendiente		2026-10-14 13:09
+P2	plan	Deriva de montos	tools/fase0.py: montos que se corren más de 25% contra los 12 meses anteriores (inflación, aguinaldo).	Fase 0	fase 0	pendiente		2026-10-14 13:09
+P3	plan	Control de fuga temporal	tools/fuga.py cada vez que cambie make_features; sin variables que identifiquen el mes.	Hidden Costs of 99% Accuracy (2610.00118)	fase 0	pendiente		2026-10-14 13:09
+P4	plan	BAJA+2 por mes y estacionalidad	tools/fase0.py: tasa por mes y razón contra dos meses antes, en todos los años.	Fase 0	fase 0	pendiente		2026-10-14 13:09
+B0	plan	Base: modelo del curso	Variables crudas, un mes de entrenamiento, binaria BAJA+2, hiperparámetros del notebook de la materia.	Curso	alta	pendiente		2026-10-14 13:09
+B1	plan	Clase objetivo	BAJA+2 sola / BAJA+1 ∪ BAJA+2 / multiclase P(B2)+α·P(B1) / peso de BAJA+1 0,25 y 0,5.	Curso	alta	pendiente		2026-10-14 13:09
+B2	plan	Lags y deltas de 1 y 2 meses	Lag y x − lag de todas las variables; HISTORIA_MESES = 2.	Curso	alta	pendiente		2026-10-14 13:09
+B3	plan	Submuestreo de CONTINUA	1,0 / 0,5 / 0,2 / 0,1 con prepare.muestra_continua; mirar ganancia y tiempo.	Curso	alta	pendiente		2026-10-14 13:09
+E1	plan	Meses de entrenamiento	1 / 3 / 6 / 12 / 24 / todos; escalar min_data_in_leaf con las filas.	Rolling-window (2606.06776)	alta	pendiente		2026-10-14 13:09
+E2	plan	Sin meses atípicos	Con 12+ meses, sacar del entrenamiento abril a diciembre de 2020 si están en el rango.	Rolling-window (2606.06776)	alta	pendiente		2026-10-14 13:09
+E3	plan	Peso por antigüedad del mes	Peso = 0,5^(edad/h), h en {3, 6, 12}.	Rolling-window (2606.06776)	alta	pendiente		2026-10-14 13:09
+E4	plan	Largo de la ventana de features	Lags 1..k (k = 2, 3, 6, 12) y promedio, mínimo, máximo y tendencia en 3, 6 y 12 meses; reportar la curva.	How Early Is Early Enough? (2607.00473)	alta	pendiente		2026-10-14 13:09
+E5	plan	Memoria larga	Caída contra el máximo de 12 meses y meses desde el último sueldo.	How Early Is Early Enough? (2607.00473)	alta	pendiente		2026-10-14 13:09
+E6	plan	Deltas interanuales	x − lag12 y x / lag12 de montos y conteos; variantes sobre el percentil del mes.	Seasonal false alarms (2608.18174)	alta	pendiente		2026-10-14 13:09
+E7	plan	Corte con estacionalidad	Envíos según la razón de BAJA+2 de los mismos meses de años anteriores; validar en 202008.	Seasonal false alarms (2608.18174)	alta	pendiente		2026-10-14 13:09
+E8	plan	Espacio de búsqueda ampliado	El agente diseña hpo/espacio_ampliado.json con justificación; comparar contra el base con los mismos trials.	Agentic Search Spaces (2609.16309)	media	pendiente		2026-10-14 13:09
+E9	plan	Arranque desde el vigente	TPE con y sin la configuración vigente como primer trial.	When Is an LLM Worth It for HPO? (2606.21641)	media	pendiente		2026-10-14 13:09
+E10	plan	Híbrido agente + TPE	Cada 10 trials el agente lee estado.md y propone hasta 2; comparar contra TPE puro.	LLMs vs HPO clásico en autoresearch (2603.24647)	media	pendiente		2026-10-14 13:09
+E11	plan	Variables generadas por roles con memoria	4 roles, 2 por ronda, 4 rondas; entra si supera a los canaritos y suma en el ensamble; registro en features_probadas.tsv.	MALMAS (2604.20261)	media	pendiente		2026-10-14 13:09
+E12	plan	Agregados por grupo sin fuga	Tasa histórica de BAJA+2 del grupo del cliente con clase hasta m − 2.	MALMAS (2604.20261)	media	pendiente		2026-10-14 13:09
+E13	plan	Corte por probabilidad calibrada	Isotónica fuera de muestra y estimular si P > 2,56%; comparar contra E7.	Calibrated cost-sensitive ensemble (Frontiers 2026)	media	pendiente		2026-10-14 13:09
+E14	plan	Tamaño del semillerío	Curva del ensamble con 5, 10, 20, 40 y 60 semillas; N por la curva.	Hidden Costs of 99% Accuracy (2610.00118)	media	pendiente		2026-10-14 13:09
+E15	plan	Ordenar la cola por predicción	El agente ordena las ideas por ganancia esperada y anota la predicción; sólo ordena, no descarta.	FOREAGENT (2601.05930)	baja	pendiente		2026-10-14 13:09
+E16	plan	Volver atrás	Con 5 descartes seguidos, retomar la segunda mejor rama.	Recovering Wasted Compute (2608.10424)	baja	pendiente		2026-10-14 13:09
