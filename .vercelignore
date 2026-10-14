@@ -1,0 +1,4 @@
+# Vercel sólo publica la página (docs/). El resto es el proyecto en Python, que corre en tu máquina.
+/*
+!/docs
+!/vercel.json

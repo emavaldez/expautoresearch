@@ -5,8 +5,8 @@ Método [autoresearch](https://github.com/karpathy/autoresearch) aplicado a chur
 
 - **Objetivo:** marcar qué clientes de **202108** son BAJA+2, con 36 meses de historia.
 - **Ganancia:** +1.072.500 por cada BAJA+2 estimulado, −27.500 por cada estímulo.
-- **Página:** https://emavaldez.github.io/expautoresearch/ — para proponer cosas a probar y ver qué se probó, con qué
-  código y qué dio.
+- **Página:** `docs/index.html`, publicada en Vercel (`vercel.json` publica sólo `docs/` como sitio estático y se
+  actualiza con cada push). Sirve para proponer cosas a probar y ver qué se probó, con qué código y qué dio.
 
 ## Cómo está armado
 
@@ -25,7 +25,7 @@ Método [autoresearch](https://github.com/karpathy/autoresearch) aplicado a chur
 | `hpo/<nombre>/` | Búsquedas de hiperparámetros: espacio, trials, estado y log. |
 | `sellado/` | Reserva y test de 202108 (sólo resúmenes; las listas con ids quedan en la caché local). |
 | `fase0/` | Informe de los datos: clase por mes, variables rotas, deriva. |
-| `docs/index.html` | La página (la genera `tools/pagina.py`). |
+| `docs/index.html` | La página (la genera `tools/pagina.py`; Vercel la publica según `vercel.json`). |
 
 Herramientas en `tools/`: `comparar.py` (confirmación pareada), `hpo.py` (Optuna), `ideas.py` (cola e issues),
 `fuga.py` (control de fuga temporal), `fase0.py`, `sellado.py` (reserva y test), `pagina.py`, `publicar.sh` y

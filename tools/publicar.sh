@@ -10,4 +10,4 @@ done
 git diff --cached --quiet || git commit -q -m "registro: $(date '+%Y-%m-%d %H:%M')"
 git pull --rebase -q || true
 git push -q
-echo "publicado: https://emavaldez.github.io/expautoresearch/"
+echo "publicado: Vercel actualiza la página con este push"
