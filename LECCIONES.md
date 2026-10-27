@@ -32,3 +32,4 @@ hasta 201912: nada de 2020 entra acá.
 - E013 confirmado (20 semillas frescas): +6,2 M por mes en el ensamble contra E012, pareado +6,9 ± 0,8 M, gana en las 20 semillas. Nuevo vigente: sólo el general, con los 4 meses de la ventana.
 - E019 (P3, sobre E013): foto_mes deja de ser variable: 754,9 M (−1,1 M), pareado +1,0 ± 0,6 M: empate. Cumple la regla de no identificar el mes y evita que el mes puntuado caiga fuera del rango que vio el árbol: se confirma como simplificación.
 - E020 (B1, sobre E013): binaria en lugar de multiclase: 754,9 M (−1,1 M), pareado −0,7 ± 1,4 M, AUC 0,9163 (la más alta), 249 s contra 629. Empate con 40% del tiempo: candidata a simplificación después de E019.
+- E019 confirmado como simplificación (20 semillas frescas): sin foto_mes empata exacto con E013 (ensamble Δ 0,0 M; pareado +0,2 ± 0,4 M, 11 de 20 semillas). Nuevo vigente: el mismo modelo sin una variable que identificaba el mes.
