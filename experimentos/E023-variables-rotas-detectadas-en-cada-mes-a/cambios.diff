@@ -1,0 +1,35 @@
+--- E019/train.py
++++ E023/train.py
+@@ -112,11 +112,32 @@
+     return (100 * (pos.fillna(0) - neg.fillna(0))).where(x.notna())
+ 
+ 
++def rotas_detectadas(df: pd.DataFrame) -> list:
++    """P1: variable-mes casi toda en cero o vacía (99% o más) cuando en los meses anteriores no lo estaba (mediana menor
++    que 90%). Cada mes se compara sólo con los anteriores, así que no mira el futuro."""
++    cols = [c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]
++    meses = sorted(df.foto_mes.unique())
++    g = df.groupby("foto_mes")[cols]
++    ceros = g.agg(lambda s: (s == 0).mean())
++    nulos = g.agg(lambda s: s.isna().mean())
++    rotas = []
++    for i, m in enumerate(meses):
++        if i < 2:
++            continue
++        rc, rn = ceros.loc[meses[:i]].median(), nulos.loc[meses[:i]].median()
++        for c in cols:
++            if (ceros.at[m, c] >= 0.99 and rc[c] < 0.9) or (nulos.at[m, c] >= 0.99 and rn[c] < 0.9):
++                rotas.append((m, c))
++    return rotas
++
++
+ def lags_y_deltas(df: pd.DataFrame) -> pd.DataFrame:
+     order = df.sort_values(["numero_de_cliente", "foto_mes"]).index
+     df = df.loc[order]
+     for c, meses in ROTAS.items():
+         df[c] = df[c].where(~df.foto_mes.isin(meses))
++    for m, c in rotas_detectadas(df):  # P1
++        df.loc[df.foto_mes == m, c] = np.nan
+     for c in PERCENTIL_CERO_FIJO:
+         df[c] = percentil_cero_fijo(df[c], df.foto_mes)
+     for c in RESTAR_MODA:

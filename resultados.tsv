@@ -22,3 +22,4 @@ E019	2026-10-27 09:26	P3	foto_mes deja de ser variable del modelo	251643333	2555
 E020	2026-10-27 09:30	B1	binaria BAJA+1 o BAJA+2 en lugar de multiclase	251643333	253480393	0.9163	-366667	2/3		248.9	descartado	E013
 E021	2026-10-27 10:16	B1	binaria BAJA+1 o BAJA+2 en lugar de multiclase	252376667	252533094	0.9164	733333	2/3		248.0	rechazado	E019
 E022	2026-10-27 10:53	P1	el vigente, medido también con la data modificada simulada	251643333	255593892	0.9155	0	0/3	243943333	1261.9	descartado	E019
+E023	2026-10-27 11:14	P1	variables rotas detectadas en cada mes (además de la tabla de 2019)	251643333	255593892	0.9155	0	0/3	243576667	1267.5	descartado	E019

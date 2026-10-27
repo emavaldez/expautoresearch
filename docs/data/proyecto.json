@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 10:53",
+ "generado": "2026-10-27 11:14",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -2311,6 +2311,162 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E022-el-vigente-medido-tambien-con-la-data-mo/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E022-el-vigente-medido-tambien-con-la-data-mo/log.txt"
    }
+  },
+  {
+   "id": "E023",
+   "fecha": "2026-10-27 11:14",
+   "descripcion": "variables rotas detectadas en cada mes (además de la tabla de 2019)",
+   "idea": "P1",
+   "hipotesis": "Predicción: empata con la data original (la tabla ya tiene las de 2019) y gana con la modificada (mpayroll en cero, ctrx_quarter y cliente_vip vacías)",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 1267.5,
+   "error": "",
+   "total": 754930000.0,
+   "media": 251643333.33333334,
+   "meseta": 255593892.3524522,
+   "auc": 0.9154785054695123,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 211502500.0,
+     "envios": 4349,
+     "aciertos": 301,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 212561627.1820449,
+     "envios_meseta": 3985,
+     "auc": 0.9091207540133893,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 209.6
+    },
+    "201909": {
+     "lista": 261717500.0,
+     "envios": 4403,
+     "aciertos": 348,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 265509551.12219453,
+     "envios_meseta": 3188,
+     "auc": 0.9141978400914079,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 210.8
+    },
+    "201910": {
+     "lista": 281710000.0,
+     "envios": 4476,
+     "aciertos": 368,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 288710498.7531172,
+     "envios_meseta": 5156,
+     "auc": 0.9231169223037395,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 213.9
+    }
+   },
+   "modificado": {
+    "media": 243576666.66666666,
+    "meses": {
+     "201908": {
+      "lista": 189502500.0,
+      "envios": 4349,
+      "aciertos": 281,
+      "baja2": 542,
+      "clientes": 131775,
+      "meseta": 191757294.26433915,
+      "envios_meseta": 4590,
+      "auc": 0.8986620175270356,
+      "train_meses": [
+       201903,
+       201904,
+       201905,
+       201906
+      ],
+      "filas_train": 506871,
+      "segundos": 207.8
+     },
+     "201909": {
+      "lista": 252917500.0,
+      "envios": 4403,
+      "aciertos": 340,
+      "baja2": 612,
+      "clientes": 133419,
+      "meseta": 260944139.65087283,
+      "envios_meseta": 2840,
+      "auc": 0.9099432263763166,
+      "train_meses": [
+       201904,
+       201905,
+       201906,
+       201907
+      ],
+      "filas_train": 511102,
+      "segundos": 210.8
+     },
+     "201910": {
+      "lista": 288310000.0,
+      "envios": 4476,
+      "aciertos": 374,
+      "baja2": 631,
+      "clientes": 135633,
+      "meseta": 290637967.58104736,
+      "envios_meseta": 4210,
+      "auc": 0.9211534132111584,
+      "train_meses": [
+       201905,
+       201906,
+       201907,
+       201908
+      ],
+      "filas_train": 516761,
+      "segundos": 213.4
+     }
+    }
+   },
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 0.0,
+    "delta_por_mes": {
+     "201908": 0.0,
+     "201909": 0.0,
+     "201910": 0.0
+    },
+    "meses_ganados": 0,
+    "pareado_media": 0.0,
+    "pareado_se": 0.0
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E023-variables-rotas-detectadas-en-cada-mes-a/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E023-variables-rotas-detectadas-en-cada-mes-a/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E023-variables-rotas-detectadas-en-cada-mes-a/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -2342,11 +2498,12 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "2",
-   "actualizado": "2026-10-27 10:53",
+   "actualizado": "2026-10-27 11:14",
    "experimentos": [
-    "E022"
+    "E022",
+    "E023"
    ],
-   "comentarios": 1
+   "comentarios": 2
   },
   {
    "id": "P2",
@@ -3085,6 +3242,7 @@
   "E020 (B1, sobre E013): binaria en lugar de multiclase: 754,9 M (−1,1 M), pareado −0,7 ± 1,4 M, AUC 0,9163 (la más alta), 249 s contra 629. Empate con 40% del tiempo: candidata a simplificación después de E019.",
   "E019 confirmado como simplificación (20 semillas frescas): sin foto_mes empata exacto con E013 (ensamble Δ 0,0 M; pareado +0,2 ± 0,4 M, 11 de 20 semillas). Nuevo vigente: el mismo modelo sin una variable que identificaba el mes.",
   "E021 (B1, sobre E019): binaria BAJA+1 o BAJA+2 con peso 1: 757,1 M (+2,2 M), pareado −0,6 ± 1,3 M, AUC 0,9164, 248 s contra 629: empate con 40% del tiempo. Se confirma como simplificación.",
-  "E021 rechazado como simplificación (20 semillas frescas): la binaria gana +1,5 M en el ensamble pero pierde por semilla (pareado −1,5 ± 0,5 M, 5 de 20, Wilcoxon p = 0,011). Sigue el multiclase (E019); la binaria queda como plan B si en el aula falta tiempo."
+  "E021 rechazado como simplificación (20 semillas frescas): la binaria gana +1,5 M en el ensamble pero pierde por semilla (pareado −1,5 ± 0,5 M, 5 de 20, Wilcoxon p = 0,011). Sigue el multiclase (E019); la binaria queda como plan B si en el aula falta tiempo.",
+  "E022 (referencia): el vigente E019 con la data modificada simulada: 731,6 M contra 754,9 M con la original (−23,3 M). El golpe está en el primer mes (201908: 186,2 contra 211,5 M, AUC 0,896 contra 0,909), que llega con mpayroll en cero y montos ×1,30 contra una ventana sin alterar; en el tercero hasta gana (293,8 contra 281,7 M). Sin cambios, el modelo aguanta, pero pierde ~10% en el mes en que la data cambia de golpe."
  ]
 }
