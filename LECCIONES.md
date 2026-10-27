@@ -10,3 +10,4 @@ hasta 201912: nada de 2020 entra acá.
 - BAJA+2 por mes en 2019: entre 0,41% (201908) y 0,62% (201903); 201910: 0,47%.
 
 ## Experimentos
+- E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas.

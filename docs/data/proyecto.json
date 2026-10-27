@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 03:56",
+ "generado": "2026-10-27 04:08",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -16,8 +16,96 @@
   "semillas_screening": 5,
   "semillas_confirmacion": 20
  },
- "vigente": null,
- "experimentos": [],
+ "vigente": "E000",
+ "experimentos": [
+  {
+   "id": "E000",
+   "fecha": "2026-10-27 04:07",
+   "descripcion": "base: modelo de la primera competencia",
+   "idea": "B0",
+   "hipotesis": "Punto de partida: el modelo entregado en la primera competencia, llevado a estos datos con lo que se ve en 2019",
+   "estado": "base",
+   "vigente_al_correr": null,
+   "segundos": 688.2,
+   "error": "",
+   "total": 734030000.0,
+   "media": 244676666.66666666,
+   "meseta": 249290997.5062344,
+   "auc": 0.9123872489936744,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 199402500.0,
+     "envios": 4349,
+     "aciertos": 290,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 202153802.9925187,
+     "envios_meseta": 4630,
+     "auc": 0.9048590739273543,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 226.8
+    },
+    "201909": {
+     "lista": 250717500.0,
+     "envios": 4403,
+     "aciertos": 338,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 256218871.57107228,
+     "envios_meseta": 2823,
+     "auc": 0.911093699240497,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 230.7
+    },
+    "201910": {
+     "lista": 283910000.0,
+     "envios": 4476,
+     "aciertos": 370,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 289500317.9551122,
+     "envios_meseta": 3959,
+     "auc": 0.9212089738131719,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 229.9
+    }
+   },
+   "modificado": null,
+   "comparacion": null,
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/train.py",
+    "diff": null,
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/log.txt"
+   }
+  }
+ ],
  "ideas": [
   {
    "id": "B0",
@@ -28,11 +116,13 @@
    "fuente_url": "https://github.com/emavaldez/primeracompetencia",
    "como_medir": "Es el primer vigente: todo lo demás se compara contra él.",
    "prioridad": "base",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "1",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 2
+   "actualizado": "2026-10-27 04:07",
+   "experimentos": [
+    "E000"
+   ],
+   "comentarios": 3
   },
   {
    "id": "P1",
@@ -189,13 +279,13 @@
    "origen": "plan",
    "titulo": "[E1b] Romper la regla de 6 meses",
    "detalle": "Entrenar con todos los meses de 2019 disponibles en lugar de la ventana de 6. Sirve para saber cuánto cuesta la regla, no para entregarlo.",
-   "fuente": "A Rolling-Window Framework for Churn Prediction (https://arxiv.org/abs/2606.06776)",
+   "fuente": "A Rolling-Window Framework for Churn Prediction (https://arxiv.org/abs/2606.06776) (https://arxiv.org/abs/2606.06776)",
    "fuente_url": "https://arxiv.org/abs/2606.06776",
-   "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente.",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente.",
    "prioridad": "media",
    "estado": "propuesta",
    "issue": "12",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 04:08",
    "experimentos": [],
    "comentarios": 0
   },
@@ -272,7 +362,7 @@
    "issue": "17",
    "actualizado": "2026-10-27 03:53",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "E7",
@@ -728,6 +818,7 @@
  "lecciones": [
   "internet: en 2019 es binaria y al revés que en 2021: 1 = usa homebanking (92%, 0,3% de BAJA+2), 0 = grupo chico y riesgoso (8%, 2,1 a 2,4% de BAJA+2).",
   "Meses rotos (variable casi toda en cero cuando antes no): 201905 y 201910 (rentabilidad, comisiones, márgenes; en 201910 también chomebanking_transacciones), 201904 (débitos automáticos Visa). Transferencias recibidas y app mobile no existen en la primera mitad de 2019.",
-  "BAJA+2 por mes en 2019: entre 0,41% (201908) y 0,62% (201903); 201910: 0,47%."
+  "BAJA+2 por mes en 2019: entre 0,41% (201908) y 0,62% (201903); 201910: 0,47%.",
+  "E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas."
  ]
 }
