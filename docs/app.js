@@ -385,7 +385,15 @@ function vAula() {
     <h3>Cómo aguanta cada uno la data modificada</h3><p class="intro">Arriba, la ganancia con la data original de 2019; abajo, en gris, con la data modificada simulada sobre esos mismos meses.</p>
     <table class="libro"><thead><tr><th>Modelo</th>${ms.map((k) => `<th class="num">${nombreMes(k)}</th>`).join("")}<th class="num">Total</th></tr></thead><tbody>
     ${fila("modelo vigente, medido con la data modificada", ref)}${fila("alternativa robusta", alt)}</tbody></table>
-    <p class="nota">En el aula, la herramienta calcula las dos listas cada mes, entrega la que diga la regla y deja cambiarla a mano sin reentrenar. Nada de esto se eligió mirando 2020.</p>`);
+    <p class="nota">En el aula, la herramienta calcula las dos listas cada mes, entrega la que diga la regla y deja cambiarla a mano sin reentrenar. Nada de esto se eligió mirando 2020.</p>
+    ${Au.preparacion ? `<h3>Qué pasó después (informe: no decide nada)</h3>
+    <p class="intro">Con el modelo ya congelado, se lo reentrenó mes a mes en 2020 como en producción, y se ensayó el aula con cronómetro (unos ${String(Au.ensayo.minutos_por_mes).replace(".", ",")} minutos por mes). Estos números se miraron recién al final y no cambiaron nada del modelo.</p>
+    <table class="libro"><thead><tr><th>Mes</th><th class="num">Envíos</th><th class="num">Aciertos</th><th class="num">BAJA+2</th><th class="num">Ganancia</th></tr></thead><tbody>
+    ${Au.preparacion.map((f) => `<tr><td>${nombreMes(f[0])} ${f[0].slice(0, 4)}</td><td class="num">${N(f[1])}</td><td class="num">${N(f[2])}</td><td class="num">${N(f[3])}</td><td class="num">${nf1.format(f[4])} M</td></tr>`).join("")}
+    <tr class="total"><td>Preparación</td><td></td><td></td><td></td><td class="num">${nf1.format(Au.preparacion.reduce((t, f) => t + f[4], 0))} M</td></tr></tbody></table>
+    <h3>El ensayo del aula</h3><table class="libro"><thead><tr><th>Mes</th><th>Data original</th><th class="num">Ganancia</th><th>Data modificada</th><th class="num">Ganancia</th><th class="num">Siempre el modelo</th></tr></thead><tbody>
+    ${Au.ensayo.original.map((o, i) => { const m = Au.ensayo.modificado[i]; return `<tr><td>${nombreMes(o[0])} ${o[0].slice(0, 4)}</td><td>${o[1]} <span class="apagado">(${o[2]} saltos)</span></td><td class="num">${nf1.format(o[3])} M</td><td>${m[1]} <span class="apagado">(${m[2]} saltos)</span></td><td class="num">${nf1.format(m[3])} M</td><td class="num apagado">${nf1.format(m[4])} M</td></tr>`; }).join("")}
+    <tr class="total"><td>Total</td><td></td><td class="num">${nf1.format(Au.ensayo.original.reduce((t, f) => t + f[3], 0))} M</td><td></td><td class="num">${nf1.format(Au.ensayo.modificado.reduce((t, f) => t + f[3], 0))} M</td><td class="num">${nf1.format(Au.ensayo.modificado.reduce((t, f) => t + f[4], 0))} M</td></tr></tbody></table>` : ""}`);
 }
 
 function vMetodo() {

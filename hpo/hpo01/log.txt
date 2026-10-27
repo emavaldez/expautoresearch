@@ -1,1 +1,6 @@
 11:38:11 búsqueda hpo01 sobre E019: 25 trials, semillas [800311, 800329, 800333], espacio ['learning_rate', 'num_leaves', 'min_data_in_leaf', 'feature_fraction', 'lambda_l2', 'num_rounds', 'submuestreo']
+11:45:37 trial 0 (arranque): 253,5M {"learning_rate": 0.027, "num_leaves": 31, "min_data_in_leaf": 200, "feature_fraction": 0.5, "lambda_l2": 13.84045687010494, "num_rounds": 500, "submuestreo": 0.2}
+12:15:56 trial 1 (tpe): 258,5M {"learning_rate": 0.015795386074823305, "num_leaves": 254, "min_data_in_leaf": 72, "feature_fraction": 0.5168676217650697, "lambda_l2": 0.0032872028799478836, "num_rounds": 667, "submuestreo": 0.1320012584263648}
+12:26:25 trial 2 (tpe): 255,2M {"learning_rate": 0.04379323831197828, "num_leaves": 63, "min_data_in_leaf": 94, "feature_fraction": 0.8140902923802459, "lambda_l2": 12.006893707043021, "num_rounds": 577, "submuestreo": 0.1728393138822684}
+13:07:25 trial 3 (tpe): 256,6M {"learning_rate": 0.011247822366406144, "num_leaves": 160, "min_data_in_leaf": 56, "feature_fraction": 0.5967710968564564, "lambda_l2": 0.030753308190665907, "num_rounds": 978, "submuestreo": 0.3616291400373393}
+14:50:44 búsqueda hpo01 sobre E019: 12 trials, semillas [800311, 800329, 800333], espacio ['learning_rate', 'num_leaves', 'min_data_in_leaf', 'feature_fraction', 'lambda_l2', 'num_rounds', 'submuestreo']
