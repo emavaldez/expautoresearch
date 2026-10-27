@@ -1,0 +1,38 @@
+--- E019/train.py
++++ E028/train.py
+@@ -306,12 +306,35 @@
+     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
+ 
+ 
++_NO_RED = {}
++
++
++def no_redundantes(train: pd.DataFrame, cols: list, limite: float = 0.98) -> list:
++    """E21: saca cada columna que tiene correlación mayor que 0,98 (R² > 0,96) con una anterior de la lista. Se mide en
++    una muestra de 60.000 filas del entrenamiento (nunca del mes que se puntúa) y se calcula una vez por ventana."""
++    clave = (tuple(sorted(train.foto_mes.unique())), len(train), len(cols))
++    if clave not in _NO_RED:
++        X = train[cols].sample(min(60_000, len(train)), random_state=1).to_numpy(np.float64)
++        X = np.where(np.isfinite(X), X, np.nan)
++        X = X - np.nanmean(X, axis=0)
++        X = np.nan_to_num(X / np.where(np.nanstd(X, axis=0) > 0, np.nanstd(X, axis=0), 1.0))
++        R = np.abs((X.T @ X) / len(X))
++        quedan = []
++        for j in range(len(cols)):
++            if not quedan or R[j, quedan].max() <= limite:
++                quedan.append(j)
++        _NO_RED[clave] = [cols[j] for j in quedan]
++        print(f"  E21: {len(quedan)} de {len(cols)} columnas no redundantes", flush=True)
++    return _NO_RED[clave]
++
++
+ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
+     """General + especialista de deudores con reparto. Devuelve P(BAJA+1) + P(BAJA+2) del general, con el reparto en el segmento."""
+     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
+     train = train[train.foto_mes.isin(months)]
+     # Columnas: todas menos la historia del resumen de tarjetas (ver historia_de_resumen); el FE de la cátedra lo ve sólo el general.
+     cols = [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)]  # P3: sin foto_mes
++    cols = no_redundantes(train, cols)  # E21
+     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
+     # igual sólo mira el último mes con clase, que el enmascarado no toca.
+     en_seg, p_esp = np.zeros(len(score), bool), None  # B5: sin especialista
