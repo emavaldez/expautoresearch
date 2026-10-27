@@ -25,3 +25,4 @@ E022	2026-10-27 10:53	P1	el vigente, medido también con la data modificada simu
 E023	2026-10-27 11:14	P1	variables rotas detectadas en cada mes (además de la tabla de 2019)	251643333	255593892	0.9155	0	0/3	243576667	1267.5	descartado	E019
 E024	2026-10-27 11:37	E17	variables rotas detectadas y percentil con cero fijo para todos los montos	251643333	254747724	0.9142	0	1/3	245410000	1317.0	descartado	E019
 E025	2026-10-27 17:46	E8	hiperparámetros del mejor trial de la búsqueda (254 hojas, 667 rondas)	253476667	258683699	0.9179	1833333	2/3		3057.9	descartado	E019
+E026	2026-10-27 18:38	B2	lags y deltas por mes calendario	251643333	255605391	0.9155	0	2/3		626.8	descartado	E019

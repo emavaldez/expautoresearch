@@ -1,0 +1,27 @@
+--- E019/train.py
++++ E026/train.py
+@@ -122,12 +122,20 @@
+     for c in RESTAR_MODA:
+         df[c] = df[c] - df.groupby("foto_mes")[c].transform(lambda v: v.mode().iloc[0])
+     base = [c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]
+-    g = df.groupby("numero_de_cliente")[base]
++    # B2: lag del mes calendario (si el cliente no estuvo ese mes, queda vacío), no de la fila anterior del cliente
++    ids = df["numero_de_cliente"].to_numpy()
++    per = (df.foto_mes.to_numpy() // 100) * 12 + df.foto_mes.to_numpy() % 100
++    X = df[base].to_numpy(dtype=np.float32)
+     new = {}
+     for k in (1, 2):  # Feature Engineering histórico de la cátedra: lags y delta lags de orden 1 y 2
+-        lag = g.shift(k)
+-        new.update({f"{c}_lag{k}": lag[c] for c in base})
+-        new.update({f"{c}_delta{k}": df[c] - lag[c] for c in base})
++        lag = np.full_like(X, np.nan)
++        for j in range(1, k + 1):
++            ok = np.zeros(len(df), bool)
++            ok[j:] = (ids[j:] == ids[:-j]) & (per[j:] - per[:-j] == k)
++            idx = np.nonzero(ok)[0]
++            lag[idx] = X[idx - j]
++        new.update({f"{c}_lag{k}": lag[:, i] for i, c in enumerate(base)})
++        new.update({f"{c}_delta{k}": X[:, i] - lag[:, i] for i, c in enumerate(base)})
+     df = pd.concat([df, pd.DataFrame(new, index=df.index)], axis=1)
+     return df.sort_index()
+ 

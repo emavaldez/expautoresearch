@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 17:46",
+ "generado": "2026-10-27 18:38",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -2721,6 +2721,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E025-hiperparametros-del-mejor-trial-de-la-bu/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E025-hiperparametros-del-mejor-trial-de-la-bu/log.txt"
    }
+  },
+  {
+   "id": "E026",
+   "fecha": "2026-10-27 18:38",
+   "descripcion": "lags y deltas por mes calendario",
+   "idea": "B2",
+   "hipotesis": "Predicción: empate o mejora chica. Hoy, si un cliente faltó un mes, el lag 1 es de dos meses atrás; con el mes calendario queda vacío y el árbol lo distingue",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 626.8,
+   "error": "",
+   "total": 754930000.0,
+   "media": 251643333.33333334,
+   "meseta": 255605390.6899418,
+   "auc": 0.9154812268409499,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 208202500.0,
+     "envios": 4349,
+     "aciertos": 298,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 209617687.03241897,
+     "envios_meseta": 3753,
+     "auc": 0.9085369497024011,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 206.2
+    },
+    "201909": {
+     "lista": 263917500.0,
+     "envios": 4403,
+     "aciertos": 350,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 264511801.7456359,
+     "envios_meseta": 3417,
+     "auc": 0.9144060024987856,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 208.5
+    },
+    "201910": {
+     "lista": 282810000.0,
+     "envios": 4476,
+     "aciertos": 369,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 292686683.2917706,
+     "envios_meseta": 6016,
+     "auc": 0.923500728321663,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 211.3
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 0.0,
+    "delta_por_mes": {
+     "201908": -3300000.0,
+     "201909": 2200000.0,
+     "201910": 1100000.0
+    },
+    "meses_ganados": 2,
+    "pareado_media": -73333.33333333135,
+    "pareado_se": 1685869.3767773202
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E026-lags-y-deltas-por-mes-calendario/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E026-lags-y-deltas-por-mes-calendario/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E026-lags-y-deltas-por-mes-calendario/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -2836,11 +2934,13 @@
    "fuente_url": "https://arxiv.org/abs/1802.03396",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "7",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 18:38",
+   "experimentos": [
+    "E026"
+   ],
+   "comentarios": 1
   },
   {
    "id": "B3",
@@ -3504,7 +3604,9 @@
   "E023 (P1, sobre E019): detectar variables rotas en cada mes (contra los meses anteriores) y pasarlas a NA: con la data original da lo mismo que el vigente (754,9 M: la tabla de 2019 ya las tenía); con la modificada, 730,8 M contra 731,6 M. Detecta bien (mpayroll en 201908, ctrx_quarter y cliente_vip en 201909), pero NA en lugar de cero no le cambia nada al árbol: lo que le pega con la data modificada es la inflación de golpe de los montos.",
   "E024 (P1 + E17, sobre E019): detectar rotas y pasar todos los montos a percentil con cero fijo: original 754,9 M (empate exacto, pareado −0,4 ± 1,2 M); modificada 736,2 M contra 731,6 M del vigente. En el mes en que la escala cambia de golpe (201908 modificado) recupera 14 M (200,5 contra 186,2); en los otros dos pierde un poco. Queda como alternativa robusta, definida en 2019, para el mes del aula que llegue con un salto de escala.",
   "Regla para el aula (definida con 2019): contar montos cuya mediana (sin ceros) se mueve fuera de [0,8; 1,25] contra el mes anterior. En los meses normales de 2019 dan entre 4 y 10; en el primer mes de la data modificada, 37 (los siguientes vuelven a 10 y 6, porque ya se comparan contra un mes inflado). Con 20 o más, entregar la alternativa robusta (E024) en ese mes: en 2019 modificado daría 746,1 M contra 731,6 M del modelo solo, y con la data original nunca se activa (754,9 M).",
-  "hpo01 (E8/E9, TPE sobre E019, 12 trials completos con 3 semillas, meseta media en 201908-201910): el vigente da 253,5 M; lo único que se despega son árboles grandes (num_leaves 160-255: 256,4 a 258,5 M). num_leaves explica el 66% de la variación (fANOVA) y el mejor quedó contra el techo del rango. Esos trials tardan 30-40 minutos contra 6 del vigente: con 5 semillas no entrarían en los 15 minutos del aula. Se cortó la búsqueda en el trial 12 y el mejor se corre como experimento (E025)."
+  "hpo01 (E8/E9, TPE sobre E019, 12 trials completos con 3 semillas, meseta media en 201908-201910): el vigente da 253,5 M; lo único que se despega son árboles grandes (num_leaves 160-255: 256,4 a 258,5 M). num_leaves explica el 66% de la variación (fANOVA) y el mejor quedó contra el techo del rango. Esos trials tardan 30-40 minutos contra 6 del vigente: con 5 semillas no entrarían en los 15 minutos del aula. Se cortó la búsqueda en el trial 12 y el mejor se corre como experimento (E025).",
+  "E025 (E8): E019 con los parámetros del mejor trial (254 hojas, 667 rondas, tasa 0,016, submuestreo 0,13): 760,4 M (+5,5 M), +1,8 M por mes, gana 2 de 3, pareado +1,9 ± 2,0 M; meseta y AUC suben (258,7 M; 0,918). No pasa el umbral y tarda 3.058 s contra ~640 (200 s por semilla y mes): en el aula, con 5 semillas, serían 17 minutos sólo para el modelo. Queda E019.",
+  "E14: curva de semillas de E019 (bloque de búsqueda, las primeras N): total de las tres listas 1 → 758,2 M; 3 → 750,5; 5 → 763,7; 10 → 764,8; 20 → 760,4. De 5 en adelante es plano (diferencias de ruido); 3 queda abajo. En el aula van 5 semillas: es el mismo resultado que 10 o 20 en la mitad o la cuarta parte del tiempo."
  ],
  "aula": {
   "modelo": "E019",
