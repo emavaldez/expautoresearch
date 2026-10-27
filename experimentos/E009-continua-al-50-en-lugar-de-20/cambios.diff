@@ -1,0 +1,11 @@
+--- E000/train.py
++++ E009/train.py
+@@ -210,7 +210,7 @@
+     num_threads=16,
+ )
+ NUM_ROUNDS = 500
+-UNDERSAMPLING = 0.2  # fracción de CONTINUA que se conserva
++UNDERSAMPLING = 0.5  # B3
+ POSITIVOS = ["BAJA+1", "BAJA+2"]  # las dos clases de baja
+ PESO_BAJA1 = 0.5  # las BAJA+1 pesan la mitad al entrenar el general: se van en un mes y no pagan; BAJA+2 es la clase que paga
+ 
