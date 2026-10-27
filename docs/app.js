@@ -224,6 +224,10 @@ function detalleExperimento(e, idea) {
   if (e.error) izq += `<pre class="error">${esc(e.error)}</pre>`;
   let der = tablaMeses(meses, "Data original");
   if (e.modificado) der += `<div style="height:18px"></div>` + tablaMeses(e.modificado.meses, "Data modificada");
+  if (e.produccion) {
+    der += `<h4 style="margin:22px 0 6px;font-weight:500">Qué habría pasado en 2020 (no decide nada)</h4><p class="nota" style="margin-top:0">El modelo congelado, reentrenado mes a mes con su ventana, sin cambios.</p>` + tablaMeses(e.produccion.original, "Producción 2020");
+    if (Object.keys(e.produccion.modificado || {}).length) der += `<div style="height:14px"></div>` + tablaMeses(e.produccion.modificado, "Aula con data modificada");
+  }
   der += `<p class="nota">Lista: lo que habría ganado la lista entregada. Meseta: lo mejor que se podía con ese orden si el corte fuera perfecto. Aciertos: BAJA+2 dentro de la lista, sobre el total del mes.</p>`;
   der += `<div class="enlaces"><a href="${esc(e.archivos.codigo)}">Código (train.py)</a>${e.archivos.diff ? `<a href="${esc(e.archivos.diff)}">Cambios contra el vigente</a>` : ""}<a href="${esc(e.archivos.log)}">Log de la corrida</a></div>`;
   const com = idea && idea.issue ? `<div class="comentarios"><h4>Comentarios</h4><div id="comentarios"><p class="nota">Cargando…</p></div>
