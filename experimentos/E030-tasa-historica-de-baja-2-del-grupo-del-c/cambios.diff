@@ -1,0 +1,45 @@
+--- E019/train.py
++++ E030/train.py
+@@ -306,6 +306,33 @@
+     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
+ 
+ 
++def _grupo(d: pd.DataFrame) -> pd.Series:
++    """Bandas de transacciones del trimestre por bandas de antigüedad (5 x 4 grupos), con cortes fijos."""
++    t = pd.cut(d.ctrx_quarter, [-np.inf, 0, 10, 30, 60, np.inf], labels=False)
++    a = pd.cut(d.cliente_antiguedad, [-np.inf, 12, 36, 120, np.inf], labels=False)
++    return (t.fillna(-1) * 10 + a.fillna(-1)).astype(int)
++
++
++def tasa_grupo(train: pd.DataFrame, score: pd.DataFrame):
++    """E12: tasa de BAJA+2 del grupo del cliente. En cada mes de entrenamiento se calcula con los OTROS meses (para no
++    darle la respuesta); en el mes que se puntúa, con todos los de entrenamiento. Sólo meses con clase."""
++    train, score = train.copy(), score.copy()
++    g_tr, g_sc = _grupo(train), _grupo(score)
++    y = (train.clase_ternaria == "BAJA+2").astype(float)
++    previa = y.mean()
++    tasa = np.empty(len(train))
++    for m in train.foto_mes.unique():
++        f = (train.foto_mes == m).to_numpy()
++        r = (y[~f].groupby(g_tr[~f]).agg(["sum", "count"]))
++        mapa = (r["sum"] + 20 * previa) / (r["count"] + 20)
++        tasa[f] = g_tr[f].map(mapa).fillna(previa).to_numpy()
++    r = y.groupby(g_tr).agg(["sum", "count"])
++    mapa = (r["sum"] + 20 * previa) / (r["count"] + 20)
++    train["tasa_grupo"] = tasa.astype("float32")
++    score["tasa_grupo"] = g_sc.map(mapa).fillna(previa).to_numpy().astype("float32")
++    return train, score
++
++
+ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
+     """General + especialista de deudores con reparto. Devuelve P(BAJA+1) + P(BAJA+2) del general, con el reparto en el segmento."""
+     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
+@@ -316,6 +343,8 @@
+     # igual sólo mira el último mes con clase, que el enmascarado no toca.
+     en_seg, p_esp = np.zeros(len(score), bool), None  # B5: sin especialista
+     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
++    train, score = tasa_grupo(train, score)  # E12
++    cols = cols + ["tasa_grupo"]
+     keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
+     train = train[keep | (train.clase_ternaria != "CONTINUA").to_numpy()]
+     y = train.clase_ternaria.map({"CONTINUA": 0, "BAJA+1": 1, "BAJA+2": 2})
