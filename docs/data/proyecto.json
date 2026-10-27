@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 04:21",
+ "generado": "2026-10-27 04:34",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -202,6 +202,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-percentil-con-cero-fijo-para-todos-los-m/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-percentil-con-cero-fijo-para-todos-los-m/log.txt"
    }
+  },
+  {
+   "id": "E002",
+   "fecha": "2026-10-27 04:34",
+   "descripcion": "el general suma el mes con sólo BAJA+1",
+   "idea": "B4",
+   "hipotesis": "Predicción: mejora poco. El mes m - 1 trae las bajas más recientes que se conocen; sus BAJA+2 van como CONTINUA (0,5% de ruido)",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 780.9,
+   "error": "",
+   "total": 639430000.0,
+   "media": 213143333.33333334,
+   "meseta": 219117188.27930173,
+   "auc": 0.9040265600880648,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 174102500.0,
+     "envios": 4349,
+     "aciertos": 267,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 182552955.11221945,
+     "envios_meseta": 4966,
+     "auc": 0.8987828695886191,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 258.4
+    },
+    "201909": {
+     "lista": 215517500.0,
+     "envios": 4403,
+     "aciertos": 306,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 217739170.82294264,
+     "envios_meseta": 4047,
+     "auc": 0.9003515519670763,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 262.1
+    },
+    "201910": {
+     "lista": 249810000.0,
+     "envios": 4476,
+     "aciertos": 339,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 257059438.90274313,
+     "envios_meseta": 3486,
+     "auc": 0.9129452587084993,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 259.6
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": -31533333.333333313,
+    "delta_por_mes": {
+     "201908": -25300000.0,
+     "201909": -35200000.0,
+     "201910": -34100000.0
+    },
+    "meses_ganados": 0,
+    "pareado_media": -32266666.666666668,
+    "pareado_se": 760336.1829553485
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E002-el-general-suma-el-mes-con-solo-baja-1/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E002-el-general-suma-el-mes-con-solo-baja-1/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E002-el-general-suma-el-mes-con-solo-baja-1/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -336,11 +434,13 @@
    "fuente_url": "",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "9",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 04:34",
+   "experimentos": [
+    "E002"
+   ],
+   "comentarios": 1
   },
   {
    "id": "B5",
@@ -919,6 +1019,7 @@
   "internet: en 2019 es binaria y al revés que en 2021: 1 = usa homebanking (92%, 0,3% de BAJA+2), 0 = grupo chico y riesgoso (8%, 2,1 a 2,4% de BAJA+2).",
   "Meses rotos (variable casi toda en cero cuando antes no): 201905 y 201910 (rentabilidad, comisiones, márgenes; en 201910 también chomebanking_transacciones), 201904 (débitos automáticos Visa). Transferencias recibidas y app mobile no existen en la primera mitad de 2019.",
   "BAJA+2 por mes en 2019: entre 0,41% (201908) y 0,62% (201903); 201910: 0,47%.",
-  "E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas."
+  "E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas.",
+  "E001 (E17): percentil con cero fijo para todos los montos: 731,8 M (−2,2 M), gana 1 de 3 meses, pareado −3,7 ± 0,5 M por mes. Predicción (mejora) errada: en 2019 la deriva entre meses de la ventana es chica y el percentil le saca a los montos su nivel, que sí informa. Queda la defensa para cuando llegue data con escala cambiada, no como regla del modelo."
  ]
 }
