@@ -1,0 +1,29 @@
+--- E000/train.py
++++ E011/train.py
+@@ -124,7 +124,7 @@
+     base = [c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]
+     g = df.groupby("numero_de_cliente")[base]
+     new = {}
+-    for k in (1, 2):  # Feature Engineering histórico de la cátedra: lags y delta lags de orden 1 y 2
++    for k in (1, 2, 3):  # E4: lags y deltas de orden 1, 2 y 3
+         lag = g.shift(k)
+         new.update({f"{c}_lag{k}": lag[c] for c in base})
+         new.update({f"{c}_delta{k}": df[c] - lag[c] for c in base})
+@@ -196,7 +196,7 @@
+ 
+ TRAIN_MONTHS_BACK = 3  # el general usa los tres últimos meses con clase de la ventana
+ MESES_ENTRENAMIENTO = 4  # la ventana entera: m - 5 a m - 2 (la segunda etapa necesita los dos primeros para su base)
+-HISTORIA_MESES = 2       # lags de 1 y 2 meses
++HISTORIA_MESES = 3       # E4: lags de 1 a 3 meses
+ CORTE = {"tipo": "fraccion", "f": 0.033}
+ 
+ PARAMS = dict(
+@@ -328,7 +328,7 @@
+     # quedan las 5 columnas de internet (cruda, 2 lags, 2 deltas). El assert es para que un cambio de nombres no deje
+     # el enmascarado vacío sin avisar (el modelo entrenaría igual, con internet promediado en los tres meses).
+     internet = [c for c in cols if c.startswith("internet")]
+-    assert len(internet) == 5, f"se esperaban 5 columnas de internet y hay {internet}"
++    assert len(internet) == 7, f"se esperaban 7 columnas de internet (lags 1 a 3) y hay {internet}"
+     # En 2019 el valor mayoritario es 1 (no 0, como en 2021): la variable y sus lags van a 1 y los deltas a 0.
+     viejos = (train.foto_mes < months[-1]).to_numpy()
+     train.loc[viejos, [c for c in internet if "_delta" not in c]] = RESTO_INTERNET

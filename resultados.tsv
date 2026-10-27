@@ -10,3 +10,4 @@ E007	2026-10-27 05:31	E1	el general entrena con 4 meses	247610000	250958828	0.91
 E008	2026-10-27 05:43	E13b	corte: proporción aprendida de los dos últimos meses con clase	242715000	249290998	0.9124	-1961667	1/3		693.1	descartado	E000
 E009	2026-10-27 06:01	B3	CONTINUA al 50% en lugar de 20%	242476667	245646162	0.9123	-2200000	1/3		1074.7	descartado	E000
 E010	2026-10-27 06:01	E4	lags y deltas hasta 3 meses							18.4	error	E000
+E011	2026-10-27 06:16	E4	lags y deltas hasta 3 meses	243943333	248129117	0.9127	-733333	2/3		806.2	descartado	E000

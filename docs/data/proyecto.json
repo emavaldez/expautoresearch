@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 06:01",
+ "generado": "2026-10-27 06:16",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -1018,6 +1018,103 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E010-lags-y-deltas-hasta-3-meses/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E010-lags-y-deltas-hasta-3-meses/log.txt"
    }
+  },
+  {
+   "id": "E011",
+   "fecha": "2026-10-27 06:16",
+   "descripcion": "lags y deltas hasta 3 meses",
+   "idea": "E4",
+   "hipotesis": "Predicción: incierto. Un mes más de historia puede mostrar caídas más lentas; agrega ~300 columnas",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 806.2,
+   "error": "",
+   "total": 731830000.0,
+   "media": 243943333.33333334,
+   "meseta": 248129116.79135492,
+   "auc": 0.9126564585410925,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 191702500.0,
+     "envios": 4349,
+     "aciertos": 283,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 197227119.70074812,
+     "envios_meseta": 2910,
+     "auc": 0.9047283804926777,
+     "train_meses": [
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 381249,
+     "segundos": 268.2
+    },
+    "201909": {
+     "lista": 254017500.0,
+     "envios": 4403,
+     "aciertos": 341,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 258091408.97755608,
+     "envios_meseta": 2558,
+     "auc": 0.9110525441336539,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 268.0
+    },
+    "201910": {
+     "lista": 286110000.0,
+     "envios": 4476,
+     "aciertos": 372,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 289068821.6957606,
+     "envios_meseta": 3411,
+     "auc": 0.9221884509969459,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 269.2
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": -733333.3333333135,
+    "delta_por_mes": {
+     "201908": -7700000.0,
+     "201909": 3300000.0,
+     "201910": 2200000.0
+    },
+    "meses_ganados": 2,
+    "pareado_media": -220000.0,
+    "pareado_se": 701474.6372226607
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E011-lags-y-deltas-hasta-3-meses/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E011-lags-y-deltas-hasta-3-meses/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E011-lags-y-deltas-hasta-3-meses/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1257,11 +1354,12 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "15",
-   "actualizado": "2026-10-27 06:01",
+   "actualizado": "2026-10-27 06:16",
    "experimentos": [
-    "E010"
+    "E010",
+    "E011"
    ],
-   "comentarios": 1
+   "comentarios": 2
   },
   {
    "id": "E5",
