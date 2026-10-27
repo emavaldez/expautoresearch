@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 08:34",
+ "generado": "2026-10-27 09:15",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -16,7 +16,7 @@
   "semillas_screening": 5,
   "semillas_confirmacion": 20
  },
- "vigente": "E012",
+ "vigente": "E013",
  "experimentos": [
   {
    "id": "E000",
@@ -1235,7 +1235,7 @@
    "descripcion": "el general entrena con 4 meses",
    "idea": "E1",
    "hipotesis": "Predicción: mejora. Sobre la base completa, 4 meses dio +8,8 M (E007, al borde del umbral)",
-   "estado": "a_confirmar",
+   "estado": "confirmado",
    "vigente_al_correr": "E012",
    "segundos": 635.7,
    "error": "",
@@ -1320,7 +1320,22 @@
     "pareado_se": 1845757.8991358022
    },
    "produccion": null,
-   "confirmacion": null,
+   "confirmacion": {
+    "a": "E012",
+    "b": "E013",
+    "fecha": "2026-10-27 09:15",
+    "ensamble_a": 244676666.66666666,
+    "ensamble_b": 250910000.0,
+    "pareado": {
+     "media": 6856666.666666666,
+     "se": 751960.7896956903,
+     "gana": 20,
+     "n": 20,
+     "p_wilcoxon": 8.745059215649787e-05
+    },
+    "modificado": null,
+    "decision": "confirmado"
+   },
    "archivos": {
     "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E013-el-general-entrena-con-4-meses/train.py",
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E013-el-general-entrena-con-4-meses/cambios.diff",
@@ -1993,14 +2008,14 @@
    "fuente_url": "https://arxiv.org/abs/2606.06776",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. Se informa la curva ganancia contra meses.",
    "prioridad": "alta",
-   "estado": "en-curso",
+   "estado": "probada",
    "issue": "11",
-   "actualizado": "2026-10-27 07:51",
+   "actualizado": "2026-10-27 09:15",
    "experimentos": [
     "E007",
     "E013"
    ],
-   "comentarios": 2
+   "comentarios": 3
   },
   {
    "id": "E1b",
@@ -2577,6 +2592,7 @@
   "E014 (B1, sobre E012): BAJA+1 con peso 1: 730,7 M (−6,6 M), pierde los 3 meses por poco (pareado −0,2 ± 0,6 M): sin efecto. El medio peso queda.",
   "E015 (B1, sobre E012): binaria BAJA+1 o BAJA+2 en lugar de multiclase: 739,5 M (+2,2 M) en el ensamble, pero cada semilla sola pierde (pareado −2,9 ± 1,4 M); tarda 227 s contra 564 (la multiclase arma tres árboles por ronda). Empate con menos de la mitad del tiempo: alternativa si el aula aprieta con los 15 minutos.",
   "E016 (B4b, sobre E012): sumar sólo las BAJA+1 de m − 1 como ejemplos extra: 531,6 M (−205,7 M), AUC 0,880. Causa: el general usa foto_mes como variable (viene así de la primera competencia), y si m − 1 trae sólo bajas el árbol aprende \"mes m − 1 o posterior = baja\"; el mes que se puntúa cae de ese lado. Explica también E002. foto_mes como variable rompe la regla de no identificar el mes: probar sacarla.",
-  "E017 (E2, sobre E012): el general no usa los meses con variables rotas (201905, 201910): 736,2 M (−1,1 M), pareado −2,4 ± 1,4 M. Pasar las variables rotas a NA ya alcanza; sacar el mes entero sólo quita ejemplos."
+  "E017 (E2, sobre E012): el general no usa los meses con variables rotas (201905, 201910): 736,2 M (−1,1 M), pareado −2,4 ± 1,4 M. Pasar las variables rotas a NA ya alcanza; sacar el mes entero sólo quita ejemplos.",
+  "E018 (E13, sobre E012): corte por probabilidad calibrada (isotónica en los dos meses anteriores fuera de muestra) mayor que 2,5%: 707,7 M (−29,6 M), pierde los 3 meses. La calibración con la base fuera de muestra (entrenada con meses más viejos) no se traslada al modelo final: el 3,3% fijo queda."
  ]
 }
