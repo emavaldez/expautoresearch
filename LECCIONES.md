@@ -11,3 +11,4 @@ hasta 201912: nada de 2020 entra acá.
 
 ## Experimentos
 - E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas.
+- E001 (E17): percentil con cero fijo para todos los montos: 731,8 M (−2,2 M), gana 1 de 3 meses, pareado −3,7 ± 0,5 M por mes. Predicción (mejora) errada: en 2019 la deriva entre meses de la ventana es chica y el percentil le saca a los montos su nivel, que sí informa. Queda la defensa para cuando llegue data con escala cambiada, no como regla del modelo.
