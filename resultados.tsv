@@ -2,3 +2,4 @@ id	fecha	idea	descripcion	media_test	media_meseta	media_auc	delta_vs_vigente	mes
 E000	2026-10-27 04:07	B0	base: modelo de la primera competencia	244676667	249290998	0.9124				688.2	base	
 E001	2026-10-27 04:20	E17	percentil con cero fijo para todos los montos	243943333	245572737	0.912	-733333	1/3		719.9	descartado	E000
 E002	2026-10-27 04:34	B4	el general suma el mes con sólo BAJA+1	213143333	219117188	0.904	-31533333	0/3		780.9	descartado	E000
+E003	2026-10-27 04:45	E3	peso por antigüedad del mes, h = 2	239910000	246321043	0.9124	-4766667	0/3		691.2	descartado	E000
