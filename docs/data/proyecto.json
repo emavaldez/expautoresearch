@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 19:49",
+ "generado": "2026-10-27 19:50",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3454,11 +3454,11 @@
    "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
    "como_medir": "Es un informe: no compite.",
    "prioridad": "fase 0",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "3",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:50",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "P3",
@@ -3486,11 +3486,11 @@
    "fuente_url": "https://arxiv.org/abs/2608.18174",
    "como_medir": "Es un informe: no compite.",
    "prioridad": "fase 0",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "5",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:50",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "B1",
@@ -3613,7 +3613,7 @@
    "prioridad": "media",
    "estado": "propuesta",
    "issue": "12",
-   "actualizado": "2026-10-27 19:49",
+   "actualizado": "2026-10-27 19:50",
    "experimentos": [],
    "comentarios": 0
   },
@@ -3777,11 +3777,11 @@
    "fuente_url": "https://arxiv.org/abs/2606.21641",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción.",
    "prioridad": "baja",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "22",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:49",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "E10",
@@ -3890,11 +3890,11 @@
    "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
    "como_medir": "La curva entera; la cantidad sale de dónde se aplana.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "29",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:49",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "E18",
@@ -3954,11 +3954,11 @@
    "fuente_url": "https://arxiv.org/abs/2601.05930",
    "como_medir": "Al final: cuántas de las predicciones acertaron el signo.",
    "prioridad": "baja",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "33",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:49",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "E16",
@@ -3969,11 +3969,11 @@
    "fuente_url": "https://arxiv.org/abs/2608.10424",
    "como_medir": "Regla del loop: se informa cuándo se usó.",
    "prioridad": "baja",
-   "estado": "aprobada",
+   "estado": "descartada",
    "issue": "34",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:49",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   }
  ],
  "papers": [
