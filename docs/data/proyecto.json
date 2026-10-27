@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 05:31",
+ "generado": "2026-10-27 05:43",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -790,6 +790,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E007-el-general-entrena-con-4-meses/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E007-el-general-entrena-con-4-meses/log.txt"
    }
+  },
+  {
+   "id": "E008",
+   "fecha": "2026-10-27 05:43",
+   "descripcion": "corte: proporción aprendida de los dos últimos meses con clase",
+   "idea": "E13b",
+   "hipotesis": "Predicción: mejora poco. La lista de la base queda a 14 M de la meseta en 2019; la proporción óptima de los meses anteriores puede acercarla o alejarla",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 693.1,
+   "error": "",
+   "total": 728145000.0,
+   "media": 242715000.0,
+   "meseta": 249290997.5062344,
+   "auc": 0.9123872489936744,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 195140000.0,
+     "envios": 5464,
+     "aciertos": 314,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 202153802.9925187,
+     "envios_meseta": 4630,
+     "auc": 0.9048590739273543,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 230.0
+    },
+    "201909": {
+     "lista": 248160000.0,
+     "envios": 4736,
+     "aciertos": 344,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 256218871.57107228,
+     "envios_meseta": 2823,
+     "auc": 0.911093699240497,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 232.6
+    },
+    "201910": {
+     "lista": 284845000.0,
+     "envios": 4522,
+     "aciertos": 372,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 289500317.9551122,
+     "envios_meseta": 3959,
+     "auc": 0.9212089738131719,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 229.8
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": -1961666.6666666567,
+    "delta_por_mes": {
+     "201908": -4262500.0,
+     "201909": -2557500.0,
+     "201910": 935000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -1008333.3333333373,
+    "pareado_se": 297881.40816998226
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E008-corte-proporcion-aprendida-de-los-dos-ul/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E008-corte-proporcion-aprendida-de-los-dos-ul/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E008-corte-proporcion-aprendida-de-los-dos-ul/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1222,11 +1320,13 @@
    "fuente_url": "",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "28",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 2
+   "actualizado": "2026-10-27 05:43",
+   "experimentos": [
+    "E008"
+   ],
+   "comentarios": 3
   },
   {
    "id": "E14",
@@ -1524,6 +1624,7 @@
   "E003 (E3, h = 2): peso 0,5^(edad/2) a los meses del general: 719,7 M (−14,3 M), pierde los 3 meses; la AUC no cambia (0,912) y la meseta baja un poco. En 2019 los tres meses del general se parecen entre sí: darle menos peso a los viejos sólo quita ejemplos.",
   "E004 (B5): sin segunda etapa: 739,5 M (+5,5 M), gana 2 de 3, pareado +0,4 ± 0,8 M: empata con la base y es más simple y 15% más rápido. Candidato a simplificación: confirmar con 20 semillas que no empeora (la segunda etapa era para la franja dudosa de 2021).",
   "E005 (B5): sin especialista: 731,8 M (−2,2 M), pareado −1,0 ± 1,3 M, AUC 0,914 (mejor que la base): otro empate. Ni la segunda etapa ni el especialista suman en 2019; falta probar las dos afuera (sólo el general).",
-  "E006 (B1): BAJA+1 con peso 1 en lugar de 0,5: 738,4 M (+4,4 M), gana los 3 meses pero por poco (pareado +0,7 ± 1,0 M por mes): no llega al umbral. Señal chica a favor de darle más peso a las BAJA+1; con 20 semillas podría confirmarse o no."
+  "E006 (B1): BAJA+1 con peso 1 en lugar de 0,5: 738,4 M (+4,4 M), gana los 3 meses pero por poco (pareado +0,7 ± 1,0 M por mes): no llega al umbral. Señal chica a favor de darle más peso a las BAJA+1; con 20 semillas podría confirmarse o no.",
+  "E007 (E1): el general con 4 meses (toda la ventana) en lugar de 3: 742,8 M (+8,8 M), gana 2 de 3, pareado +2,0 ± 1,0 M por mes, meseta y AUC suben (251,0 M; 0,9135). Queda a 0,1 M por mes del umbral de screening: es el candidato más firme hasta ahora (más ejemplos de baja)."
  ]
 }

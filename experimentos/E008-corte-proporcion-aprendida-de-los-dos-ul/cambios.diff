@@ -1,0 +1,31 @@
+--- E000/train.py
++++ E008/train.py
+@@ -482,6 +482,28 @@
+ 
+ 
+ 
++# ---------------------------------------------------------------- corte (E13b)
++# La proporción de clientes a estimular que maximizó la ganancia en los dos últimos meses con clase, puntuados por la
++# base fuera de muestra (la misma de la segunda etapa: nunca vio la clase de esos meses).
++GANANCIA, COSTO, SUAVIZADO = 1_072_500, 27_500, 401
++
++
++def envios_optimos(p, y):
++    g = np.cumsum(np.where(np.asarray(y)[np.argsort(-p, kind="stable")], GANANCIA, -COSTO), dtype=float)
++    if len(g) <= SUAVIZADO:
++        return int(np.argmax(g)) + 1
++    return int(np.argmax(np.convolve(g, np.ones(SUAVIZADO) / SUAVIZADO, mode="valid"))) + SUAVIZADO // 2 + 1
++
++
++def corte(prob, train, score):
++    fracciones = []
++    for m, (ids_m, pm) in base_fuera_de_muestra(train).items():
++        t = train[(train.foto_mes == m).to_numpy()]
++        fracciones.append(envios_optimos(pm, (t.clase_ternaria == "BAJA+2").to_numpy()) / len(pm))
++    f = np.mean(fracciones) if fracciones else CORTE["f"]
++    return int(round(f * len(prob)))
++
++
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:
