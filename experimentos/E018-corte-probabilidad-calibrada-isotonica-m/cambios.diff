@@ -1,0 +1,27 @@
+--- E012/train.py
++++ E018/train.py
+@@ -482,6 +482,24 @@
+ 
+ 
+ 
++# ---------------------------------------------------------------- corte (E13)
++# Estimular a quien tenga P(BAJA+2) > 27.500 / 1.100.000 = 2,5%, con la probabilidad calibrada por regresión isotónica
++# en los dos últimos meses con clase, puntuados por la base fuera de muestra (nunca vio la clase de esos meses).
++UMBRAL = 27_500 / (1_072_500 + 27_500)
++
++
++def corte(prob, train, score):
++    from sklearn.isotonic import IsotonicRegression
++    xs, ys = [], []
++    for m, (ids_m, pm) in base_fuera_de_muestra(train).items():
++        t = train[(train.foto_mes == m).to_numpy()]
++        xs.append(pm); ys.append((t.clase_ternaria == "BAJA+2").to_numpy().astype(float))
++    if not xs:
++        return int(round(CORTE["f"] * len(prob)))
++    iso = IsotonicRegression(out_of_bounds="clip", y_min=0, y_max=1).fit(np.concatenate(xs), np.concatenate(ys))
++    return int((iso.predict(prob) >= UMBRAL).sum())
++
++
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:

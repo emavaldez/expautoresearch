@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 08:23",
+ "generado": "2026-10-27 08:34",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -1718,6 +1718,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E017-el-general-no-usa-los-meses-con-variable/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E017-el-general-no-usa-los-meses-con-variable/log.txt"
    }
+  },
+  {
+   "id": "E018",
+   "fecha": "2026-10-27 08:34",
+   "descripcion": "corte: probabilidad calibrada (isotónica) mayor que 2,5%",
+   "idea": "E13",
+   "hipotesis": "Predicción: pierde o empata. El corte fijo está cerca del óptimo en 2019; la calibración con la base fuera de muestra (más pobre) puede mover el corte de más",
+   "estado": "descartado",
+   "vigente_al_correr": "E012",
+   "segundos": 654.9,
+   "error": "",
+   "total": 707740000.0,
+   "media": 235913333.33333334,
+   "meseta": 250149006.65004158,
+   "auc": 0.9142453463863438,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 192802500.0,
+     "envios": 5709,
+     "aciertos": 318,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 204063578.55361596,
+     "envios_meseta": 4462,
+     "auc": 0.9057456691702089,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 214.9
+    },
+    "201909": {
+     "lista": 240322500.0,
+     "envios": 6941,
+     "aciertos": 392,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 259097387.78054863,
+     "envios_meseta": 2489,
+     "auc": 0.9139932087798939,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 217.9
+    },
+    "201910": {
+     "lista": 274615000.0,
+     "envios": 7494,
+     "aciertos": 437,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 287286053.6159601,
+     "envios_meseta": 3207,
+     "auc": 0.9229971612089283,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 221.3
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E012",
+    "delta_media": -9863333.333333313,
+    "delta_por_mes": {
+     "201908": -11000000.0,
+     "201909": -9295000.0,
+     "201910": -9295000.0
+    },
+    "meses_ganados": 0,
+    "pareado_media": -10996333.333333325,
+    "pareado_se": 897372.189909081
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E018-corte-probabilidad-calibrada-isotonica-m/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E018-corte-probabilidad-calibrada-isotonica-m/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E018-corte-probabilidad-calibrada-isotonica-m/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -2147,11 +2245,13 @@
    "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. En la simulación, calibrar con un solo mes anduvo mal: probar con 2 y 3 meses.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "27",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 08:34",
+   "experimentos": [
+    "E018"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E13b",
@@ -2476,6 +2576,7 @@
   "E013 (E1, sobre E012): el general con 4 meses (toda la ventana): 756,0 M (+18,7 M), gana 2 de 3, pareado +6,9 ± 1,8 M por mes, AUC 0,9155: a confirmar. Sin especialista, el general aprovecha más los ejemplos del cuarto mes.",
   "E014 (B1, sobre E012): BAJA+1 con peso 1: 730,7 M (−6,6 M), pierde los 3 meses por poco (pareado −0,2 ± 0,6 M): sin efecto. El medio peso queda.",
   "E015 (B1, sobre E012): binaria BAJA+1 o BAJA+2 en lugar de multiclase: 739,5 M (+2,2 M) en el ensamble, pero cada semilla sola pierde (pareado −2,9 ± 1,4 M); tarda 227 s contra 564 (la multiclase arma tres árboles por ronda). Empate con menos de la mitad del tiempo: alternativa si el aula aprieta con los 15 minutos.",
-  "E016 (B4b, sobre E012): sumar sólo las BAJA+1 de m − 1 como ejemplos extra: 531,6 M (−205,7 M), AUC 0,880. Causa: el general usa foto_mes como variable (viene así de la primera competencia), y si m − 1 trae sólo bajas el árbol aprende \"mes m − 1 o posterior = baja\"; el mes que se puntúa cae de ese lado. Explica también E002. foto_mes como variable rompe la regla de no identificar el mes: probar sacarla."
+  "E016 (B4b, sobre E012): sumar sólo las BAJA+1 de m − 1 como ejemplos extra: 531,6 M (−205,7 M), AUC 0,880. Causa: el general usa foto_mes como variable (viene así de la primera competencia), y si m − 1 trae sólo bajas el árbol aprende \"mes m − 1 o posterior = baja\"; el mes que se puntúa cae de ese lado. Explica también E002. foto_mes como variable rompe la regla de no identificar el mes: probar sacarla.",
+  "E017 (E2, sobre E012): el general no usa los meses con variables rotas (201905, 201910): 736,2 M (−1,1 M), pareado −2,4 ± 1,4 M. Pasar las variables rotas a NA ya alcanza; sacar el mes entero sólo quita ejemplos."
  ]
 }
