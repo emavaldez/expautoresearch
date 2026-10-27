@@ -1,0 +1,31 @@
+--- E013/train.py
++++ E020/train.py
+@@ -212,7 +212,7 @@
+ NUM_ROUNDS = 500
+ UNDERSAMPLING = 0.2  # fracción de CONTINUA que se conserva
+ POSITIVOS = ["BAJA+1", "BAJA+2"]  # las dos clases de baja
+-PESO_BAJA1 = 0.5  # las BAJA+1 pesan la mitad al entrenar el general: se van en un mes y no pagan; BAJA+2 es la clase que paga
++PESO_BAJA1 = 1.0  # las BAJA+1 pesan la mitad al entrenar el general: se van en un mes y no pagan; BAJA+2 es la clase que paga
+ 
+ 
+ HISTORIA = tuple(f"_{s}" for s in ("lag1", "delta1", "lag2", "delta2", "ratiolag1", "ratioavg3", "avg3", "min3", "max3", "ratiomax3"))
+@@ -318,7 +318,7 @@
+     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
+     keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
+     train = train[keep | (train.clase_ternaria != "CONTINUA").to_numpy()]
+-    y = train.clase_ternaria.map({"CONTINUA": 0, "BAJA+1": 1, "BAJA+2": 2})
++    y = (train.clase_ternaria != "CONTINUA").astype(int)  # B1: binaria, BAJA+1 o BAJA+2
+     w = np.where(train.clase_ternaria == "BAJA+1", PESO_BAJA1, 1.0)
+     # internet cambió de régimen: a igual actividad, tener internet >= 2 dos meses seguidos no subía la baja en 202104-05
+     # (1-3% contra 2-6% del resto) y en 202106 la duplica (6-7% contra 2-4%). El promedio de los tres meses borra lo que
+@@ -334,8 +334,8 @@
+     train.loc[viejos, [c for c in internet if "_delta" not in c]] = RESTO_INTERNET
+     train.loc[viejos, [c for c in internet if "_delta" in c]] = 0
+     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
+-    model = lgb.train({**PARAMS, "objective": "multiclass", "num_class": 3, "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
+-    p = model.predict(score[cols])[:, 1:].sum(axis=1)
++    model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
++    p = model.predict(score[cols])
+     if p_esp is not None:
+         # Mes por mes: el perfil y el orden son de los clientes de UN mes. Al puntuar 202108 hay un solo mes (da lo mismo),
+         # pero base_fuera_de_muestra puntúa mayo y junio en una sola llamada, y repartir todo junto le daría a un cliente
