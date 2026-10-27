@@ -1,0 +1,729 @@
+{
+ "generado": "2026-10-27 03:20",
+ "repo": "emavaldez/expautoresearch",
+ "escenario": {
+  "meses_test": [
+   202007,
+   202008,
+   202009
+  ],
+  "ventana": 6,
+  "gap": 2,
+  "ganancia": 1072500,
+  "costo": 27500,
+  "umbral_screening": 3000000,
+  "min_meses_ganados": 2,
+  "semillas_screening": 5,
+  "semillas_confirmacion": 20
+ },
+ "vigente": null,
+ "experimentos": [],
+ "ideas": [
+  {
+   "id": "B0",
+   "origen": "plan",
+   "titulo": "Base: modelo de la primera competencia",
+   "detalle": "El modelo entregado en la primera competencia (general multiclase + especialista del grupo riesgoso + segunda etapa), llevado a estos datos: tabla de variables rotas propia, grupo riesgoso internet == 0, franja y corte escalados (3,3% del mes).",
+   "fuente": "Primera Competencia: modelo entregado",
+   "fuente_url": "https://github.com/emavaldez/primeracompetencia",
+   "como_medir": "Es el primer vigente: todo lo demás se compara contra él.",
+   "prioridad": "base",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "P1",
+   "origen": "plan",
+   "titulo": "Variables rotas detectadas en cada mes",
+   "detalle": "Detectar dentro de make_features las variables casi todo en cero o vacías en un mes cuando antes no lo estaban, y pasarlas a NA. La base usa una tabla fija hasta 202006 que no conoce lo que puede llegar en el aula.",
+   "fuente": "Notebook de drifting de la cátedra (z701)",
+   "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
+   "como_medir": "Sobre todo con la data modificada (202007 llega con mpayroll en cero, 202008 sin ctrx_quarter): ganancia de las tres listas con y sin la detección.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "P2",
+   "origen": "plan",
+   "titulo": "Deriva de montos",
+   "detalle": "Informe de los montos que se corren más de 25% contra los meses anteriores (inflación, aguinaldo). Alimenta E6 y E17.",
+   "fuente": "Notebook de drifting de la cátedra (z701)",
+   "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
+   "como_medir": "Es un informe: no compite.",
+   "prioridad": "fase 0",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "P3",
+   "origen": "plan",
+   "titulo": "Control de fuga temporal",
+   "detalle": "tools/fuga.py cada vez que cambie make_features: las variables de un mes no pueden cambiar si se agregan meses futuros.",
+   "fuente": "The Hidden Costs of 99% Accuracy",
+   "fuente_url": "https://arxiv.org/abs/2610.00118",
+   "como_medir": "Pasa o no pasa: si hay fuga, el experimento no se corre.",
+   "prioridad": "fase 0",
+   "estado": "probada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "P4",
+   "origen": "plan",
+   "titulo": "BAJA+2 por mes",
+   "detalle": "Tasa de BAJA+2 por mes en 2019 y 2020 y razón contra dos meses antes. Alimenta E7.",
+   "fuente": "Seasonal false alarms in churn early-warning systems",
+   "fuente_url": "https://arxiv.org/abs/2608.18174",
+   "como_medir": "Es un informe: no compite.",
+   "prioridad": "fase 0",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "B1",
+   "origen": "plan",
+   "titulo": "Clase objetivo",
+   "detalle": "La base es multiclase con BAJA+1 a medio peso. Variantes: BAJA+1 a peso 0,25 y 1; binaria BAJA+1 ∪ BAJA+2; binaria sólo BAJA+2.",
+   "fuente": "Simulación del aula (bitácora de la Segunda Competencia)",
+   "fuente_url": "",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "B2",
+   "origen": "plan",
+   "titulo": "Lags por mes calendario",
+   "detalle": "La base toma como mes anterior la fila anterior del cliente: si faltó un mes, el lag es de dos meses atrás. Variante: el lag del mes calendario, vacío si no estuvo.",
+   "fuente": "Predicting Customer Churn: XGBoost with Temporal Data",
+   "fuente_url": "https://arxiv.org/abs/1802.03396",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "B3",
+   "origen": "plan",
+   "titulo": "Submuestreo de CONTINUA",
+   "detalle": "1,0 / 0,5 / 0,2 (base) / 0,1.",
+   "fuente": "Calibrated, cost-sensitive ensemble for churn in retail banking",
+   "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. También el tiempo.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "B4",
+   "origen": "plan",
+   "titulo": "Usar el mes con sólo BAJA+1",
+   "detalle": "El escenario da las BAJA+1 de m − 1 y la base no las usa. Variantes: sumar m − 1 al entrenamiento (BAJA+1 positivas, el resto negativas); sumarlo sólo para el especialista.",
+   "fuente": "Simulación del aula (bitácora de la Segunda Competencia)",
+   "fuente_url": "",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "B5",
+   "origen": "plan",
+   "titulo": "Qué aporta cada pieza",
+   "detalle": "Sin especialista / sin segunda etapa / sólo el general. Si una pieza no suma en estos datos, se saca.",
+   "fuente": "Primera Competencia: modelo entregado",
+   "fuente_url": "https://github.com/emavaldez/primeracompetencia",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. A igual ganancia gana lo más simple.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E1",
+   "origen": "plan",
+   "titulo": "Meses de entrenamiento dentro de la ventana",
+   "detalle": "El general usa 3 meses; variantes 1, 2 y 4 (los 4 con clase completa que deja la regla de 6 meses), escalando min_data_in_leaf con las filas.",
+   "fuente": "A Rolling-Window Framework for Churn Prediction",
+   "fuente_url": "https://arxiv.org/abs/2606.06776",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Se informa la curva ganancia contra meses.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E1b",
+   "origen": "plan",
+   "titulo": "Romper la regla de 6 meses",
+   "detalle": "12 meses y todo desde 201901. Sirve para saber cuánto cuesta la regla, no para entregarlo.",
+   "fuente": "A Rolling-Window Framework for Churn Prediction",
+   "fuente_url": "https://arxiv.org/abs/2606.06776",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "propuesta",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E2",
+   "origen": "plan",
+   "titulo": "Sin meses atípicos",
+   "detalle": "Sacar del entrenamiento 202006 (el mes con ~30 variables rotas) y, aparte, los meses de pandemia con tasas raras (202002 a 202004).",
+   "fuente": "A Rolling-Window Framework for Churn Prediction",
+   "fuente_url": "https://arxiv.org/abs/2606.06776",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E3",
+   "origen": "plan",
+   "titulo": "Peso por antigüedad del mes",
+   "detalle": "Peso de cada fila = 0,5^(edad del mes / h), con h en 1, 2 y 3. En la simulación del aula, darle peso 10 al mes más reciente sumó 15 a 20 M en 202009.",
+   "fuente": "A Rolling-Window Framework for Churn Prediction",
+   "fuente_url": "https://arxiv.org/abs/2606.06776",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E4",
+   "origen": "plan",
+   "titulo": "Largo de la ventana de variables",
+   "detalle": "Lags 1..k con k en 2 (base), 3 y 6; promedio, mínimo, máximo y tendencia sobre 3 y 6 meses. Las variables pueden mirar meses anteriores a la ventana de entrenamiento.",
+   "fuente": "How Early Is Early Enough?",
+   "fuente_url": "https://arxiv.org/abs/2607.00473",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Se informa la curva entera (ganancia contra k), no sólo el mejor punto.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E5",
+   "origen": "plan",
+   "titulo": "Memoria larga",
+   "detalle": "Caída contra el máximo de 6 y 12 meses (saldo, transacciones, consumo) y meses desde el último sueldo.",
+   "fuente": "How Early Is Early Enough?",
+   "fuente_url": "https://arxiv.org/abs/2607.00473",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E6",
+   "origen": "plan",
+   "titulo": "Deltas interanuales",
+   "detalle": "x − lag12 y x / lag12 de montos y conteos (202007 contra 201907), además de delta1: el delta contra el mes anterior mezcla aguinaldo e inflación con una caída real.",
+   "fuente": "Seasonal false alarms in churn early-warning systems",
+   "fuente_url": "https://arxiv.org/abs/2608.18174",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E7",
+   "origen": "plan",
+   "titulo": "Corte con estacionalidad",
+   "detalle": "Estimar cuántos BAJA+2 va a tener el mes con la razón de los mismos meses de 2019 y fijar los envíos con eso.",
+   "fuente": "Seasonal false alarms in churn early-warning systems",
+   "fuente_url": "https://arxiv.org/abs/2608.18174",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Se compara la cantidad de envíos contra la óptima de cada mes.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E17",
+   "origen": "plan",
+   "titulo": "Rank por mes de todos los montos",
+   "detalle": "La base pasa a percentil 14 montos elegidos para 2021. Variantes: todos los montos; todas las variables; rank antes de calcular la historia (no se mueve si cambia la escala entre meses).",
+   "fuente": "Notebook de drifting de la cátedra (z701)",
+   "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Y sobre todo con la data modificada (montos inflados de golpe).",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E20",
+   "origen": "plan",
+   "titulo": "Sacar variables que derivan",
+   "detalle": "Sin mirar la clase: PSI de cada variable entre la ventana de entrenamiento y el mes a puntuar; las de PSI alto y poca importancia no entran.",
+   "fuente": "Notebook de drifting de la cátedra (z701)",
+   "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Con la data original y con la modificada.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E8",
+   "origen": "plan",
+   "titulo": "Espacio de hiperparámetros ampliado",
+   "detalle": "El agente diseña el espacio (con una línea de justificación por parámetro) y Optuna busca; comparar contra el espacio base con los mismos trials.",
+   "fuente": "Agentic Search Spaces for Tabular ML",
+   "fuente_url": "https://arxiv.org/abs/2609.16309",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Pocos trials: el test es lo único que mide, así que la búsqueda sobreajusta.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E9",
+   "origen": "plan",
+   "titulo": "Arranque desde el vigente",
+   "detalle": "TPE con y sin la configuración vigente como primer trial, al mismo presupuesto.",
+   "fuente": "When Is an LLM Worth It for HPO?",
+   "fuente_url": "https://arxiv.org/abs/2606.21641",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "baja",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E10",
+   "origen": "plan",
+   "titulo": "Híbrido agente + TPE",
+   "detalle": "Cada 10 trials el agente lee el estado de la búsqueda y propone hasta 2 trials; el resto los elige TPE.",
+   "fuente": "Can LLMs Beat Classical HPO? A Study on autoresearch",
+   "fuente_url": "https://arxiv.org/abs/2603.24647",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Contra TPE puro al mismo presupuesto.",
+   "prioridad": "baja",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E11",
+   "origen": "plan",
+   "titulo": "Variables generadas por roles con memoria",
+   "detalle": "Cuatro roles (temporal, interanual, agregados por grupo, interacciones), 2 por ronda, 4 rondas; una variable entra si supera al mejor de 20 canaritos y suma en el ensamble.",
+   "fuente": "MALMAS: multiagente con memoria para generar variables",
+   "fuente_url": "https://arxiv.org/abs/2604.20261",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Expectativa baja: en el paper sumó 0,006 de AUC.",
+   "prioridad": "baja",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E12",
+   "origen": "plan",
+   "titulo": "Agregados por grupo sin fuga",
+   "detalle": "Tasa histórica de BAJA+2 del grupo del cliente (bandas de transacciones por antigüedad), con meses con clase hasta m − 2.",
+   "fuente": "MALMAS: multiagente con memoria para generar variables",
+   "fuente_url": "https://arxiv.org/abs/2604.20261",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E21",
+   "origen": "plan",
+   "titulo": "Variables redundantes",
+   "detalle": "Si una variable se explica en más de 95% (R²) con otras, no aporta y ensucia la importancia: sacarlas.",
+   "fuente": "The Hidden Costs of 99% Accuracy",
+   "fuente_url": "https://arxiv.org/abs/2610.00118",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Con menos columnas, a igual ganancia gana el más chico.",
+   "prioridad": "baja",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E13",
+   "origen": "plan",
+   "titulo": "Corte por probabilidad calibrada",
+   "detalle": "Calibrar P(BAJA+2) con isotónica en los últimos meses con clase y estimular a quien tenga P > 2,5% (27.500 / 1.100.000).",
+   "fuente": "Calibrated, cost-sensitive ensemble for churn in retail banking",
+   "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. En la simulación, calibrar con un solo mes anduvo mal: probar con 2 y 3 meses.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E13b",
+   "origen": "plan",
+   "titulo": "Corte por la proporción aprendida",
+   "detalle": "La proporción de envíos que maximizó la ganancia en los últimos meses con clase, en lugar del 3,3% fijo. En la simulación del aula le ganó a la fija por 15 a 25 M.",
+   "fuente": "Simulación del aula (bitácora de la Segunda Competencia)",
+   "fuente_url": "",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "alta",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E14",
+   "origen": "plan",
+   "titulo": "Tamaño del semillerío",
+   "detalle": "Curva de la ganancia con 5, 10, 20 y 40 semillas.",
+   "fuente": "Calibrated, cost-sensitive ensemble for churn in retail banking",
+   "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
+   "como_medir": "La curva entera; la cantidad sale de dónde se aplana.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E18",
+   "origen": "plan",
+   "titulo": "Corte por segmento",
+   "detalle": "Una proporción de envíos para el grupo riesgoso (internet == 0) y otra para el resto, cada una aprendida de los meses con clase.",
+   "fuente": "Data-Driven Telecom Marketing Optimization",
+   "fuente_url": "https://arxiv.org/abs/2607.10260",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E19",
+   "origen": "plan",
+   "titulo": "Pesos por costo en lugar de submuestreo",
+   "detalle": "Sin submuestreo y con peso de BAJA+2 según la ganancia (1.072.500 / 27.500, cerca de 39) o una fracción: el class weighting del paper de banca y la idea de ProfTree.",
+   "fuente": "Profit Driven Decision Trees for Churn Prediction (ProfTree)",
+   "fuente_url": "https://arxiv.org/abs/1712.08101",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E22",
+   "origen": "plan",
+   "titulo": "Ensamble de modelos distintos",
+   "detalle": "Promediar por percentil la base con los modelos binarios de la simulación del aula (historia y rank), que ven otras variables.",
+   "fuente": "Calibrated, cost-sensitive ensemble for churn in retail banking",
+   "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
+   "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
+   "prioridad": "media",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E15",
+   "origen": "plan",
+   "titulo": "Ordenar la cola por predicción",
+   "detalle": "Antes de cada tanda el agente ordena las ideas pendientes por la ganancia que espera y anota la predicción en la hipótesis. Ordena, no descarta.",
+   "fuente": "Can We Predict Before Executing ML Agents? (FOREAGENT)",
+   "fuente_url": "https://arxiv.org/abs/2601.05930",
+   "como_medir": "Al final: cuántas de las predicciones acertaron el signo.",
+   "prioridad": "baja",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  },
+  {
+   "id": "E16",
+   "origen": "plan",
+   "titulo": "Volver atrás",
+   "detalle": "Con 5 descartes seguidos, retomar la segunda mejor rama en vez de seguir desde el vigente.",
+   "fuente": "Recovering Wasted Compute in Autoresearch Agents",
+   "fuente_url": "https://arxiv.org/abs/2608.10424",
+   "como_medir": "Regla del loop: se informa cuándo se usó.",
+   "prioridad": "baja",
+   "estado": "aprobada",
+   "issue": "",
+   "actualizado": "2026-10-27 03:14",
+   "experimentos": [],
+   "comentarios": 0
+  }
+ ],
+ "papers": [
+  {
+   "titulo": "A Rolling-Window Framework for Churn Prediction",
+   "url": "https://arxiv.org/abs/2606.06776",
+   "prioridad": "alta",
+   "veredicto": "sirve",
+   "para": "Cuántos meses de entrenamiento y ventanas móviles: es la forma del escenario.",
+   "ideas": [
+    "E1",
+    "E1b",
+    "E2",
+    "E3"
+   ]
+  },
+  {
+   "titulo": "How Early Is Early Enough?",
+   "url": "https://arxiv.org/abs/2607.00473",
+   "prioridad": "alta",
+   "veredicto": "sirve",
+   "para": "Cuánta historia mirar en las variables, reportando la curva entera.",
+   "ideas": [
+    "E4",
+    "E5"
+   ]
+  },
+  {
+   "titulo": "Seasonal false alarms in churn early-warning systems",
+   "url": "https://arxiv.org/abs/2608.18174",
+   "prioridad": "alta",
+   "veredicto": "sirve",
+   "para": "Deltas interanuales y cortes con estacionalidad. Nuestra clase no es por umbral de caída, así que la parte de etiquetas aplica poco.",
+   "ideas": [
+    "E6",
+    "E7",
+    "P4"
+   ]
+  },
+  {
+   "titulo": "Agentic Search Spaces for Tabular ML",
+   "url": "https://arxiv.org/abs/2609.16309",
+   "prioridad": "alta",
+   "veredicto": "sirve",
+   "para": "El agente diseña el espacio de hiperparámetros y una búsqueda clásica elige.",
+   "ideas": [
+    "E8"
+   ]
+  },
+  {
+   "titulo": "The Hidden Costs of 99% Accuracy",
+   "url": "https://arxiv.org/abs/2610.00118",
+   "prioridad": "alta",
+   "veredicto": "sirve como método",
+   "para": "Control de fuga y descarte de variables redundantes. No usamos SMOTE.",
+   "ideas": [
+    "P3",
+    "E21"
+   ]
+  },
+  {
+   "titulo": "Calibrated, cost-sensitive ensemble for churn in retail banking",
+   "url": "https://doi.org/10.3389/frai.2026.1889639",
+   "prioridad": "alta",
+   "veredicto": "sirve",
+   "para": "Corte por probabilidad calibrada, pesos por costo y ensamble de modelos distintos.",
+   "ideas": [
+    "E13",
+    "E14",
+    "E19",
+    "E22",
+    "B3"
+   ]
+  },
+  {
+   "titulo": "When Is an LLM Worth It for HPO?",
+   "url": "https://arxiv.org/abs/2606.21641",
+   "prioridad": "media",
+   "veredicto": "sirve como control",
+   "para": "El arranque fuerte de la búsqueda es la configuración por defecto, no el modelo de lenguaje.",
+   "ideas": [
+    "E9"
+   ]
+  },
+  {
+   "titulo": "Can LLMs Beat Classical HPO? A Study on autoresearch",
+   "url": "https://arxiv.org/abs/2603.24647",
+   "prioridad": "media",
+   "veredicto": "sirve",
+   "para": "Híbrido agente + búsqueda clásica (Centaur).",
+   "ideas": [
+    "E10"
+   ]
+  },
+  {
+   "titulo": "MALMAS: multiagente con memoria para generar variables",
+   "url": "https://arxiv.org/abs/2604.20261",
+   "prioridad": "media",
+   "veredicto": "sirve, con expectativa baja",
+   "para": "Variables generadas por roles con memoria y filtro de canaritos.",
+   "ideas": [
+    "E11",
+    "E12"
+   ]
+  },
+  {
+   "titulo": "Data-Driven Telecom Marketing Optimization",
+   "url": "https://arxiv.org/abs/2607.10260",
+   "prioridad": "media",
+   "veredicto": "a medias",
+   "para": "Cortes distintos por segmento. El dataset es chico y de telecomunicaciones.",
+   "ideas": [
+    "E18"
+   ]
+  },
+  {
+   "titulo": "ChurnNet",
+   "url": "https://arxiv.org/abs/2606.00169",
+   "prioridad": "media",
+   "veredicto": "no se prueba",
+   "para": "Muestra que los modelos de series de tiempo no les ganan a los árboles: respalda no probar redes.",
+   "ideas": []
+  },
+  {
+   "titulo": "Can We Predict Before Executing ML Agents? (FOREAGENT)",
+   "url": "https://arxiv.org/abs/2601.05930",
+   "prioridad": "media",
+   "veredicto": "sirve para el loop",
+   "para": "Ordenar la cola de ideas por la ganancia que se espera.",
+   "ideas": [
+    "E15"
+   ]
+  },
+  {
+   "titulo": "Recovering Wasted Compute in Autoresearch Agents",
+   "url": "https://arxiv.org/abs/2608.10424",
+   "prioridad": "baja",
+   "veredicto": "sirve para el loop",
+   "para": "Reglas para no repetir errores y explorar otras ramas.",
+   "ideas": [
+    "E16"
+   ]
+  },
+  {
+   "titulo": "TabFM-Auto",
+   "url": "https://arxiv.org/abs/2609.37989",
+   "prioridad": "baja",
+   "veredicto": "no se prueba",
+   "para": "Los modelos fundacionales tabulares no escalan a 4,7 millones de filas y no están instalados.",
+   "ideas": []
+  },
+  {
+   "titulo": "Explainable AI for churn: CRM integration",
+   "url": "https://arxiv.org/abs/2608.26151",
+   "prioridad": "baja",
+   "veredicto": "no se prueba",
+   "para": "Explica predicciones con SHAP; no cambia la ganancia.",
+   "ideas": []
+  },
+  {
+   "titulo": "Simulated Customers Never Walk Away",
+   "url": "https://arxiv.org/abs/2606.20708",
+   "prioridad": "baja",
+   "veredicto": "no se prueba",
+   "para": "Trata de simular usuarios con modelos de lenguaje: otro problema.",
+   "ideas": []
+  },
+  {
+   "titulo": "Profit Driven Decision Trees for Churn Prediction (ProfTree)",
+   "url": "https://arxiv.org/abs/1712.08101",
+   "prioridad": "agregado",
+   "veredicto": "sirve",
+   "para": "Meter la ganancia en el entrenamiento: pesos por costo.",
+   "ideas": [
+    "E19"
+   ]
+  },
+  {
+   "titulo": "Predicting Customer Churn: XGBoost with Temporal Data",
+   "url": "https://arxiv.org/abs/1802.03396",
+   "prioridad": "agregado",
+   "veredicto": "sirve",
+   "para": "Variables por ventanas de tiempo y lags por mes calendario.",
+   "ideas": [
+    "B2",
+    "E4"
+   ]
+  },
+  {
+   "titulo": "e-Profits: ganancia por cliente",
+   "url": "https://arxiv.org/abs/2507.08860",
+   "prioridad": "agregado",
+   "veredicto": "no se prueba",
+   "para": "Propone ganancia por cliente; acá todos los aciertos valen lo mismo.",
+   "ideas": []
+  }
+ ],
+ "lecciones": []
+}
