@@ -30,3 +30,4 @@ E027	2026-10-27 18:52	E22	ensamble de la multiclase y la binaria (promedio de pe
 E028	2026-10-27 19:03	E21	sin variables redundantes (correlación mayor que 0,98 con otra)	251643333	255161299	0.9153	0	0/3		639.5	descartado	E019
 E029	2026-10-27 19:14	E20	sin las columnas que derivan entre la ventana y el mes (PSI mayor o igual a 0,25)	248343333	254332984	0.9157	-3300000	1/3		599.1	descartado	E019
 E030	2026-10-27 19:25	E12	tasa histórica de BAJA+2 del grupo del cliente (transacciones por antigüedad)	252010000	256158934	0.9158	366667	2/3		656.5	descartado	E019
+E031	2026-10-27 19:37	E19	BAJA+2 con peso 3 (las BAJA+1 siguen en 0,5)	250543333	253790071	0.9151	-1100000	1/3		677.0	descartado	E019
