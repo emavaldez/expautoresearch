@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 06:26",
+ "generado": "2026-10-27 07:41",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -16,7 +16,7 @@
   "semillas_screening": 5,
   "semillas_confirmacion": 20
  },
- "vigente": "E000",
+ "vigente": "E012",
  "experimentos": [
   {
    "id": "E000",
@@ -1122,7 +1122,7 @@
    "descripcion": "sólo el general (sin especialista ni segunda etapa)",
    "idea": "B5",
    "hipotesis": "Predicción: empata con la base. Las dos piezas empataron por separado; si juntas tampoco suman, el modelo queda mucho más simple",
-   "estado": "descartado",
+   "estado": "confirmado",
    "vigente_al_correr": "E000",
    "segundos": 562.8,
    "error": "",
@@ -1207,7 +1207,22 @@
     "pareado_se": 863030.8350355886
    },
    "produccion": null,
-   "confirmacion": null,
+   "confirmacion": {
+    "a": "E000",
+    "b": "E012",
+    "fecha": "2026-10-27 07:41",
+    "ensamble_a": 241743333.33333334,
+    "ensamble_b": 244676666.66666666,
+    "pareado": {
+     "media": 2750000.0000000005,
+     "se": 562718.4436142339,
+     "gana": 16,
+     "n": 20,
+     "p_wilcoxon": 0.0005855919257290155
+    },
+    "modificado": null,
+    "decision": "confirmado"
+   },
    "archivos": {
     "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E012-solo-el-general-sin-especialista-ni-segu/train.py",
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E012-solo-el-general-sin-especialista-ni-segu/cambios.diff",
@@ -1370,13 +1385,13 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "10",
-   "actualizado": "2026-10-27 06:25",
+   "actualizado": "2026-10-27 07:41",
    "experimentos": [
     "E004",
     "E005",
     "E012"
    ],
-   "comentarios": 3
+   "comentarios": 4
   },
   {
    "id": "E1",
@@ -1959,6 +1974,7 @@
   "E007 (E1): el general con 4 meses (toda la ventana) en lugar de 3: 742,8 M (+8,8 M), gana 2 de 3, pareado +2,0 ± 1,0 M por mes, meseta y AUC suben (251,0 M; 0,9135). Queda a 0,1 M por mes del umbral de screening: es el candidato más firme hasta ahora (más ejemplos de baja).",
   "E008 (E13b): corte por la proporción aprendida de los dos meses anteriores (fuera de muestra): 728,1 M (−5,9 M), gana 1 de 3. En 2019 la tasa de bajas es estable y el 3,3% ya está cerca del óptimo; la proporción aprendida con la base fuera de muestra (un modelo más pobre) mete ruido. El corte fijo queda.",
   "E009 (B3): CONTINUA al 50% en lugar de 20%: 727,4 M (−6,6 M), gana 1 de 3 y tarda 55% más. Más CONTINUA diluye las bajas sin mejorar el orden: el 20% queda.",
-  "E011 (E4): lags y deltas hasta 3 meses (≈300 columnas más): 731,8 M (−2,2 M), gana 2 de 3, pareado −0,2 ± 0,7 M: empate, y tarda 15% más. El tercer mes de historia no agrega señal sobre lo que ya dan lag2, el promedio y la tendencia de 3 meses."
+  "E011 (E4): lags y deltas hasta 3 meses (≈300 columnas más): 731,8 M (−2,2 M), gana 2 de 3, pareado −0,2 ± 0,7 M: empate, y tarda 15% más. El tercer mes de historia no agrega señal sobre lo que ya dan lag2, el promedio y la tendencia de 3 meses.",
+  "E012 (B5): sólo el general (sin especialista ni segunda etapa): 737,3 M (+3,3 M), pareado −0,1 ± 0,9 M, AUC 0,914 (la mejor), 18% más rápido. Empate con un modelo mucho más simple: se confirma como simplificación (que no pierda)."
  ]
 }
