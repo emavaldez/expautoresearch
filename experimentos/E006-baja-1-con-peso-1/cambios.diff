@@ -1,0 +1,11 @@
+--- E000/train.py
++++ E006/train.py
+@@ -212,7 +212,7 @@
+ NUM_ROUNDS = 500
+ UNDERSAMPLING = 0.2  # fracción de CONTINUA que se conserva
+ POSITIVOS = ["BAJA+1", "BAJA+2"]  # las dos clases de baja
+-PESO_BAJA1 = 0.5  # las BAJA+1 pesan la mitad al entrenar el general: se van en un mes y no pagan; BAJA+2 es la clase que paga
++PESO_BAJA1 = 1.0  # las BAJA+1 pesan la mitad al entrenar el general: se van en un mes y no pagan; BAJA+2 es la clase que paga
+ 
+ 
+ HISTORIA = tuple(f"_{s}" for s in ("lag1", "delta1", "lag2", "delta2", "ratiolag1", "ratioavg3", "avg3", "min3", "max3", "ratiomax3"))
