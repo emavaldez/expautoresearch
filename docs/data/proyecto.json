@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 07:51",
+ "generado": "2026-10-27 08:01",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -1326,6 +1326,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E013-el-general-entrena-con-4-meses/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E013-el-general-entrena-con-4-meses/log.txt"
    }
+  },
+  {
+   "id": "E014",
+   "fecha": "2026-10-27 08:01",
+   "descripcion": "BAJA+1 con peso 1",
+   "idea": "B1",
+   "hipotesis": "Predicción: mejora poco. Sobre la base completa dio +4,4 M y ganó los 3 meses (E006)",
+   "estado": "descartado",
+   "vigente_al_correr": "E012",
+   "segundos": 563.7,
+   "error": "",
+   "total": 730730000.0,
+   "media": 243576666.66666666,
+   "meseta": 250227574.81296757,
+   "auc": 0.9143336595182653,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 197202500.0,
+     "envios": 4349,
+     "aciertos": 288,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 203815735.66084787,
+     "envios_meseta": 4756,
+     "auc": 0.9062782983411128,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 184.8
+    },
+    "201909": {
+     "lista": 249617500.0,
+     "envios": 4403,
+     "aciertos": 337,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 256258029.92518702,
+     "envios_meseta": 3332,
+     "auc": 0.9142973013421462,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 187.3
+    },
+    "201910": {
+     "lista": 283910000.0,
+     "envios": 4476,
+     "aciertos": 370,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 290608958.85286784,
+     "envios_meseta": 3833,
+     "auc": 0.9224253788715369,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 190.8
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E012",
+    "delta_media": -2200000.0,
+    "delta_por_mes": {
+     "201908": -6600000.0,
+     "201909": 0.0,
+     "201910": 0.0
+    },
+    "meses_ganados": 0,
+    "pareado_media": -219999.99999999403,
+    "pareado_se": 598015.235777672
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E014-baja-1-con-peso-1/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E014-baja-1-con-peso-1/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E014-baja-1-con-peso-1/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1417,11 +1515,12 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "6",
-   "actualizado": "2026-10-27 05:18",
+   "actualizado": "2026-10-27 08:01",
    "experimentos": [
-    "E006"
+    "E006",
+    "E014"
    ],
-   "comentarios": 1
+   "comentarios": 2
   },
   {
    "id": "B2",
@@ -2075,6 +2174,7 @@
   "E009 (B3): CONTINUA al 50% en lugar de 20%: 727,4 M (−6,6 M), gana 1 de 3 y tarda 55% más. Más CONTINUA diluye las bajas sin mejorar el orden: el 20% queda.",
   "E011 (E4): lags y deltas hasta 3 meses (≈300 columnas más): 731,8 M (−2,2 M), gana 2 de 3, pareado −0,2 ± 0,7 M: empate, y tarda 15% más. El tercer mes de historia no agrega señal sobre lo que ya dan lag2, el promedio y la tendencia de 3 meses.",
   "E012 (B5): sólo el general (sin especialista ni segunda etapa): 737,3 M (+3,3 M), pareado −0,1 ± 0,9 M, AUC 0,914 (la mejor), 18% más rápido. Empate con un modelo mucho más simple: se confirma como simplificación (que no pierda).",
-  "E012 confirmado (simplificación, 20 semillas frescas): sólo el general le gana a la base por +2,9 M por mes en el ensamble (pareado +2,8 ± 0,6 M, 16 de 20 semillas, Wilcoxon p = 0,001). Es el nuevo vigente: un LightGBM multiclase con la ventana de variables de la primera competencia, sin especialista ni segunda etapa."
+  "E012 confirmado (simplificación, 20 semillas frescas): sólo el general le gana a la base por +2,9 M por mes en el ensamble (pareado +2,8 ± 0,6 M, 16 de 20 semillas, Wilcoxon p = 0,001). Es el nuevo vigente: un LightGBM multiclase con la ventana de variables de la primera competencia, sin especialista ni segunda etapa.",
+  "E013 (E1, sobre E012): el general con 4 meses (toda la ventana): 756,0 M (+18,7 M), gana 2 de 3, pareado +6,9 ± 1,8 M por mes, AUC 0,9155: a confirmar. Sin especialista, el general aprovecha más los ejemplos del cuarto mes."
  ]
 }
