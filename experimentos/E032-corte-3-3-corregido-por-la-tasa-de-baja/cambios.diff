@@ -1,0 +1,18 @@
+--- E019/train.py
++++ E032/train.py
+@@ -198,6 +198,15 @@
+ MESES_ENTRENAMIENTO = 4  # la ventana entera: m - 5 a m - 2 (la segunda etapa necesita los dos primeros para su base)
+ HISTORIA_MESES = 2       # lags de 1 y 2 meses
+ CORTE = {"tipo": "fraccion", "f": 0.033}
++
++
++def corte(prob, train, score):
++    """E7: la proporción fija de 3,3% corregida por la tasa de BAJA+2 del último mes con clase contra la de toda la
++    ventana: si las bajas vienen subiendo, se estimula a más gente."""
++    y = train.clase_ternaria == "BAJA+2"
++    ultimo = train.foto_mes.max()
++    r = y[train.foto_mes == ultimo].mean() / y.mean()
++    return int(round(CORTE["f"] * float(np.clip(r, 0.7, 1.4)) * len(prob)))
+ 
+ PARAMS = dict(
+     objective="binary",  # sin efecto: base() lo pisa con "multiclass" de 3 clases

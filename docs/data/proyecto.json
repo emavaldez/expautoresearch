@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 19:37",
+ "generado": "2026-10-27 19:48",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3309,6 +3309,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E031-baja-2-con-peso-3-las-baja-1-siguen-en-0/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E031-baja-2-con-peso-3-las-baja-1-siguen-en-0/log.txt"
    }
+  },
+  {
+   "id": "E032",
+   "fecha": "2026-10-27 19:48",
+   "descripcion": "corte: 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana",
+   "idea": "E7",
+   "hipotesis": "Predicción: empate o pierde poco. En 2019 la tasa es estable; la corrección sólo mueve el corte cuando las bajas cambian de golpe",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 649.5,
+   "error": "",
+   "total": 758285000.0,
+   "media": 252761666.66666666,
+   "meseta": 255593892.3524522,
+   "auc": 0.9154785054695123,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 214142500.0,
+     "envios": 3893,
+     "aciertos": 292,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 212561627.1820449,
+     "envios_meseta": 3985,
+     "auc": 0.9091207540133893,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 215.3
+    },
+    "201909": {
+     "lista": 259765000.0,
+     "envios": 4594,
+     "aciertos": 351,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 265509551.12219453,
+     "envios_meseta": 3188,
+     "auc": 0.9141978400914079,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 214.7
+    },
+    "201910": {
+     "lista": 284377500.0,
+     "envios": 3899,
+     "aciertos": 356,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 288710498.7531172,
+     "envios_meseta": 5156,
+     "auc": 0.9231169223037395,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 218.7
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 1118333.3333333135,
+    "delta_por_mes": {
+     "201908": 2640000.0,
+     "201909": -1952500.0,
+     "201910": 2667500.0
+    },
+    "meses_ganados": 2,
+    "pareado_media": -1741666.6666666686,
+    "pareado_se": 548776.4167268458
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E032-corte-3-3-corregido-por-la-tasa-de-baja/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E032-corte-3-3-corregido-por-la-tasa-de-baja/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E032-corte-3-3-corregido-por-la-tasa-de-baja/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -3610,11 +3708,13 @@
    "fuente_url": "https://arxiv.org/abs/2608.18174",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. Se compara la cantidad de envíos contra la óptima de cada mes.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "18",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 19:48",
+   "experimentos": [
+    "E032"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E17",
@@ -4111,7 +4211,8 @@
   "E027 (E22): ensamble de la multiclase y la binaria (promedio de percentiles, con el nivel de la multiclase): 759,3 M (+4,4 M), gana 1 de 3, pareado −0,5 ± 0,9 M, 35% más lento. Empate: la binaria y la multiclase ordenan casi igual, no hay diversidad que sumar.",
   "E028 (E21): sacar columnas con correlación mayor que 0,98 con otra (75 a 105 de 1.278): las tres listas aciertan exactamente lo mismo que el vigente; pareado −1,7 ± 0,8 M por semilla. No suma. Ojo: E019, E022 (mismo código) y E028 dan las mismas listas pero mesetas distintas por décimas: LightGBM con varios hilos no es determinístico en esta configuración.",
   "E029 (E20): sacar las columnas con PSI ≥ 0,25 entre la ventana y el mes puntuado (126 a 139 de 1.278): 745,0 M (−9,9 M), gana 1 de 3, pareado −0,9 ± 0,6 M. En 2019 lo que \"deriva\" contra la ventana son sobre todo fechas de cierre y montos con estacionalidad que igual informan; sacarlas pierde un poco. Queda como herramienta de diagnóstico del tablero, no como regla del modelo.",
-  "E030 (E12): tasa histórica de BAJA+2 del grupo del cliente (transacciones del trimestre × antigüedad, fuera de muestra por mes): 756,0 M (+1,1 M), pareado +0,3 ± 1,4 M: empate. El árbol ya arma ese cruce solo."
+  "E030 (E12): tasa histórica de BAJA+2 del grupo del cliente (transacciones del trimestre × antigüedad, fuera de muestra por mes): 756,0 M (+1,1 M), pareado +0,3 ± 1,4 M: empate. El árbol ya arma ese cruce solo.",
+  "E031 (E19): BAJA+2 con peso 3 en la multiclase: 751,6 M (−3,3 M), gana 1 de 3, pareado −1,0 ± 0,5 M. El submuestreo de CONTINUA ya balancea; pesar más la clase que paga no ordena mejor arriba."
  ],
  "aula": {
   "modelo": "E019",
