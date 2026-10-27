@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 06:16",
+ "generado": "2026-10-27 06:25",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -1115,6 +1115,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E011-lags-y-deltas-hasta-3-meses/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E011-lags-y-deltas-hasta-3-meses/log.txt"
    }
+  },
+  {
+   "id": "E012",
+   "fecha": "2026-10-27 06:25",
+   "descripcion": "sólo el general (sin especialista ni segunda etapa)",
+   "idea": "B5",
+   "hipotesis": "Predicción: empata con la base. Las dos piezas empataron por separado; si juntas tampoco suman, el modelo queda mucho más simple",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 562.8,
+   "error": "",
+   "total": 737330000.0,
+   "media": 245776666.66666666,
+   "meseta": 250149006.65004158,
+   "auc": 0.9142453463863438,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 203802500.0,
+     "envios": 4349,
+     "aciertos": 294,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 204063578.55361596,
+     "envios_meseta": 4462,
+     "auc": 0.9057456691702089,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 184.3
+    },
+    "201909": {
+     "lista": 249617500.0,
+     "envios": 4403,
+     "aciertos": 337,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 259097387.78054863,
+     "envios_meseta": 2489,
+     "auc": 0.9139932087798939,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 187.1
+    },
+    "201910": {
+     "lista": 283910000.0,
+     "envios": 4476,
+     "aciertos": 370,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 287286053.6159601,
+     "envios_meseta": 3207,
+     "auc": 0.9229971612089283,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 190.7
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": 1100000.0,
+    "delta_por_mes": {
+     "201908": 4400000.0,
+     "201909": -1100000.0,
+     "201910": 0.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -73333.3333333373,
+    "pareado_se": 863030.8350355886
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E012-solo-el-general-sin-especialista-ni-segu/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E012-solo-el-general-sin-especialista-ni-segu/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E012-solo-el-general-sin-especialista-ni-segu/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1272,12 +1370,13 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "10",
-   "actualizado": "2026-10-27 05:06",
+   "actualizado": "2026-10-27 06:25",
    "experimentos": [
     "E004",
-    "E005"
+    "E005",
+    "E012"
    ],
-   "comentarios": 2
+   "comentarios": 3
   },
   {
    "id": "E1",
@@ -1859,6 +1958,7 @@
   "E006 (B1): BAJA+1 con peso 1 en lugar de 0,5: 738,4 M (+4,4 M), gana los 3 meses pero por poco (pareado +0,7 ± 1,0 M por mes): no llega al umbral. Señal chica a favor de darle más peso a las BAJA+1; con 20 semillas podría confirmarse o no.",
   "E007 (E1): el general con 4 meses (toda la ventana) en lugar de 3: 742,8 M (+8,8 M), gana 2 de 3, pareado +2,0 ± 1,0 M por mes, meseta y AUC suben (251,0 M; 0,9135). Queda a 0,1 M por mes del umbral de screening: es el candidato más firme hasta ahora (más ejemplos de baja).",
   "E008 (E13b): corte por la proporción aprendida de los dos meses anteriores (fuera de muestra): 728,1 M (−5,9 M), gana 1 de 3. En 2019 la tasa de bajas es estable y el 3,3% ya está cerca del óptimo; la proporción aprendida con la base fuera de muestra (un modelo más pobre) mete ruido. El corte fijo queda.",
-  "E009 (B3): CONTINUA al 50% en lugar de 20%: 727,4 M (−6,6 M), gana 1 de 3 y tarda 55% más. Más CONTINUA diluye las bajas sin mejorar el orden: el 20% queda."
+  "E009 (B3): CONTINUA al 50% en lugar de 20%: 727,4 M (−6,6 M), gana 1 de 3 y tarda 55% más. Más CONTINUA diluye las bajas sin mejorar el orden: el 20% queda.",
+  "E011 (E4): lags y deltas hasta 3 meses (≈300 columnas más): 731,8 M (−2,2 M), gana 2 de 3, pareado −0,2 ± 0,7 M: empate, y tarda 15% más. El tercer mes de historia no agrega señal sobre lo que ya dan lag2, el promedio y la tendencia de 3 meses."
  ]
 }

@@ -1,0 +1,17 @@
+--- E000/train.py
++++ E012/train.py
+@@ -314,7 +314,7 @@
+     cols = [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente") and not historia_de_resumen(c)]
+     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
+     # igual sólo mira el último mes con clase, que el enmascarado no toca.
+-    en_seg, p_esp = especialista(train, score, [c for c in cols if not c.endswith(FE_CATEDRA)], seed)  # el especialista no ve el FE de la cátedra
++    en_seg, p_esp = np.zeros(len(score), bool), None  # B5: sin especialista
+     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
+     keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
+     train = train[keep | (train.clase_ternaria != "CONTINUA").to_numpy()]
+@@ -485,4 +485,4 @@
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:
+-    return segunda_etapa(train, score, seed, base(train, score, seed))
++    return base(train, score, seed)  # B5: sin segunda etapa
