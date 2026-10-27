@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 10:11",
+ "generado": "2026-10-27 10:16",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -2042,6 +2042,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E020-binaria-baja-1-o-baja-2-en-lugar-de-mult/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E020-binaria-baja-1-o-baja-2-en-lugar-de-mult/log.txt"
    }
+  },
+  {
+   "id": "E021",
+   "fecha": "2026-10-27 10:16",
+   "descripcion": "binaria BAJA+1 o BAJA+2 en lugar de multiclase",
+   "idea": "B1",
+   "hipotesis": "Predicción: empata y tarda menos de la mitad (sobre E013 empató con 249 s contra 629); un modelo más simple y rápido para los 15 minutos del aula",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 248.0,
+   "error": "",
+   "total": 757130000.0,
+   "media": 252376666.66666666,
+   "meseta": 252533094.34746468,
+   "auc": 0.9163755566275017,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 203802500.0,
+     "envios": 4349,
+     "aciertos": 294,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 205589108.47880298,
+     "envios_meseta": 5377,
+     "auc": 0.9098764730532098,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 81.7
+    },
+    "201909": {
+     "lista": 265017500.0,
+     "envios": 4403,
+     "aciertos": 351,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 262866053.61596006,
+     "envios_meseta": 4415,
+     "auc": 0.9150059566019214,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 82.0
+    },
+    "201910": {
+     "lista": 288310000.0,
+     "envios": 4476,
+     "aciertos": 374,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 289144120.947631,
+     "envios_meseta": 3873,
+     "auc": 0.9242442402273737,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 83.5
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 733333.3333333135,
+    "delta_por_mes": {
+     "201908": -7700000.0,
+     "201909": 3300000.0,
+     "201910": 6600000.0
+    },
+    "meses_ganados": 2,
+    "pareado_media": -586666.6666666686,
+    "pareado_se": 1278610.356771931
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E021-binaria-baja-1-o-baja-2-en-lugar-de-mult/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E021-binaria-baja-1-o-baja-2-en-lugar-de-mult/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E021-binaria-baja-1-o-baja-2-en-lugar-de-mult/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -2135,14 +2233,15 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "6",
-   "actualizado": "2026-10-27 09:30",
+   "actualizado": "2026-10-27 10:16",
    "experimentos": [
     "E006",
     "E014",
     "E015",
-    "E020"
+    "E020",
+    "E021"
    ],
-   "comentarios": 4
+   "comentarios": 5
   },
   {
    "id": "B2",
@@ -2810,6 +2909,7 @@
   "E018 (E13, sobre E012): corte por probabilidad calibrada (isotónica en los dos meses anteriores fuera de muestra) mayor que 2,5%: 707,7 M (−29,6 M), pierde los 3 meses. La calibración con la base fuera de muestra (entrenada con meses más viejos) no se traslada al modelo final: el 3,3% fijo queda.",
   "E013 confirmado (20 semillas frescas): +6,2 M por mes en el ensamble contra E012, pareado +6,9 ± 0,8 M, gana en las 20 semillas. Nuevo vigente: sólo el general, con los 4 meses de la ventana.",
   "E019 (P3, sobre E013): foto_mes deja de ser variable: 754,9 M (−1,1 M), pareado +1,0 ± 0,6 M: empate. Cumple la regla de no identificar el mes y evita que el mes puntuado caiga fuera del rango que vio el árbol: se confirma como simplificación.",
-  "E020 (B1, sobre E013): binaria en lugar de multiclase: 754,9 M (−1,1 M), pareado −0,7 ± 1,4 M, AUC 0,9163 (la más alta), 249 s contra 629. Empate con 40% del tiempo: candidata a simplificación después de E019."
+  "E020 (B1, sobre E013): binaria en lugar de multiclase: 754,9 M (−1,1 M), pareado −0,7 ± 1,4 M, AUC 0,9163 (la más alta), 249 s contra 629. Empate con 40% del tiempo: candidata a simplificación después de E019.",
+  "E019 confirmado como simplificación (20 semillas frescas): sin foto_mes empata exacto con E013 (ensamble Δ 0,0 M; pareado +0,2 ± 0,4 M, 11 de 20 semillas). Nuevo vigente: el mismo modelo sin una variable que identificaba el mes."
  ]
 }
