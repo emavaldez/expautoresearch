@@ -1,0 +1,9 @@
+{
+  "learning_rate": {"tipo": "float", "min": 0.01, "max": 0.08, "log": true},
+  "num_leaves": {"tipo": "int", "min": 15, "max": 255, "log": true},
+  "min_data_in_leaf": {"tipo": "int", "min": 50, "max": 2000, "log": true},
+  "feature_fraction": {"tipo": "float", "min": 0.2, "max": 0.9},
+  "lambda_l2": {"tipo": "float", "min": 0.001, "max": 50.0, "log": true},
+  "num_rounds": {"tipo": "int", "min": 250, "max": 1000},
+  "submuestreo": {"tipo": "float", "min": 0.1, "max": 0.4}
+}
