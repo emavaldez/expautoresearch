@@ -1,0 +1,29 @@
+--- E019/train.py
++++ E025/train.py
+@@ -199,18 +199,19 @@
+ HISTORIA_MESES = 2       # lags de 1 y 2 meses
+ CORTE = {"tipo": "fraccion", "f": 0.033}
+ 
+-PARAMS = dict(
++PARAMS = dict(  # E8: el mejor trial de hpo01 (TPE sobre 201908-201910, 3 semillas del bloque de búsqueda)
+     objective="binary",  # sin efecto: base() lo pisa con "multiclass" de 3 clases
+-    learning_rate=0.027,
+-    num_leaves=31,
+-    min_data_in_leaf=200,
+-    feature_fraction=0.5,
++    learning_rate=0.0158,
++    num_leaves=254,
++    min_data_in_leaf=72,
++    feature_fraction=0.517,
++    lambda_l2=0.0033,
+     max_bin=255,
+     verbosity=-1,
+     num_threads=16,
+ )
+-NUM_ROUNDS = 500
+-UNDERSAMPLING = 0.2  # fracción de CONTINUA que se conserva
++NUM_ROUNDS = 667
++UNDERSAMPLING = 0.132  # fracción de CONTINUA que se conserva (E8)
+ POSITIVOS = ["BAJA+1", "BAJA+2"]  # las dos clases de baja
+ PESO_BAJA1 = 0.5  # las BAJA+1 pesan la mitad al entrenar el general: se van en un mes y no pagan; BAJA+2 es la clase que paga
+ 
