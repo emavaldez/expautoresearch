@@ -3,9 +3,11 @@
 El loop de autoresearch NO edita este archivo. Lo que se puede cambiar por variable de entorno es sólo para correr las
 pruebas con datos sintéticos (`tools/sinteticos.py`).
 
-Escenario (Segunda Competencia, DMEyF 2026): el modelo nace con datos de 2019 y se reentrena todos los meses con los
-últimos 6 meses. Para puntuar un mes m se sabe la clase completa hasta m - 2 y sólo las BAJA+1 de m - 1. Se mide en
-202007, 202008 y 202009, los tres meses que en el aula llegan de a uno (con la data modificada).
+Escenario (Segunda Competencia, DMEyF 2026): el modelo se DEFINE sólo con datos de 2019. El presente es 201912: se ven
+los datos hasta 201912 y la clase como se sabía entonces (completa hasta 201910, 201911 sólo BAJA+1, 201912 nada).
+Cada experimento se mide en 201908, 201909 y 201910 con la misma regla que en producción: se reentrena con los últimos
+6 meses y para puntuar m se sabe la clase completa hasta m - 2 y sólo las BAJA+1 de m - 1. En 2020 el modelo elegido
+sólo se reentrena (tools/produccion.py lo informa al final); los cambios para 202007-202009 se deciden en el aula.
 """
 import os
 from pathlib import Path
@@ -25,9 +27,12 @@ VENTANA_SUAVIZADO = 401      # envíos: la meseta de la curva, para leer la cali
 GAP = 2                      # para puntuar m se conoce la clase completa hasta m - GAP
 VENTANA = 6                  # regla del escenario: se entrena con los meses m - 5 a m - 1 (m - 1 sólo con sus BAJA+1)
 
-# ---------------------------------------------------------------- train y test
-MESES_TEST = [202007, 202008, 202009]  # deciden los experimentos: la ganancia real de la lista de cada mes
-ULTIMO_MES_DATOS = 202011              # la clase de 202009 sale de 202010 y 202011; nada más allá se lee
+# ---------------------------------------------------------------- train y test (todo dentro de 2019)
+PRESENTE = 201912                      # último mes que se ve al definir el modelo
+MESES_TEST = [201908, 201909, 201910]  # deciden los experimentos: los tres últimos meses con clase completa en 201912
+# Producción (sólo para informar al final, nunca para decidir): el modelo elegido se reentrena mes a mes en 2020.
+MESES_PRODUCCION = [202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009]
+ULTIMO_MES_PRODUCCION = 202011         # la clase de 202009 sale de 202010 y 202011
 
 # ---------------------------------------------------------------- semillas
 # Semilla primigenia propia: las semillas son los primos que le siguen.

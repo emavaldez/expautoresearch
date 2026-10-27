@@ -1,0 +1,13 @@
+03:41:04 E000: evaluando con 20 semillas del bloque confirmacion
+03:41:17 [202007] entrena con [202002, 202003, 202004, 202005] (593,595 filas) | puntúa 154,772 clientes, 538 BAJA+2 | 1648 columnas | features 13 s
+03:42:44 [202007] semilla 800083: lista 183.0M con 5,107 | meseta 187.4M en 4,547 | AUC 0.9087 (87 s)
+03:43:18 [202007] semilla 800089: lista 185.2M con 5,107 | meseta 189.0M en 4,781 | AUC 0.9092 (35 s)
+03:43:57 [202007] semilla 800113: lista 178.6M con 5,107 | meseta 182.4M en 4,389 | AUC 0.9097 (39 s)
+03:44:35 [202007] semilla 800117: lista 186.3M con 5,107 | meseta 186.3M en 4,968 | AUC 0.9096 (38 s)
+03:45:13 [202007] semilla 800119: lista 166.5M con 5,107 | meseta 182.8M en 3,557 | AUC 0.9081 (38 s)
+03:45:52 [202007] semilla 800123: lista 176.4M con 5,107 | meseta 181.8M en 3,802 | AUC 0.9084 (39 s)
+03:46:30 [202007] semilla 800131: lista 181.9M con 5,107 | meseta 182.8M en 4,740 | AUC 0.9092 (38 s)
+03:47:09 [202007] semilla 800143: lista 183.0M con 5,107 | meseta 183.6M en 4,503 | AUC 0.9079 (38 s)
+03:47:48 [202007] semilla 800159: lista 178.6M con 5,107 | meseta 184.7M en 4,379 | AUC 0.9085 (39 s)
+03:48:26 [202007] semilla 800161: lista 181.9M con 5,107 | meseta 180.2M en 5,074 | AUC 0.9086 (38 s)
+03:49:04 [202007] semilla 800171: lista 177.5M con 5,107 | meseta 182.0M en 3,994 | AUC 0.9081 (38 s)

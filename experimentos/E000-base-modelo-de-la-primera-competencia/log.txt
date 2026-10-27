@@ -1,25 +1,4 @@
-03:10:37 E000: base: modelo de la primera competencia
-03:10:37 idea: B0 | hipótesis: Punto de partida: el modelo entregado en la primera competencia, llevado a estos datos | vigente: (ninguno: esta es la base)
-03:10:37 meses de test [202007, 202008, 202009] (ventana de 6 meses) | semillas [800011, 800029, 800053, 800057, 800077]
-03:10:52 [202007] entrena con [202002, 202003, 202004, 202005] (593,595 filas) | puntúa 154,772 clientes, 538 BAJA+2 | 1648 columnas | features 14 s
-03:13:08 [202007] semilla 800011: lista 179.7M con 5,107 | meseta 182.4M en 3,659 | AUC 0.9086 (136 s)
-03:14:09 [202007] semilla 800029: lista 180.8M con 5,107 | meseta 180.2M en 4,950 | AUC 0.9099 (60 s)
-03:15:10 [202007] semilla 800053: lista 177.5M con 5,107 | meseta 185.7M en 4,144 | AUC 0.9095 (61 s)
-03:15:56 [202007] semilla 800057: lista 180.8M con 5,107 | meseta 191.4M en 4,104 | AUC 0.9090 (46 s)
-03:16:34 [202007] semilla 800077: lista 180.8M con 5,107 | meseta 182.0M en 3,532 | AUC 0.9100 (38 s)
-03:16:34 [202007] ENSAMBLE de 5: lista 183.0M (294 de 538 BAJA+2 con 5,107 envíos) | meseta 185.1M en 5,154 | AUC 0.9106
-03:16:45 [202008] entrena con [202003, 202004, 202005, 202006] (600,123 filas) | puntúa 156,234 clientes, 434 BAJA+2 | 1648 columnas | features 11 s
-03:18:00 [202008] semilla 800011: lista 77.1M con 5,156 | meseta 101.7M en 2,124 | AUC 0.8965 (76 s)
-03:18:39 [202008] semilla 800029: lista 80.4M con 5,156 | meseta 95.7M en 2,308 | AUC 0.8962 (39 s)
-03:19:17 [202008] semilla 800053: lista 80.4M con 5,156 | meseta 98.8M en 2,511 | AUC 0.8931 (38 s)
-03:19:55 [202008] semilla 800057: lista 81.5M con 5,156 | meseta 99.4M en 2,678 | AUC 0.8948 (38 s)
-03:20:34 [202008] semilla 800077: lista 81.5M con 5,156 | meseta 101.5M en 2,228 | AUC 0.8958 (38 s)
-03:20:34 [202008] ENSAMBLE de 5: lista 79.3M (201 de 434 BAJA+2 con 5,156 envíos) | meseta 100.4M en 2,179 | AUC 0.8969
-03:20:45 [202009] entrena con [202004, 202005, 202006, 202007] (606,582 filas) | puntúa 157,519 clientes, 527 BAJA+2 | 1648 columnas | features 11 s
-03:22:01 [202009] semilla 800011: lista 105.7M con 5,198 | meseta 110.3M en 4,243 | AUC 0.9042 (76 s)
-03:22:39 [202009] semilla 800029: lista 111.2M con 5,198 | meseta 122.4M en 4,392 | AUC 0.9031 (38 s)
-03:23:17 [202009] semilla 800053: lista 110.1M con 5,198 | meseta 113.2M en 3,235 | AUC 0.9056 (38 s)
-03:23:55 [202009] semilla 800057: lista 111.2M con 5,198 | meseta 113.5M en 3,874 | AUC 0.9033 (38 s)
-03:24:33 [202009] semilla 800077: lista 107.9M con 5,198 | meseta 114.5M en 3,924 | AUC 0.9035 (38 s)
-03:24:33 [202009] ENSAMBLE de 5: lista 107.9M (228 de 527 BAJA+2 con 5,198 envíos) | meseta 118.3M en 3,970 | AUC 0.9053
-03:24:34 RESUMEN E000 | base | test 370,1M en 3 meses (media 123,4M, meseta 134,6M, AUC 0.9042) | 836 s
+03:55:49 E000: base: modelo de la primera competencia
+03:55:49 idea: B0 | hipótesis: Punto de partida: el modelo entregado en la primera competencia, llevado a estos datos con lo que se ve en 2019 | vigente: (ninguno: esta es la base)
+03:55:49 meses de test [201908, 201909, 201910] (ventana de 6 meses) | semillas [800011, 800029, 800053, 800057, 800077]
+03:55:58 [201908] entrena con [201903, 201904, 201905, 201906] (506,871 filas) | puntúa 131,775 clientes, 542 BAJA+2 | 1648 columnas | features 9 s

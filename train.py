@@ -12,17 +12,19 @@ Las tres piezas son las mismas que en la entrega de la primera:
   3. SEGUNDA ETAPA: LightGBM chico que reordena la franja dudosa del resto de los clientes, entrenado con los dos
      últimos meses con clase puntuados por una base que no vio su clase.
 
-Qué cambió para estos datos (2019-2020 en lugar de 2021), sin tocar la lógica:
-  - ROTAS: la tabla de variables rotas por mes es la de este dataset (201904, 201905, 201910, 202004 y las ~30 de 202006),
-    medida con datos hasta 202006. En la primera era sólo ccajas_depositos en 202105.
-  - internet: en 2021 marcaba deudores con 1 a 3 (4% de los clientes). En 2019-2020 es binaria y al revés: 1 = usa
-    homebanking (92%, 0,25% de BAJA+2) y 0 es el grupo chico y riesgoso (8%, 1,3 a 2,4% de BAJA+2). El especialista se
+Qué cambió para estos datos (2019 en lugar de 2021), sin tocar la lógica:
+  - ROTAS: la tabla de variables rotas por mes es la de 2019 (201904, 201905 y 201910, y las de transferencias y app
+    de la primera mitad del año, que todavía no existían). En la primera era sólo ccajas_depositos en 202105. Lo que se
+    rompa en 2020 la tabla no lo sabe (ver P1).
+  - internet: en 2021 marcaba deudores con 1 a 3 (4% de los clientes). En 2019 es binaria y al revés: 1 = usa
+    homebanking (92%, 0,3% de BAJA+2) y 0 es el grupo chico y riesgoso (8%, 2,1 a 2,4% de BAJA+2 en 2019). El especialista se
     arma sobre internet == 0 y la segunda etapa sobre internet == 1, que es el "resto" equivalente.
   - FRANJA de la segunda etapa: 8.000 a 30.000 puestos rodeaba un corte de 11.250 sobre 164.000 clientes; acá el corte es
-    de unos 5.100 sobre 155.000, así que la franja se achica en la misma proporción: 3.600 a 13.600.
+    de unos 4.400 sobre 133.000 (2019), así que la franja se achica en la misma proporción: 3.100 a 11.500.
   - CORTE: 3,3% de los clientes del mes (la proporción que maximizaba la ganancia en la validación de 2019); la primera
     usaba 11.250 fijos.
-  - Ventana: para puntuar m entrena con los meses con clase completa de m - 5 a m - 2 (regla del escenario); el general
+  - Todo se definió con datos de 2019 (ver config.py). Ventana: para puntuar m entrena con los meses con clase completa
+    de m - 5 a m - 2 (regla del escenario); el general
     usa los tres últimos y la segunda etapa los dos últimos, puntuados por una base entrenada con los anteriores.
 """
 import lightgbm as lgb
@@ -56,44 +58,22 @@ def razon(num, den):
 
 
 # Data Quality (tips de la cátedra): una variable rota en un mes se pasa a NA sólo en ese mes, antes de lags y deltas.
-# Tabla fija, medida con datos hasta 202006: la variable está casi toda en cero o vacía ese mes y en los demás no.
+# Tabla fija, medida con los datos de 2019: la variable está casi toda en cero o vacía ese mes y en los demás no.
 ROTAS = {
-    "active_quarter": (202006,),
-    "catm_trx": (202006,),
-    "catm_trx_other": (202006,),
-    "ccajas_consultas": (202006,),
-    "ccajas_depositos": (202004, 202006,),
-    "ccajas_extracciones": (202006,),
-    "ccajas_transacciones": (202006,),
-    "ccallcenter_transacciones": (202006,),
-    "ccomisiones_otras": (201905, 201910, 202006,),
-    "cextraccion_autoservicio": (202006,),
-    "chomebanking_transacciones": (201910, 202006,),
-    "cmobile_app_trx": (201901, 201902, 201903, 201904, 201905, 201906, 202006,),
-    "ctarjeta_debito_transacciones": (202006,),
-    "ctarjeta_master_transacciones": (202006,),
+    "ccomisiones_otras": (201905, 201910,),
+    "chomebanking_transacciones": (201910,),
+    "cmobile_app_trx": (201901, 201902, 201903, 201904, 201905, 201906,),
     "ctarjeta_visa_debitos_automaticos": (201904,),
-    "ctarjeta_visa_transacciones": (202006,),
     "ctransferencias_recibidas": (201901, 201902, 201903, 201904, 201905,),
-    "internet": (202006,),
-    "mactivos_margen": (201905, 201910, 202006,),
-    "matm": (202006,),
-    "matm_other": (202006,),
-    "mautoservicio": (202006,),
-    "mcomisiones": (201905, 201910, 202006,),
-    "mcomisiones_otras": (201905, 201910, 202006,),
-    "mcuentas_saldo": (202006,),
-    "mextraccion_autoservicio": (202006,),
-    "mpasivos_margen": (201905, 201910, 202006,),
-    "mrentabilidad": (201905, 201910, 202006,),
-    "mrentabilidad_annual": (201905, 201910, 202006,),
-    "mtarjeta_master_consumo": (202006,),
-    "mtarjeta_visa_consumo": (202006,),
+    "mactivos_margen": (201905, 201910,),
+    "mcomisiones": (201905, 201910,),
+    "mcomisiones_otras": (201905, 201910,),
+    "mpasivos_margen": (201905, 201910,),
+    "mrentabilidad": (201905, 201910,),
+    "mrentabilidad_annual": (201905, 201910,),
     "mtransferencias_recibidas": (201901, 201902, 201903, 201904, 201905,),
     "mttarjeta_visa_debitos_automaticos": (201904,),
-    "tcallcenter": (202006,),
-    "thomebanking": (202006,),
-    "tmobile_app": (201901, 201902, 201903, 201904, 201905, 201906, 202006,),
+    "tmobile_app": (201901, 201902, 201903, 201904, 201905, 201906,),
 }
 
 # Data Drifting. Mirando las 152 variables mes a mes, la escala de estos montos se corre de un mes a
@@ -261,7 +241,7 @@ def historia_de_resumen(c: str) -> bool:
 # mes con clase. Por qué con canaritos: con ~6.000 filas y ~380 bajas, 1.160
 # variables son demasiadas y el especialista ajusta ruido. Los canaritos miden cuánta ganancia junta una columna de números
 # al azar; sólo quedan las variables reales que juntan más que el mejor de ellos.
-SEGMENTO_INTERNET = 0  # en 2019-2020 el grupo chico y riesgoso es internet == 0 (ver el encabezado)
+SEGMENTO_INTERNET = 0  # en 2019 el grupo chico y riesgoso es internet == 0 (ver el encabezado)
 RESTO_INTERNET = 1     # el resto, sobre el que actúa la segunda etapa
 PARAMS_ESP = dict(
     objective="binary",
@@ -349,7 +329,7 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
     # el enmascarado vacío sin avisar (el modelo entrenaría igual, con internet promediado en los tres meses).
     internet = [c for c in cols if c.startswith("internet")]
     assert len(internet) == 5, f"se esperaban 5 columnas de internet y hay {internet}"
-    # En 2019-2020 el valor mayoritario es 1 (no 0, como en 2021): la variable y sus lags van a 1 y los deltas a 0.
+    # En 2019 el valor mayoritario es 1 (no 0, como en 2021): la variable y sus lags van a 1 y los deltas a 0.
     viejos = (train.foto_mes < months[-1]).to_numpy()
     train.loc[viejos, [c for c in internet if "_delta" not in c]] = RESTO_INTERNET
     train.loc[viejos, [c for c in internet if "_delta" in c]] = 0
@@ -394,7 +374,7 @@ def repartir(p_gen: np.ndarray, p_esp: np.ndarray) -> np.ndarray:
 
 # ---------------------------------------------------------------- segunda etapa sobre la franja dudosa
 
-FRANJA = (3600, 13600)  # puestos de la base, sólo clientes del resto (internet == 1)
+FRANJA = (3100, 11500)  # puestos de la base, sólo clientes del resto (internet == 1)
 PARAMS_2 = dict(objective="binary", learning_rate=0.03, num_leaves=4, min_data_in_leaf=200, feature_fraction=0.3, lambda_l2=20.0,
                 max_bin=63, verbosity=-1, num_threads=3)
 RONDAS_2 = 100

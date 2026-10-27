@@ -1,45 +1,51 @@
 # Plan de experimentos
 
-**Escenario (Segunda Competencia):** el modelo nace con datos de 2019 y se reentrena todos los meses con los últimos 6
-meses. Para puntuar un mes m se sabe la clase completa hasta m − 2 y sólo las BAJA+1 de m − 1. **Test: 202007, 202008 y
-202009**, los tres meses que en el aula llegan de a uno, con la data modificada.
+**Regla de la Segunda Competencia:** el modelo se define **sólo con datos de 2019**. El presente es 201912: se ven los
+datos hasta 201912 y la clase como se la sabía entonces (completa hasta 201910, 201911 sólo con BAJA+1, 201912 sin
+clase). Después, en 2020, el modelo sólo se reentrena todos los meses con la ventana de 6 meses, sin cambiarlo. En
+202007, 202008 y 202009 (el aula) se simula estar en ese momento y se implementan los cambios que hagan falta con lo que
+llega.
 
-**Cómo se mide cada experimento (igual para todos):** para cada mes de test se entrena con lo que se sabía en ese mes,
-se arma la lista con el corte del modelo y se la mide con la clase verdadera (sale de 202010 y 202011). Lo que decide es
-la **ganancia de las tres listas** (+1.072.500 por BAJA+2 estimulado, −27.500 por estímulo). Además se informan la
-meseta de la curva (lo mejor que se podía con ese orden, sin depender del corte) y la AUC. A los que se confirman se los
-corre también con la **data modificada** (montos inflados de golpe, variables rotas, columnas que faltan) para saber si
-aguantan lo que nos pueden hacer en el aula.
+**Cómo se mide cada experimento (igual para todos):** el test son **201908, 201909 y 201910**, los tres últimos meses
+con clase completa en 201912. Para cada uno se entrena con lo que se sabía en ese mes (la misma regla que en
+producción: clase completa de m − 5 a m − 2 y BAJA+1 de m − 1), se arma la lista con el corte del modelo y se la mide con
+la clase. Decide la **ganancia de las tres listas** (+1.072.500 por BAJA+2 estimulado, −27.500 por estímulo); se
+informan también la meseta de la curva y la AUC. Los que se confirman se corren además con **data modificada simulada
+sobre esos mismos meses** (montos inflados de golpe, variables rotas, columnas que faltan), para preparar el aula sin
+mirar 2020.
 
 **Regla de adopción:** screening con 5 semillas: pasa a confirmación si la ganancia media por mes mejora más de 3 M
 contra el vigente y mejora en al menos 2 de los 3 meses. Confirmación con 20 semillas frescas: la lista del ensamble gana
-más y la diferencia pareada por semilla supera 2 errores estándar. Ojo: el test es también lo que elige, así que el
-número final es optimista; la prueba de verdad es el aula.
+más y la diferencia pareada por semilla supera 2 errores estándar.
+
+**2020 no decide nada.** Al final, el modelo elegido se reentrena mes a mes en 2020 (`tools/produccion.py`) y se
+informa qué habría ganado. Ningún experimento se elige mirando ese número.
 
 Cada ítem es una idea; las variantes se corren como experimentos separados. Los ids son los que se pasan en `--idea`.
 
 ## Base
 
 - **B0. Modelo de la primera competencia.** "Tips Ale Bolaño" tal como se entregó (general multiclase + especialista
-  del grupo riesgoso + segunda etapa sobre la franja dudosa), llevado a estos datos: tabla de variables rotas propia,
-  el grupo riesgoso es `internet == 0` (en 2019-2020 la variable está al revés que en 2021), franja y corte escalados
-  al tamaño de estas listas (3,3% del mes). Fuente: github.com/emavaldez/primeracompetencia.
+  del grupo riesgoso + segunda etapa sobre la franja dudosa), llevado a estos datos con lo que se ve en 2019: tabla de
+  variables rotas de 2019, el grupo riesgoso es `internet == 0` (en 2019 la variable está al revés que en 2021), franja
+  y corte escalados al tamaño de estas listas (3,3% del mes). Fuente: github.com/emavaldez/primeracompetencia.
 
 ## Fase 0: mirar los datos
 
-- **P1. Variables rotas detectadas en cada mes.** La base usa una tabla fija hasta 202006; en el aula puede llegar un
-  mes con una variable rota que la tabla no conoce. Variante: detectarlas dentro de `make_features` comparando cada
+- **P1. Variables rotas detectadas en cada mes.** La base usa una tabla fija de 2019; en el aula puede llegar un mes
+  con una variable rota que la tabla no conoce. Variante: detectarlas dentro de `make_features` comparando cada
   mes contra los anteriores (casi todo cero o vacío cuando antes no) y pasarlas a NA. Se mide sobre todo con la data
   modificada. Fuente: notebook de drifting de la cátedra (z701).
 - **P2. Deriva de montos.** Informe (`tools/fase0.py`): montos que se corren más de 25% contra los meses anteriores
   (inflación, aguinaldo). Alimenta E6 y E17.
 - **P3. Fuga.** `tools/fuga.py` cada vez que cambie `make_features`. Fuente: *The Hidden Costs of 99% Accuracy*.
-- **P4. BAJA+2 por mes.** Tasa por mes en 2019 y 2020 y razón contra dos meses antes. Alimenta E7.
+- **P4. BAJA+2 por mes.** Tasa por mes en 2019 y razón contra dos meses antes. Alimenta E7.
 
 ## Básicos
 
 - **B1. Clase objetivo.** La base es multiclase con BAJA+1 a medio peso. Variantes: BAJA+1 a peso 0,25 y 1; binaria
-  BAJA+1 ∪ BAJA+2; binaria sólo BAJA+2. En la simulación del aula, binaria BAJA+1 ∪ BAJA+2 le ganaba a sólo BAJA+2.
+  BAJA+1 ∪ BAJA+2; binaria sólo BAJA+2. En la validación de 2019 del lab, binaria BAJA+1 ∪ BAJA+2 le ganaba a sólo
+  BAJA+2.
 - **B2. Lags por mes calendario.** La base toma el "mes anterior" como la fila anterior del cliente: si faltó un mes,
   el lag es de dos meses atrás. Variante: lag del mes calendario (vacío si no estuvo).
 - **B3. Submuestreo de CONTINUA.** 1,0 / 0,5 / 0,2 (base) / 0,1.
@@ -56,12 +62,11 @@ Extreme Gradient Boosting with Temporal Data*.
 
 - **E1. Meses de entrenamiento dentro de la ventana.** El general usa 3; variantes 1, 2 y 4 (los 4 con clase completa
   que deja la regla). Escalar `min_data_in_leaf` con las filas.
-- **E1b. Romper la regla de 6 meses (sólo si Emmanuel la aprueba).** 12 meses y todo desde 201901. Sirve para saber
-  cuánto cuesta la regla, no para entregarlo.
-- **E2. Sin meses atípicos.** Sacar del entrenamiento 202006 (el mes con ~30 variables rotas) y, aparte, los meses de
-  pandemia con tasas raras (202002–202004).
-- **E3. Peso por antigüedad del mes.** Peso = 0,5^(edad / h), h ∈ {1, 2, 3}. En la simulación, sumar el mes más reciente
-  con peso 10 a 2019 subió 202009 de 96 a 117 M.
+- **E1b. Romper la regla de 6 meses (sólo si Emmanuel la aprueba).** Todos los meses de 2019 disponibles. Sirve para
+  saber cuánto cuesta la regla, no para entregarlo.
+- **E2. Sin meses rotos.** Sacar del entrenamiento los meses con variables rotas (201905, 201910) en lugar de pasarlas a
+  NA.
+- **E3. Peso por antigüedad del mes.** Peso = 0,5^(edad / h), h ∈ {1, 2, 3}: los meses recientes pesan más.
 - **E4. Largo de la ventana de variables.** Lags 1..k con k ∈ {2 (base), 3, 6}; promedio, mínimo, máximo y tendencia
   sobre 3 y 6 meses. Reportar la curva entera (ganancia contra k): el paper muestra que el codo depende del diseño. Las
   variables pueden mirar meses anteriores a la ventana de entrenamiento.
@@ -73,11 +78,10 @@ Extreme Gradient Boosting with Temporal Data*.
 Fuentes: *Seasonal false alarms in customer churn and decline early-warning systems*; notebook de drifting de la
 cátedra (z701); la simulación del aula.
 
-- **E6. Deltas interanuales.** x − lag12 y x / lag12 de montos y conteos (202007 contra 201907), además de delta1.
-  Hipótesis: el delta contra el mes anterior mezcla aguinaldo e inflación con una caída real. Variante sobre el
-  percentil del mes.
-- **E7. Corte con estacionalidad.** Estimar cuántos BAJA+2 va a tener el mes con la razón de los mismos meses de 2019
-  (P4) y fijar los envíos con eso (`corte` en `train.py`).
+- **E6. Deltas interanuales: no entra.** x − lag12 contra el mismo mes del año anterior. Con 2019 no se puede validar (no
+  hay 2018), y meterla en el modelo sin validarla sería decidir con 2020.
+- **E7. Corte con la tasa reciente.** Estimar cuántos BAJA+2 va a tener el mes con la tasa de los meses anteriores (P4)
+  y fijar los envíos con eso (`corte` en `train.py`). Con un solo año no hay estacionalidad que estimar.
 - **E17. Rank por mes de todos los montos.** La base pasa a percentil 14 montos elegidos para 2021. Variantes: todos
   los montos; todo (como la estrategia `rank` del aula); rank antes de calcular la historia (`rank_previo`), que no se
   mueve si cambia la escala entre meses. Se mide sobre todo con la data modificada.
@@ -119,10 +123,10 @@ Fuentes: *Calibrated, cost-sensitive, explainable ensemble learning for customer
 Optimization*; la simulación del aula.
 
 - **E13. Corte por probabilidad calibrada.** Calibrar P(BAJA+2) con isotónica en el último mes con clase (el
-  submuestreo y los pesos la descalibran) y estimular a quien tenga P > 27.500 / 1.100.000 = 2,5%. En la simulación,
-  el umbral calibrado con un solo mes anduvo mal: probar calibrar con los 2 o 3 últimos meses.
+  submuestreo y los pesos la descalibran) y estimular a quien tenga P > 27.500 / 1.100.000 = 2,5%. Variantes: calibrar
+  con 1, 2 y 3 meses.
 - **E13b. Corte por la proporción aprendida.** La proporción de envíos que maximizó la ganancia en los últimos meses con
-  clase (la regla `frac` del aula, que le ganó a la fija por 15 a 25 M en 202007-202009).
+  clase, puntuados fuera de muestra (la regla `frac` del script del aula).
 - **E14. Tamaño del semillerío.** Curva de la ganancia con 5, 10, 20 y 40 semillas.
 - **E18. Corte por segmento.** Una proporción de envíos para el grupo riesgoso (internet == 0) y otra para el resto,
   cada una aprendida de los meses con clase.
@@ -142,6 +146,19 @@ Autoresearch Agents*.
   espera y anota la predicción en la hipótesis. Sirve para ordenar, no para descartar (el paper acierta 61,5% de los
   pares).
 - **E16. Volver atrás.** Con 5 descartes seguidos, retomar la segunda mejor rama en vez de seguir desde el vigente.
+
+## Para el aula (202007, 202008, 202009)
+
+En el aula se simula estar en cada mes y se implementan los cambios que hagan falta con lo que llega. No se puede
+cambiar el modelo por lo que pasó en 2020; sí reaccionar a la data que llega. Lo que se prepara ahora, probado sobre la
+data modificada simulada de 2019:
+
+- **Controles de calidad del mes que llega** (nulos, ceros, PSI contra la ventana de entrenamiento y contra el mes
+  anterior), con las variables rotas pasadas a NA (P1).
+- **Defensas contra el drifting** que el modelo ya traiga definidas en 2019 (E17, E20).
+- **El corte re-estimado** con los meses que se van completando (E13, E13b).
+- **El tablero** para decidir en el momento: alertas de calidad, distribución del score contra los meses anteriores y
+  qué cambia la lista con cada alternativa.
 
 ## Propuestas de las compañeras
 

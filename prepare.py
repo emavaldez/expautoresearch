@@ -75,19 +75,22 @@ def _leer(ruta: Path) -> pd.DataFrame:
     return pd.read_csv(ruta, engine="pyarrow")
 
 
-def modificar(df: pd.DataFrame) -> pd.DataFrame:
-    """La data "modificada" del aula, simulada (fija, con semilla): lo que nos pueden hacer en 202007-202009.
+def modificar(df: pd.DataFrame, meses=None) -> pd.DataFrame:
+    """Data "modificada" como la del aula, simulada (fija, con semilla) sobre los tres meses de test: lo que nos pueden
+    hacer en 202007-202009, ensayado sobre los de 2019 para preparar las herramientas sin mirar 2020.
 
-    Montos con inflación de golpe (x1,30 / x1,35 / x1,40) y 2% de ruido; 202007: mpayroll en cero y Visa_status vacía en
-    el 30%; 202008: ctrx_quarter vacía y cliente_vip ausente; 202009: mcaja_ahorro x100 y cliente_antiguedad en años.
+    Montos con inflación de golpe (x1,30 / x1,35 / x1,40) y 2% de ruido; primer mes: mpayroll en cero y Visa_status
+    vacía en el 30%; segundo: ctrx_quarter vacía y cliente_vip ausente; tercero: mcaja_ahorro x100 y cliente_antiguedad
+    en años.
     """
     df = df.copy()
     rng = np.random.default_rng(11)
+    meses = list(meses or C.MESES_TEST)
     montos = [c for c in df.columns if c.startswith(("m", "Visa_m", "Master_m"))]
-    for mes, f in ((202007, 1.30), (202008, 1.35), (202009, 1.40)):
+    for mes, f in zip(meses, (1.30, 1.35, 1.40)):
         sel = (df[MES] == mes).to_numpy()
         df.loc[sel, montos] = (df.loc[sel, montos].to_numpy() * f * rng.normal(1, 0.02, (sel.sum(), len(montos)))).astype(np.float32)
-    m7, m8, m9 = (df[MES] == 202007).to_numpy(), (df[MES] == 202008).to_numpy(), (df[MES] == 202009).to_numpy()
+    m7, m8, m9 = ((df[MES] == m).to_numpy() for m in meses)
     df.loc[m7, "mpayroll"] = 0.0
     df.loc[m7 & (rng.random(len(df)) < 0.3), "Visa_status"] = np.nan
     df.loc[m8, ["ctrx_quarter", "cliente_vip"]] = np.nan
@@ -97,20 +100,25 @@ def modificar(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def cargar(modificado: bool = False) -> pd.DataFrame:
-    """Dataset con la clase calculada (por presencia, receta del curso), desde la caché. Sólo meses hasta
-    config.ULTIMO_MES_DATOS. Con modificado=True, 202007-202009 vienen alterados como en el aula (ver modificar)."""
-    cache = C.CACHE / ("dataset_modificado.parquet" if modificado else "dataset.parquet")
+def cargar(modificado: bool = False, produccion: bool = False) -> pd.DataFrame:
+    """Dataset con la clase calculada por presencia (receta del curso), desde la caché.
+
+    Por defecto, sólo hasta config.PRESENTE (201912): la clase queda como se la sabía entonces (201911 sólo BAJA+1,
+    201912 sin clase) y nada de 2020 entra. produccion=True lee hasta config.ULTIMO_MES_PRODUCCION, sólo para
+    tools/produccion.py. modificado=True altera los meses de test como en el aula (ver modificar)."""
+    hasta = C.ULTIMO_MES_PRODUCCION if produccion else C.PRESENTE
+    nombre = f"dataset_{hasta}" + ("_modificado" if modificado else "")
+    cache = C.CACHE / f"{nombre}.parquet"
     if cache.exists() and (not C.DATOS.exists() or cache.stat().st_mtime >= C.DATOS.stat().st_mtime):
         return pd.read_parquet(cache)
     if modificado:
-        df = modificar(cargar(False))
+        df = modificar(cargar(False, produccion), C.MESES_TEST if not produccion else [202007, 202008, 202009])
     else:
         if not C.DATOS.exists():
             raise FileNotFoundError(f"No encuentro el dataset en {C.DATOS} (config.DATOS o la variable EXP_DATOS)")
         t0 = time.time()
         df = _leer(C.DATOS)
-        df = df[df[MES] <= C.ULTIMO_MES_DATOS].reset_index(drop=True)
+        df = df[df[MES] <= hasta].reset_index(drop=True)
         for c in df.columns:
             if df[c].dtype == np.float64:
                 df[c] = df[c].astype(np.float32)

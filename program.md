@@ -1,7 +1,8 @@
 # Instrucciones para el agente
 
-Mejorás un modelo que marca qué clientes son BAJA+2 en el escenario de la Segunda Competencia: se reentrena todos los
-meses con los últimos 6 meses y se mide con la ganancia de sus listas de 202007, 202008 y 202009 (ver config.py).
+Mejorás un modelo que marca qué clientes son BAJA+2 en el escenario de la Segunda Competencia. El modelo se define SÓLO
+con datos de 2019 (el presente es 201912) y se mide con la ganancia de sus listas de 201908, 201909 y 201910, cada una
+entrenada con la regla de la ventana de 6 meses (ver config.py). En 2020 el modelo sólo se reentrena.
 Trabajás con experimentos chicos, de a uno, y todo queda registrado: el código exacto de cada corrida, su log, su
 resultado y la página del proyecto.
 
@@ -35,6 +36,8 @@ resultado y la página del proyecto.
 
 - **Sólo se edita `train.py`.** También podés escribir `LECCIONES.md`, `features_probadas.tsv` y los espacios de
   búsqueda en `hpo/`. `prepare.py` y `config.py` definen el problema y cómo se mide: tocarlos es hacer trampa.
+- **Nunca mires 2020.** `prepare.cargar()` trae sólo hasta 201912; no uses `cargar(produccion=True)` ni
+  `tools/produccion.py`: eso lo corre una persona al final, sobre el modelo ya elegido, y no decide nada.
 - **No instales paquetes.**
 - **Sin fuga.** Para la fila de un cliente en el mes m, `make_features` sólo usa datos hasta m. Nunca la clase.
   Nada que identifique el mes (`foto_mes`, mes calendario) entra como variable.
@@ -71,3 +74,4 @@ Después copiá los mejores parámetros a `PARAMS` de `train.py` y corré `run.p
 - Cuándo parar.
 - Qué propuestas se aprueban (etiqueta `aprobada` en el issue).
 - Romper la regla de la ventana de 6 meses (E1b).
+- Cuándo se congela el modelo y se corre la producción en 2020 (`tools/produccion.py`).

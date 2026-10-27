@@ -24,9 +24,9 @@ PAPERS = [
      "Cuántos meses de entrenamiento y ventanas móviles: es la forma del escenario.", ["E1", "E1b", "E2", "E3"]),
     ("How Early Is Early Enough?", "https://arxiv.org/abs/2607.00473", "alta", "sirve",
      "Cuánta historia mirar en las variables, reportando la curva entera.", ["E4", "E5"]),
-    ("Seasonal false alarms in churn early-warning systems", "https://arxiv.org/abs/2608.18174", "alta", "sirve",
-     "Deltas interanuales y cortes con estacionalidad. Nuestra clase no es por umbral de caída, así que la parte de "
-     "etiquetas aplica poco.", ["E6", "E7", "P4"]),
+    ("Seasonal false alarms in churn early-warning systems", "https://arxiv.org/abs/2608.18174", "alta", "a medias",
+     "Deltas interanuales y cortes con estacionalidad. Con un solo año (2019) no se puede validar lo interanual, y "
+     "nuestra clase no es por umbral de caída; queda la idea de corregir el corte por la tasa reciente.", ["E6", "E7", "P4"]),
     ("Agentic Search Spaces for Tabular ML", "https://arxiv.org/abs/2609.16309", "alta", "sirve",
      "El agente diseña el espacio de hiperparámetros y una búsqueda clásica elige.", ["E8"]),
     ("The Hidden Costs of 99% Accuracy", "https://arxiv.org/abs/2610.00118", "alta", "sirve como método",

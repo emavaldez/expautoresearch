@@ -9,7 +9,9 @@ const N = (x) => (x == null ? "–" : nf0.format(x));
 const A = (x) => (x == null ? "–" : x.toFixed(4).replace(".", ","));
 const signo = (x) => (x == null ? "–" : `${x > 0 ? "+" : x < 0 ? "−" : ""}${nf1.format(Math.abs(x) / 1e6)} M`);
 const claseSigno = (x) => (x == null || x === 0 ? "" : x > 0 ? "gana" : "pierde");
-const NOMBRE_MES = { "202007": "Julio", "202008": "Agosto", "202009": "Septiembre" };
+const MESES_ES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const nombreMes = (m) => { const t = MESES_ES[Number(String(m).slice(4)) - 1] || String(m); return t[0].toUpperCase() + t.slice(1); };
+const NOMBRE_MES = new Proxy({}, { get: (_, m) => nombreMes(m) });
 
 const ESTADO_EXP = {
   base: ["adoptado", "base"],
@@ -62,7 +64,7 @@ function grafico() {
   const ex = D.experimentos.filter((e) => e.total != null);
   const W = Math.max(Math.min(el.clientWidth || 960, 960), 480), H = Math.round(W * 0.28) + 40, L = 62, R = 18, T = 18, B = 34;
   if (!ex.length) {
-    el.innerHTML = `<svg viewBox="0 0 ${W} 120" role="img" aria-label="Todavía no hay experimentos"><text class="vacio" x="0" y="60">El primer asiento es la base (B0): está corriendo.</text></svg>`;
+    el.innerHTML = `<svg viewBox="0 0 ${W} 90" role="img" aria-label="Todavía no hay experimentos"><text class="vacio" x="0" y="50">El primer asiento es la base (B0), medida en 2019: está corriendo.</text></svg>`;
     return;
   }
   const ys = ex.map((e) => e.total / 1e6);
@@ -136,7 +138,7 @@ function resumen() {
   const cola = D.ideas.filter((i) => i.estado === "aprobada").length;
   let t = "";
   if (vig) {
-    t += `El modelo vigente es <a href="#/experimentos/${esc(vig.id)}">${esc(vig.id)}</a>, ${esc(vig.descripcion)}: sus listas habrían ganado <strong>${M(vig.total)}</strong> en julio, agosto y septiembre`;
+    t += `El modelo vigente es <a href="#/experimentos/${esc(vig.id)}">${esc(vig.id)}</a>, ${esc(vig.descripcion)}: sus listas habrían ganado <strong>${M(vig.total)}</strong> en ${D.escenario.meses_test.map((m) => nombreMes(m).toLowerCase()).join(", ").replace(/, ([^,]*)$/, " y $1")} de 2019`;
     if (base && base.id !== vig.id) t += `, ${signo(vig.total - base.total)} contra la base`;
     t += ". ";
   }
@@ -162,7 +164,7 @@ function ruta() {
 function vExperimentos(abierto) {
   const ex = [...D.experimentos].reverse();
   const meses = D.escenario.meses_test.map(String);
-  let h = `<h2>Experimentos</h2><p class="intro">Un renglón por corrida, el último arriba. Las columnas de los meses son la ganancia real de la lista que habría entregado ese modelo; tocá un renglón para ver qué se cambió, cómo se midió, el código y los comentarios.</p>`;
+  let h = `<h2>Experimentos</h2><p class="intro">Un renglón por corrida, el último arriba. Las columnas de los meses (de 2019) son la ganancia de la lista que habría entregado ese modelo; tocá un renglón para ver qué se cambió, cómo se midió, el código y los comentarios.</p>`;
   if (!ex.length) {
     vista(h + `<p class="intro">Todavía no terminó ninguno. El primero es la base, el modelo de la primera competencia llevado a estos datos.</p>`);
     return;
@@ -265,7 +267,7 @@ function detalleIdea(i) {
   const izq = `<dl>
     <dt>Qué probar y por qué</dt><dd>${esc(i.detalle)}</dd>
     <dt>De dónde salió</dt><dd>${i.fuente_url ? `<a href="${esc(i.fuente_url)}">${esc(i.fuente)}</a>` : esc(i.fuente || "–")}</dd>
-    <dt>Cómo se mide</dt><dd>${esc(i.como_medir || "Ganancia de las tres listas contra el vigente.")}</dd>
+    <dt>Cómo se mide</dt><dd>${esc(i.como_medir || "Ganancia de las tres listas de test contra el vigente.")}</dd>
     <dt>Quién la propuso</dt><dd>${i.origen === "plan" ? "El plan inicial" : esc(i.origen)}</dd>
   </dl>`;
   const der = exps.length
@@ -307,7 +309,7 @@ function vPropuestas(abierta, seccion) {
     <label>Qué probar <small>Qué cambiar en el modelo o en el proceso.</small><textarea name="que" required></textarea></label>
     <label>Por qué debería mejorar <small>Qué esperás ver y en qué meses.</small><textarea name="porque"></textarea></label>
     <label>Fuente <small>El link al paper, la clase de donde salió, o "idea propia" y por qué se te ocurrió.</small><input name="fuente" placeholder="https://arxiv.org/abs/..."></label>
-    <label>Cómo medirlo <small>Si querés mirar algo además de la ganancia de las tres listas de test.</small><textarea name="medir"></textarea></label>
+    <label>Cómo medirlo <small>Si querés mirar algo además de la ganancia de las tres listas de test (201908 a 201910).</small><textarea name="medir"></textarea></label>
     <label>Prioridad<select name="prioridad"><option>alta</option><option selected>media</option><option>baja</option></select></label>
     <div class="acciones"><button class="boton" type="submit">Abrir la propuesta en GitHub</button><span class="nota">Se abre en otra pestaña; nada se publica hasta que la confirmes ahí.</span></div>
   </form>`;
@@ -364,14 +366,15 @@ function md(t) {
 
 function vMetodo() {
   const E = D.escenario;
+  const mt = E.meses_test.map((m) => nombreMes(m).toLowerCase());
   vista(`<h2>Cómo medimos</h2><div class="texto-largo">
-    <p>El escenario es el de la Segunda Competencia: el modelo nace con datos de 2019 y se reentrena todos los meses con los últimos ${E.ventana} meses, como en producción. Para puntuar un mes se sabe la clase completa hasta dos meses antes y, del mes anterior, sólo quién se dio de baja (BAJA+1).</p>
-    <p><strong>Train y test.</strong> El test son julio, agosto y septiembre de 2020, los tres meses que en el aula llegan de a uno. Para cada uno, el modelo se entrena con lo que se sabía en ese momento, arma su lista de clientes a estimular con su propia regla de corte, y la lista se mide con la clase verdadera, que sale de octubre y noviembre.</p>
+    <p><strong>La regla.</strong> El modelo se define sólo con datos de 2019. El presente es diciembre de 2019: se ven los datos hasta ese mes y la clase como se la sabía entonces (completa hasta octubre, noviembre sólo con las BAJA+1, diciembre sin clase). En 2020 el modelo sólo se reentrena todos los meses con los últimos ${E.ventana} meses, sin cambiarlo. En julio, agosto y septiembre de 2020, el aula, se implementan los cambios que hagan falta con la data que llega.</p>
+    <p><strong>Train y test.</strong> El test son ${mt.join(", ").replace(/, ([^,]*)$/, " y $1")} de 2019, los tres últimos meses con clase completa en diciembre. Para cada uno, el modelo se entrena con lo que se sabía en ese momento, con la misma regla que en producción (clase completa hasta dos meses antes y, del mes anterior, sólo quién se dio de baja), arma su lista con su propia regla de corte y la lista se mide con la clase.</p>
     <p><strong>La ganancia.</strong> Cada BAJA+2 estimulado suma <span class="cifra">${N(E.ganancia)}</span> y cada estímulo cuesta <span class="cifra">${N(E.costo)}</span>. Lo que decide es la suma de las tres listas. También se informan la meseta de la curva (lo mejor que se podía con ese orden si el corte fuera perfecto) y la AUC.</p>
     <p><strong>Cuándo se adopta un cambio.</strong> Primero con ${E.semillas_screening} semillas: pasa a confirmación si la ganancia media por mes mejora más de ${M(E.umbral_screening)} y gana en al menos ${E.min_meses_ganados} de los 3 meses. Después con ${E.semillas_confirmacion} semillas nuevas: se adopta si la diferencia por semilla supera dos errores estándar. A igual ganancia gana el código más simple.</p>
-    <p><strong>La data modificada.</strong> En el aula los meses llegan alterados: variables rotas, drifting, cosas con la data. A los que se confirman se los corre también con una versión simulada (montos inflados de golpe, variables en cero o vacías, columnas que faltan) para saber si aguantan.</p>
-    <p><strong>Una advertencia.</strong> Como el test es también lo que elige, el número final es optimista. La prueba de verdad es el aula.</p>
-    <p>Cada corrida deja su código exacto, el cambio contra el vigente y su log en el repositorio. Lo aprendido se anota en <a href="https://github.com/${esc(D.repo)}/blob/main/LECCIONES.md">LECCIONES.md</a>.</p>
+    <p><strong>La data modificada.</strong> En el aula los meses llegan alterados: variables rotas, drifting, cosas con la data. Para prepararse sin mirar 2020, a los que se confirman se los corre también con esos mismos tres meses de 2019 alterados (montos inflados de golpe, variables en cero o vacías, columnas que faltan).</p>
+    <p><strong>2020 no decide nada.</strong> Cuando el modelo quede congelado, se lo reentrena mes a mes en 2020 y se informa qué habría ganado. Ningún experimento se elige mirando ese número.</p>
+    <p>Cada corrida deja su código exacto, el cambio contra el vigente y su log en el repositorio. Lo aprendido se anota en <a href="https://github.com/${esc(D.repo)}/blob/main/LECCIONES.md">LECCIONES.md</a>. Dos corridas viejas, medidas por error en 2020, quedaron en <a href="https://github.com/${esc(D.repo)}/tree/main/anulados">anulados/</a> y no cuentan.</p>
     ${D.lecciones.length ? `<h3>Lo aprendido hasta ahora</h3><ul>${D.lecciones.map((l) => `<li>${esc(l)}</li>`).join("")}</ul>` : ""}
   </div>`);
 }
