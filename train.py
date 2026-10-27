@@ -194,7 +194,7 @@ def fe_historico_catedra(d: pd.DataFrame) -> pd.DataFrame:
 
 # ---------------------------------------------------------------- modelo
 
-TRAIN_MONTHS_BACK = 3  # el general usa los tres últimos meses con clase de la ventana
+TRAIN_MONTHS_BACK = 4  # E1
 MESES_ENTRENAMIENTO = 4  # la ventana entera: m - 5 a m - 2 (la segunda etapa necesita los dos primeros para su base)
 HISTORIA_MESES = 2       # lags de 1 y 2 meses
 CORTE = {"tipo": "fraccion", "f": 0.033}
