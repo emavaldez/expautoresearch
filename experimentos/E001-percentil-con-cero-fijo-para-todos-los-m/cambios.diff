@@ -1,0 +1,11 @@
+--- E000/train.py
++++ E001/train.py
+@@ -117,7 +117,7 @@
+     df = df.loc[order]
+     for c, meses in ROTAS.items():
+         df[c] = df[c].where(~df.foto_mes.isin(meses))
+-    for c in PERCENTIL_CERO_FIJO:
++    for c in [c for c in df.columns if c.startswith(("m", "Visa_m", "Master_m"))]:  # E17: todos los montos
+         df[c] = percentil_cero_fijo(df[c], df.foto_mes)
+     for c in RESTAR_MODA:
+         df[c] = df[c] - df.groupby("foto_mes")[c].transform(lambda v: v.mode().iloc[0])

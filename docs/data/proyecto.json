@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 04:08",
+ "generado": "2026-10-27 04:21",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -103,6 +103,104 @@
     "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/train.py",
     "diff": null,
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/log.txt"
+   }
+  },
+  {
+   "id": "E001",
+   "fecha": "2026-10-27 04:20",
+   "descripcion": "percentil con cero fijo para todos los montos",
+   "idea": "E17",
+   "hipotesis": "Predicción: mejora. La base pasa a percentil 14 montos elegidos para 2021; en 2019 los montos también derivan mes a mes (inflación) y el percentil por mes lo saca",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 719.9,
+   "error": "",
+   "total": 731830000.0,
+   "media": 243943333.33333334,
+   "meseta": 245572736.90773067,
+   "auc": 0.9119934051457127,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 197202500.0,
+     "envios": 4349,
+     "aciertos": 288,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 198425461.3466334,
+     "envios_meseta": 3356,
+     "auc": 0.9054418941010332,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 239.2
+    },
+    "201909": {
+     "lista": 251817500.0,
+     "envios": 4403,
+     "aciertos": 339,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 252079127.18204486,
+     "envios_meseta": 3508,
+     "auc": 0.9092390864899977,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 241.4
+    },
+    "201910": {
+     "lista": 282810000.0,
+     "envios": 4476,
+     "aciertos": 369,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 286213622.1945137,
+     "envios_meseta": 3965,
+     "auc": 0.921299234846107,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 238.5
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": -733333.3333333135,
+    "delta_por_mes": {
+     "201908": -2200000.0,
+     "201909": 1100000.0,
+     "201910": -1100000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -3666666.666666669,
+    "pareado_se": 491934.95504995703
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-percentil-con-cero-fijo-para-todos-los-m/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-percentil-con-cero-fijo-para-todos-los-m/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-percentil-con-cero-fijo-para-todos-los-m/log.txt"
    }
   }
  ],
@@ -388,11 +486,13 @@
    "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. Y con la data modificada simulada (montos inflados de golpe).",
    "prioridad": "alta",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "19",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 04:20",
+   "experimentos": [
+    "E001"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E20",
