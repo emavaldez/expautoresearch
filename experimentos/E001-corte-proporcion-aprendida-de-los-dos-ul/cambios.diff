@@ -1,0 +1,42 @@
+--- E000/train.py
++++ E001/train.py
+@@ -217,7 +217,7 @@
+ TRAIN_MONTHS_BACK = 3  # el general usa los tres últimos meses con clase de la ventana
+ MESES_ENTRENAMIENTO = 4  # la ventana entera: m - 5 a m - 2 (la segunda etapa necesita los dos primeros para su base)
+ HISTORIA_MESES = 2       # lags de 1 y 2 meses
+-CORTE = {"tipo": "fraccion", "f": 0.033}
++CORTE = {"tipo": "fraccion", "f": 0.033}  # sin meses fuera de muestra (no pasa en el test): la proporción fija
+ 
+ PARAMS = dict(
+     objective="binary",  # sin efecto: base() lo pisa con "multiclass" de 3 clases
+@@ -502,6 +502,30 @@
+ 
+ 
+ 
++# ---------------------------------------------------------------- corte (E13b)
++#
++# La proporción de clientes a estimular que maximizó la ganancia en los dos últimos meses con clase, puntuados por la base
++# fuera de muestra (la misma que usa la segunda etapa: nunca vio la clase de esos meses). El 3,3% fijo de 2019 estimula de
++# más en meses con pocas bajas (agosto de 2020: la lista gana 79 M y la meseta 100 M con 2.200 envíos).
++GANANCIA, COSTO, SUAVIZADO = 1_072_500, 27_500, 401
++
++
++def envios_optimos(p, y):
++    g = np.cumsum(np.where(np.asarray(y)[np.argsort(-p, kind="stable")], GANANCIA, -COSTO), dtype=float)
++    if len(g) <= SUAVIZADO:
++        return int(np.argmax(g)) + 1
++    return int(np.argmax(np.convolve(g, np.ones(SUAVIZADO) / SUAVIZADO, mode="valid"))) + SUAVIZADO // 2 + 1
++
++
++def corte(prob, train, score):
++    fracciones = []
++    for m, (ids_m, pm) in base_fuera_de_muestra(train).items():
++        t = train[(train.foto_mes == m).to_numpy()]
++        fracciones.append(envios_optimos(pm, (t.clase_ternaria == "BAJA+2").to_numpy()) / len(pm))
++    f = np.mean(fracciones) if fracciones else CORTE["f"]
++    return int(round(f * len(prob)))
++
++
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:

@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 03:27",
+ "generado": "2026-10-27 03:40",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -102,6 +102,103 @@
     "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/train.py",
     "diff": null,
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/log.txt"
+   }
+  },
+  {
+   "id": "E001",
+   "fecha": "2026-10-27 03:40",
+   "descripcion": "corte: proporción aprendida de los dos últimos meses con clase",
+   "idea": "E13b",
+   "hipotesis": "El 3,3% fijo estimula de más en meses con pocas bajas; la proporción óptima de los dos meses anteriores (fuera de muestra) se acerca a la meseta",
+   "estado": "a_confirmar",
+   "vigente_al_correr": "E000",
+   "segundos": 728.8,
+   "error": "",
+   "total": 389977500.0,
+   "media": 129992500.0,
+   "meseta": 134584428.51205316,
+   "auc": 0.9042408408500776,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "202007": {
+     "lista": 185212500.0,
+     "envios": 4625,
+     "aciertos": 284,
+     "baja2": 538,
+     "clientes": 154772,
+     "meseta": 185061009.97506234,
+     "envios_meseta": 5154,
+     "auc": 0.9105824235689188,
+     "train_meses": [
+      202002,
+      202003,
+      202004,
+      202005
+     ],
+     "filas_train": 593595,
+     "segundos": 245.1
+    },
+    "202008": {
+     "lista": 89485000.0,
+     "envios": 4146,
+     "aciertos": 185,
+     "baja2": 434,
+     "clientes": 156234,
+     "meseta": 100351066.08478802,
+     "envios_meseta": 2179,
+     "auc": 0.8968611536709594,
+     "train_meses": [
+      202003,
+      202004,
+      202005,
+      202006
+     ],
+     "filas_train": 600123,
+     "segundos": 242.7
+    },
+    "202009": {
+     "lista": 115280000.0,
+     "envios": 3608,
+     "aciertos": 195,
+     "baja2": 527,
+     "clientes": 157519,
+     "meseta": 118341209.47630921,
+     "envios_meseta": 3970,
+     "auc": 0.9052789453103546,
+     "train_meses": [
+      202004,
+      202005,
+      202006,
+      202007
+     ],
+     "filas_train": 606582,
+     "segundos": 240.1
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": 6618333.333333328,
+    "delta_por_mes": {
+     "202007": 2255000.0,
+     "202008": 10175000.0,
+     "202009": 7425000.0
+    },
+    "meses_ganados": 3,
+    "pareado_media": 4051666.666666669,
+    "pareado_se": 819891.5917499233
+   },
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-corte-proporcion-aprendida-de-los-dos-ul/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-corte-proporcion-aprendida-de-los-dos-ul/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E001-corte-proporcion-aprendida-de-los-dos-ul/log.txt"
    }
   }
  ],
@@ -522,11 +619,13 @@
    "fuente_url": "",
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
-   "estado": "aprobada",
+   "estado": "en-curso",
    "issue": "28",
-   "actualizado": "2026-10-27 03:14",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 03:40",
+   "experimentos": [
+    "E001"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E14",
@@ -814,5 +913,11 @@
    "ideas": []
   }
  ],
- "lecciones": []
+ "lecciones": [
+  "internet: en 2019-2020 es binaria y al revés que en 2021: 1 = usa homebanking (92%, 0,25% de BAJA+2), 0 = grupo chico y riesgoso (8%, 1,3 a 2,4% de BAJA+2).",
+  "Meses rotos (variable casi toda en cero cuando antes no): 201905 y 201910 (rentabilidad, comisiones, márgenes), 201904 (débitos automáticos Visa), 202004 (ccajas_depositos) y 202006 (~30 variables, incluido internet). 202006 es lag de 202007 y último mes con clase para puntuar 202008.",
+  "BAJA+2 por mes: 0,41 a 0,62% en 2019; 202002 0,15% (arranque de la pandemia); 202007 0,35%, 202008 0,28%, 202009 0,34%.",
+  "Montos: la mediana del saldo casi se duplica entre 2019 y 2020 (inflación); transferencias y homebanking suben fuerte con la pandemia.",
+  "E000 (B0): la base da 370,1 M en las tres listas (183,0 / 79,3 / 107,9), AUC media 0,904. La meseta suma 403,8 M: el corte fijo de 3,3% deja ~34 M, casi todo en agosto (lista de 5.156 contra óptimo de ~2.200). El especialista elige 35-38 variables con canaritos; tarda 14 minutos con 5 semillas."
+ ]
 }
