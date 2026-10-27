@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 18:38",
+ "generado": "2026-10-27 18:52",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -2819,6 +2819,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E026-lags-y-deltas-por-mes-calendario/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E026-lags-y-deltas-por-mes-calendario/log.txt"
    }
+  },
+  {
+   "id": "E027",
+   "fecha": "2026-10-27 18:52",
+   "descripcion": "ensamble de la multiclase y la binaria (promedio de percentiles)",
+   "idea": "E22",
+   "hipotesis": "Predicción: mejora chica. Los dos empatan solos y se equivocan distinto (la binaria tuvo la AUC más alta); el promedio de órdenes suele sumar",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 847.5,
+   "error": "",
+   "total": 759330000.0,
+   "media": 253110000.0,
+   "meseta": 254439395.26184535,
+   "auc": 0.9163243527126941,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 211502500.0,
+     "envios": 4349,
+     "aciertos": 301,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 209522568.57855362,
+     "envios_meseta": 4460,
+     "auc": 0.9099645955197064,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 278.9
+    },
+    "201909": {
+     "lista": 260617500.0,
+     "envios": 4403,
+     "aciertos": 347,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 264732693.2668329,
+     "envios_meseta": 3316,
+     "auc": 0.9149068275448706,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 282.0
+    },
+    "201910": {
+     "lista": 287210000.0,
+     "envios": 4476,
+     "aciertos": 373,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 289062923.9401496,
+     "envios_meseta": 3977,
+     "auc": 0.9241016350735052,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 285.8
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 1466666.6666666567,
+    "delta_por_mes": {
+     "201908": 0.0,
+     "201909": -1100000.0,
+     "201910": 5500000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -513333.33333334327,
+    "pareado_se": 946255.779374689
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E027-ensamble-de-la-multiclase-y-la-binaria-p/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E027-ensamble-de-la-multiclase-y-la-binaria-p/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E027-ensamble-de-la-multiclase-y-la-binaria-p/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -3339,11 +3437,13 @@
    "fuente_url": "https://doi.org/10.3389/frai.2026.1889639",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "32",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 18:52",
+   "experimentos": [
+    "E027"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E15",
@@ -3606,7 +3706,8 @@
   "Regla para el aula (definida con 2019): contar montos cuya mediana (sin ceros) se mueve fuera de [0,8; 1,25] contra el mes anterior. En los meses normales de 2019 dan entre 4 y 10; en el primer mes de la data modificada, 37 (los siguientes vuelven a 10 y 6, porque ya se comparan contra un mes inflado). Con 20 o más, entregar la alternativa robusta (E024) en ese mes: en 2019 modificado daría 746,1 M contra 731,6 M del modelo solo, y con la data original nunca se activa (754,9 M).",
   "hpo01 (E8/E9, TPE sobre E019, 12 trials completos con 3 semillas, meseta media en 201908-201910): el vigente da 253,5 M; lo único que se despega son árboles grandes (num_leaves 160-255: 256,4 a 258,5 M). num_leaves explica el 66% de la variación (fANOVA) y el mejor quedó contra el techo del rango. Esos trials tardan 30-40 minutos contra 6 del vigente: con 5 semillas no entrarían en los 15 minutos del aula. Se cortó la búsqueda en el trial 12 y el mejor se corre como experimento (E025).",
   "E025 (E8): E019 con los parámetros del mejor trial (254 hojas, 667 rondas, tasa 0,016, submuestreo 0,13): 760,4 M (+5,5 M), +1,8 M por mes, gana 2 de 3, pareado +1,9 ± 2,0 M; meseta y AUC suben (258,7 M; 0,918). No pasa el umbral y tarda 3.058 s contra ~640 (200 s por semilla y mes): en el aula, con 5 semillas, serían 17 minutos sólo para el modelo. Queda E019.",
-  "E14: curva de semillas de E019 (bloque de búsqueda, las primeras N): total de las tres listas 1 → 758,2 M; 3 → 750,5; 5 → 763,7; 10 → 764,8; 20 → 760,4. De 5 en adelante es plano (diferencias de ruido); 3 queda abajo. En el aula van 5 semillas: es el mismo resultado que 10 o 20 en la mitad o la cuarta parte del tiempo."
+  "E14: curva de semillas de E019 (bloque de búsqueda, las primeras N): total de las tres listas 1 → 758,2 M; 3 → 750,5; 5 → 763,7; 10 → 764,8; 20 → 760,4. De 5 en adelante es plano (diferencias de ruido); 3 queda abajo. En el aula van 5 semillas: es el mismo resultado que 10 o 20 en la mitad o la cuarta parte del tiempo.",
+  "E026 (B2): lags por mes calendario: idéntico al vigente (754,9 M, misma AUC y meseta). En 2019 casi ningún cliente tiene huecos (el que se va no vuelve), así que el lag por fila y el del mes calendario coinciden: no hace nada."
  ],
  "aula": {
   "modelo": "E019",
