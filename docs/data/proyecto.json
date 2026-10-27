@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 19:48",
+ "generado": "2026-10-27 19:49",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3613,7 +3613,7 @@
    "prioridad": "media",
    "estado": "propuesta",
    "issue": "12",
-   "actualizado": "2026-10-27 19:48",
+   "actualizado": "2026-10-27 19:49",
    "experimentos": [],
    "comentarios": 0
   },
@@ -3678,11 +3678,11 @@
    "fuente_url": "https://arxiv.org/abs/2607.00473",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "descartada",
    "issue": "16",
-   "actualizado": "2026-10-27 03:53",
+   "actualizado": "2026-10-27 19:49",
    "experimentos": [],
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "E6",
@@ -4212,7 +4212,8 @@
   "E028 (E21): sacar columnas con correlación mayor que 0,98 con otra (75 a 105 de 1.278): las tres listas aciertan exactamente lo mismo que el vigente; pareado −1,7 ± 0,8 M por semilla. No suma. Ojo: E019, E022 (mismo código) y E028 dan las mismas listas pero mesetas distintas por décimas: LightGBM con varios hilos no es determinístico en esta configuración.",
   "E029 (E20): sacar las columnas con PSI ≥ 0,25 entre la ventana y el mes puntuado (126 a 139 de 1.278): 745,0 M (−9,9 M), gana 1 de 3, pareado −0,9 ± 0,6 M. En 2019 lo que \"deriva\" contra la ventana son sobre todo fechas de cierre y montos con estacionalidad que igual informan; sacarlas pierde un poco. Queda como herramienta de diagnóstico del tablero, no como regla del modelo.",
   "E030 (E12): tasa histórica de BAJA+2 del grupo del cliente (transacciones del trimestre × antigüedad, fuera de muestra por mes): 756,0 M (+1,1 M), pareado +0,3 ± 1,4 M: empate. El árbol ya arma ese cruce solo.",
-  "E031 (E19): BAJA+2 con peso 3 en la multiclase: 751,6 M (−3,3 M), gana 1 de 3, pareado −1,0 ± 0,5 M. El submuestreo de CONTINUA ya balancea; pesar más la clase que paga no ordena mejor arriba."
+  "E031 (E19): BAJA+2 con peso 3 en la multiclase: 751,6 M (−3,3 M), gana 1 de 3, pareado −1,0 ± 0,5 M. El submuestreo de CONTINUA ya balancea; pesar más la clase que paga no ordena mejor arriba.",
+  "E032 (E7): corte del 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana: 758,3 M (+3,4 M en el ensamble), pero pareado −1,7 ± 0,5 M por semilla: no llega. En 2019 la tasa casi no se mueve y el 3,3% fijo sigue."
  ],
  "aula": {
   "modelo": "E019",
