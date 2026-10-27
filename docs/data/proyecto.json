@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 09:31",
+ "generado": "2026-10-27 10:11",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -16,7 +16,7 @@
   "semillas_screening": 5,
   "semillas_confirmacion": 20
  },
- "vigente": "E013",
+ "vigente": "E019",
  "experimentos": [
   {
    "id": "E000",
@@ -1838,7 +1838,7 @@
    "descripcion": "foto_mes deja de ser variable del modelo",
    "idea": "P3",
    "hipotesis": "Predicción: empata o mejora. foto_mes identifica el mes (regla del arnés) y el mes que se puntúa siempre cae fuera del rango que vio el árbol",
-   "estado": "descartado",
+   "estado": "confirmado",
    "vigente_al_correr": "E013",
    "segundos": 629.3,
    "error": "",
@@ -1923,7 +1923,22 @@
     "pareado_se": 584370.5065186716
    },
    "produccion": null,
-   "confirmacion": null,
+   "confirmacion": {
+    "a": "E013",
+    "b": "E019",
+    "fecha": "2026-10-27 10:11",
+    "ensamble_a": 250910000.0,
+    "ensamble_b": 250910000.0,
+    "pareado": {
+     "media": 219999.9999999999,
+     "se": 436609.7458548521,
+     "gana": 11,
+     "n": 20,
+     "p_wilcoxon": 0.6525138150100411
+    },
+    "modificado": null,
+    "decision": "confirmado"
+   },
    "archivos": {
     "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E019-foto-mes-deja-de-ser-variable-del-modelo/train.py",
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E019-foto-mes-deja-de-ser-variable-del-modelo/cambios.diff",
@@ -2088,11 +2103,11 @@
    "prioridad": "fase 0",
    "estado": "probada",
    "issue": "4",
-   "actualizado": "2026-10-27 09:26",
+   "actualizado": "2026-10-27 10:11",
    "experimentos": [
     "E019"
    ],
-   "comentarios": 1
+   "comentarios": 2
   },
   {
    "id": "P4",
@@ -2794,6 +2809,7 @@
   "E017 (E2, sobre E012): el general no usa los meses con variables rotas (201905, 201910): 736,2 M (−1,1 M), pareado −2,4 ± 1,4 M. Pasar las variables rotas a NA ya alcanza; sacar el mes entero sólo quita ejemplos.",
   "E018 (E13, sobre E012): corte por probabilidad calibrada (isotónica en los dos meses anteriores fuera de muestra) mayor que 2,5%: 707,7 M (−29,6 M), pierde los 3 meses. La calibración con la base fuera de muestra (entrenada con meses más viejos) no se traslada al modelo final: el 3,3% fijo queda.",
   "E013 confirmado (20 semillas frescas): +6,2 M por mes en el ensamble contra E012, pareado +6,9 ± 0,8 M, gana en las 20 semillas. Nuevo vigente: sólo el general, con los 4 meses de la ventana.",
-  "E019 (P3, sobre E013): foto_mes deja de ser variable: 754,9 M (−1,1 M), pareado +1,0 ± 0,6 M: empate. Cumple la regla de no identificar el mes y evita que el mes puntuado caiga fuera del rango que vio el árbol: se confirma como simplificación."
+  "E019 (P3, sobre E013): foto_mes deja de ser variable: 754,9 M (−1,1 M), pareado +1,0 ± 0,6 M: empate. Cumple la regla de no identificar el mes y evita que el mes puntuado caiga fuera del rango que vio el árbol: se confirma como simplificación.",
+  "E020 (B1, sobre E013): binaria en lugar de multiclase: 754,9 M (−1,1 M), pareado −0,7 ± 1,4 M, AUC 0,9163 (la más alta), 249 s contra 629. Empate con 40% del tiempo: candidata a simplificación después de E019."
  ]
 }
