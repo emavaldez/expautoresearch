@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 04:45",
+ "generado": "2026-10-27 04:55",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -398,6 +398,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E003-peso-por-antiguedad-del-mes-h-2/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E003-peso-por-antiguedad-del-mes-h-2/log.txt"
    }
+  },
+  {
+   "id": "E004",
+   "fecha": "2026-10-27 04:55",
+   "descripcion": "sin segunda etapa",
+   "idea": "B5",
+   "hipotesis": "Predicción: igual o un poco menos. La segunda etapa se armó para la franja dudosa de 2021; si no suma, se saca por simplicidad",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 584.2,
+   "error": "",
+   "total": 739530000.0,
+   "media": 246510000.0,
+   "meseta": 248958574.39733997,
+   "auc": 0.9123944093632078,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 199402500.0,
+     "envios": 4349,
+     "aciertos": 290,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 201728204.48877805,
+     "envios_meseta": 4596,
+     "auc": 0.9047963000261247,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 192.0
+    },
+    "201909": {
+     "lista": 252917500.0,
+     "envios": 4403,
+     "aciertos": 340,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 258311340.3990025,
+     "envios_meseta": 2951,
+     "auc": 0.9111109364018384,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 194.0
+    },
+    "201910": {
+     "lista": 287210000.0,
+     "envios": 4476,
+     "aciertos": 373,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 286836178.30423933,
+     "envios_meseta": 3767,
+     "auc": 0.9212759916616602,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 197.4
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": 1833333.3333333433,
+    "delta_por_mes": {
+     "201908": 0.0,
+     "201909": 2200000.0,
+     "201910": 3300000.0
+    },
+    "meses_ganados": 2,
+    "pareado_media": 366666.66666666867,
+    "pareado_se": 760336.1829553528
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E004-sin-segunda-etapa/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E004-sin-segunda-etapa/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E004-sin-segunda-etapa/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -549,11 +647,13 @@
    "fuente_url": "https://github.com/emavaldez/primeracompetencia",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. A igual ganancia gana lo más simple.",
    "prioridad": "alta",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "10",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 04:55",
+   "experimentos": [
+    "E004"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E1",
@@ -1121,6 +1221,7 @@
   "BAJA+2 por mes en 2019: entre 0,41% (201908) y 0,62% (201903); 201910: 0,47%.",
   "E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas.",
   "E001 (E17): percentil con cero fijo para todos los montos: 731,8 M (−2,2 M), gana 1 de 3 meses, pareado −3,7 ± 0,5 M por mes. Predicción (mejora) errada: en 2019 la deriva entre meses de la ventana es chica y el percentil le saca a los montos su nivel, que sí informa. Queda la defensa para cuando llegue data con escala cambiada, no como regla del modelo.",
-  "E002 (B4): sumar al general el mes m − 1 con BAJA+1 positivas y el resto como CONTINUA: 639,4 M (−94,6 M), pierde los 3 meses, AUC 0,904. Las BAJA+2 de m − 1 (todavía desconocidas) quedan como CONTINUA y son justo el perfil que hay que encontrar: el modelo aprende que ese perfil se queda. Nunca usar el mes parcial con el resto como negativo. Variante pendiente: sólo sus BAJA+1 como positivos extra, sin negativos de ese mes."
+  "E002 (B4): sumar al general el mes m − 1 con BAJA+1 positivas y el resto como CONTINUA: 639,4 M (−94,6 M), pierde los 3 meses, AUC 0,904. Las BAJA+2 de m − 1 (todavía desconocidas) quedan como CONTINUA y son justo el perfil que hay que encontrar: el modelo aprende que ese perfil se queda. Nunca usar el mes parcial con el resto como negativo. Variante pendiente: sólo sus BAJA+1 como positivos extra, sin negativos de ese mes.",
+  "E003 (E3, h = 2): peso 0,5^(edad/2) a los meses del general: 719,7 M (−14,3 M), pierde los 3 meses; la AUC no cambia (0,912) y la meseta baja un poco. En 2019 los tres meses del general se parecen entre sí: darle menos peso a los viejos sólo quita ejemplos."
  ]
 }

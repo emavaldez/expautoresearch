@@ -1,0 +1,26 @@
+04:45:56 E004: sin segunda etapa
+04:45:56 idea: B5 | hipótesis: Predicción: igual o un poco menos. La segunda etapa se armó para la franja dudosa de 2021; si no suma, se saca por simplicidad | vigente: E000
+04:45:56 meses de test [201908, 201909, 201910] (ventana de 6 meses) | semillas [800011, 800029, 800053, 800057, 800077]
+04:46:06 [201908] entrena con [201903, 201904, 201905, 201906] (506,871 filas) | puntúa 131,775 clientes, 542 BAJA+2 | 1648 columnas | features 10 s
+04:46:47 [201908] semilla 800011: lista 202.7M con 4,349 | meseta 204.9M en 3,890 | AUC 0.9019 (41 s)
+04:47:23 [201908] semilla 800029: lista 193.9M con 4,349 | meseta 196.7M en 3,764 | AUC 0.9035 (35 s)
+04:47:58 [201908] semilla 800053: lista 196.1M con 4,349 | meseta 199.0M en 4,787 | AUC 0.9057 (35 s)
+04:48:33 [201908] semilla 800057: lista 195.0M con 4,349 | meseta 196.0M en 4,657 | AUC 0.9008 (35 s)
+04:49:08 [201908] semilla 800077: lista 197.2M con 4,349 | meseta 199.6M en 4,679 | AUC 0.9046 (35 s)
+04:49:08 [201908] ENSAMBLE de 5: lista 199.4M (290 de 542 BAJA+2 con 4,349 envíos) | meseta 201.7M en 4,596 | AUC 0.9048
+04:49:18 [201909] entrena con [201904, 201905, 201906, 201907] (511,102 filas) | puntúa 133,419 clientes, 612 BAJA+2 | 1648 columnas | features 9 s
+04:49:59 [201909] semilla 800011: lista 252.9M con 4,403 | meseta 260.4M en 3,204 | AUC 0.9095 (41 s)
+04:50:35 [201909] semilla 800029: lista 248.5M con 4,403 | meseta 254.8M en 3,736 | AUC 0.9104 (36 s)
+04:51:11 [201909] semilla 800053: lista 248.5M con 4,403 | meseta 254.0M en 3,153 | AUC 0.9087 (36 s)
+04:51:46 [201909] semilla 800057: lista 249.6M con 4,403 | meseta 253.7M en 3,862 | AUC 0.9093 (36 s)
+04:52:22 [201909] semilla 800077: lista 255.1M con 4,403 | meseta 256.8M en 3,459 | AUC 0.9108 (36 s)
+04:52:22 [201909] ENSAMBLE de 5: lista 252.9M (340 de 612 BAJA+2 con 4,403 envíos) | meseta 258.3M en 2,951 | AUC 0.9111
+04:52:32 [201910] entrena con [201905, 201906, 201907, 201908] (516,761 filas) | puntúa 135,633 clientes, 631 BAJA+2 | 1648 columnas | features 9 s
+04:53:14 [201910] semilla 800011: lista 282.8M con 4,476 | meseta 289.6M en 3,478 | AUC 0.9199 (42 s)
+04:53:51 [201910] semilla 800029: lista 278.4M con 4,476 | meseta 279.4M en 4,247 | AUC 0.9207 (37 s)
+04:54:27 [201910] semilla 800053: lista 283.9M con 4,476 | meseta 286.1M en 4,233 | AUC 0.9216 (36 s)
+04:55:03 [201910] semilla 800057: lista 282.8M con 4,476 | meseta 282.9M en 4,157 | AUC 0.9183 (36 s)
+04:55:40 [201910] semilla 800077: lista 286.1M con 4,476 | meseta 285.8M en 4,334 | AUC 0.9188 (37 s)
+04:55:40 [201910] ENSAMBLE de 5: lista 287.2M (373 de 631 BAJA+2 con 4,476 envíos) | meseta 286.8M en 3,767 | AUC 0.9213
+04:55:43 RESUMEN E004 | descartado | test 739,5M en 3 meses (media 246,5M, meseta 249,0M, AUC 0.9124) | Δ media 1,8M vs E000 | meses 2/3 | pareado 0,4M ± 0,8M | 584 s
+04:55:43 para volver al vigente: python run.py --restaurar

@@ -1,0 +1,8 @@
+--- E000/train.py
++++ E004/train.py
+@@ -485,4 +485,4 @@
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:
+-    return segunda_etapa(train, score, seed, base(train, score, seed))
++    return base(train, score, seed)  # B5: sin segunda etapa
