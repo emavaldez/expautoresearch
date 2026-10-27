@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 04:55",
+ "generado": "2026-10-27 05:06",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -496,6 +496,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E004-sin-segunda-etapa/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E004-sin-segunda-etapa/log.txt"
    }
+  },
+  {
+   "id": "E005",
+   "fecha": "2026-10-27 05:06",
+   "descripcion": "sin especialista del grupo riesgoso",
+   "idea": "B5",
+   "hipotesis": "Predicción: menos. El grupo internet == 0 tiene ocho veces más bajas que el resto y el general lo promedia",
+   "estado": "descartado",
+   "vigente_al_correr": "E000",
+   "segundos": 653.8,
+   "error": "",
+   "total": 731830000.0,
+   "media": 243943333.33333334,
+   "meseta": 249612836.65835413,
+   "auc": 0.9142714446734809,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 202702500.0,
+     "envios": 4349,
+     "aciertos": 293,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 203373129.67581046,
+     "envios_meseta": 4290,
+     "auc": 0.9058889595624446,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 214.7
+    },
+    "201909": {
+     "lista": 248517500.0,
+     "envios": 4403,
+     "aciertos": 336,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 258351870.32418948,
+     "envios_meseta": 2480,
+     "auc": 0.9140354958059685,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 216.0
+    },
+    "201910": {
+     "lista": 280610000.0,
+     "envios": 4476,
+     "aciertos": 367,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 287113509.9750624,
+     "envios_meseta": 3443,
+     "auc": 0.9228898786520296,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 222.4
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E000",
+    "delta_media": -733333.3333333135,
+    "delta_por_mes": {
+     "201908": 3300000.0,
+     "201909": -2200000.0,
+     "201910": -3300000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -1026666.6666666686,
+    "pareado_se": 1261674.3724995863
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E005-sin-especialista-del-grupo-riesgoso/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E005-sin-especialista-del-grupo-riesgoso/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E005-sin-especialista-del-grupo-riesgoso/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -649,11 +747,12 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "10",
-   "actualizado": "2026-10-27 04:55",
+   "actualizado": "2026-10-27 05:06",
    "experimentos": [
-    "E004"
+    "E004",
+    "E005"
    ],
-   "comentarios": 1
+   "comentarios": 2
   },
   {
    "id": "E1",
@@ -1222,6 +1321,7 @@
   "E000 (B0): la base da 734,0 M en las tres listas de 2019 (199,4 / 250,7 / 283,9), AUC media 0,912; la meseta suma 747,9 M, así que el corte fijo de 3,3% deja sólo ~14 M. El especialista elige ~35-40 variables con canaritos. 11 minutos con 5 semillas.",
   "E001 (E17): percentil con cero fijo para todos los montos: 731,8 M (−2,2 M), gana 1 de 3 meses, pareado −3,7 ± 0,5 M por mes. Predicción (mejora) errada: en 2019 la deriva entre meses de la ventana es chica y el percentil le saca a los montos su nivel, que sí informa. Queda la defensa para cuando llegue data con escala cambiada, no como regla del modelo.",
   "E002 (B4): sumar al general el mes m − 1 con BAJA+1 positivas y el resto como CONTINUA: 639,4 M (−94,6 M), pierde los 3 meses, AUC 0,904. Las BAJA+2 de m − 1 (todavía desconocidas) quedan como CONTINUA y son justo el perfil que hay que encontrar: el modelo aprende que ese perfil se queda. Nunca usar el mes parcial con el resto como negativo. Variante pendiente: sólo sus BAJA+1 como positivos extra, sin negativos de ese mes.",
-  "E003 (E3, h = 2): peso 0,5^(edad/2) a los meses del general: 719,7 M (−14,3 M), pierde los 3 meses; la AUC no cambia (0,912) y la meseta baja un poco. En 2019 los tres meses del general se parecen entre sí: darle menos peso a los viejos sólo quita ejemplos."
+  "E003 (E3, h = 2): peso 0,5^(edad/2) a los meses del general: 719,7 M (−14,3 M), pierde los 3 meses; la AUC no cambia (0,912) y la meseta baja un poco. En 2019 los tres meses del general se parecen entre sí: darle menos peso a los viejos sólo quita ejemplos.",
+  "E004 (B5): sin segunda etapa: 739,5 M (+5,5 M), gana 2 de 3, pareado +0,4 ± 0,8 M: empata con la base y es más simple y 15% más rápido. Candidato a simplificación: confirmar con 20 semillas que no empeora (la segunda etapa era para la franja dudosa de 2021)."
  ]
 }
