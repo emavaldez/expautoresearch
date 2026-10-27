@@ -1,0 +1,28 @@
+--- E012/train.py
++++ E016/train.py
+@@ -306,7 +306,7 @@
+     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
+ 
+ 
+-def base(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
++def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, extra=None) -> np.ndarray:
+     """General + especialista de deudores con reparto. Devuelve P(BAJA+1) + P(BAJA+2) del general, con el reparto en el segmento."""
+     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
+     train = train[train.foto_mes.isin(months)]
+@@ -315,6 +315,10 @@
+     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
+     # igual sólo mira el último mes con clase, que el enmascarado no toca.
+     en_seg, p_esp = np.zeros(len(score), bool), None  # B5: sin especialista
++    # B4b: las BAJA+1 del mes m - 1 (ya conocidas) entran como ejemplos extra de baja; el resto de ese mes no entra
++    if extra is not None and len(extra):
++        e = extra[extra.baja1.to_numpy()].assign(clase_ternaria="BAJA+1")
++        train = pd.concat([train, e[train.columns]], ignore_index=True)
+     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
+     keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
+     train = train[keep | (train.clase_ternaria != "CONTINUA").to_numpy()]
+@@ -485,4 +489,4 @@
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:
+-    return base(train, score, seed)  # B5: sin segunda etapa
++    return base(train, score, seed, extra=intermedio)  # B5: sin segunda etapa; B4b: BAJA+1 de m - 1

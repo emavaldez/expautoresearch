@@ -15,3 +15,4 @@ E012	2026-10-27 06:25	B5	sólo el general (sin especialista ni segunda etapa)	24
 E013	2026-10-27 07:51	E1	el general entrena con 4 meses	252010000	255689719	0.9155	6233333	2/3		635.7	a_confirmar	E012
 E014	2026-10-27 08:01	B1	BAJA+1 con peso 1	243576667	250227575	0.9143	-2200000	0/3		563.7	descartado	E012
 E015	2026-10-27 08:05	B1	binaria BAJA+1 o BAJA+2 en lugar de multiclase	246510000	249890397	0.915	733333	2/3		226.9	descartado	E012
+E016	2026-10-27 08:14	B4	suma sólo las BAJA+1 del mes m - 1 (sin negativos de ese mes)	177210000	180217078	0.8796	-68566667	0/3		566.7	descartado	E012

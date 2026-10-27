@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 08:05",
+ "generado": "2026-10-27 08:15",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -1522,6 +1522,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E015-binaria-baja-1-o-baja-2-en-lugar-de-mult/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E015-binaria-baja-1-o-baja-2-en-lugar-de-mult/log.txt"
    }
+  },
+  {
+   "id": "E016",
+   "fecha": "2026-10-27 08:14",
+   "descripcion": "suma sólo las BAJA+1 del mes m - 1 (sin negativos de ese mes)",
+   "idea": "B4",
+   "hipotesis": "Predicción: mejora poco. Son las bajas más recientes que se conocen, sin el error de E002 (que marcaba como CONTINUA a las BAJA+2 desconocidas)",
+   "estado": "descartado",
+   "vigente_al_correr": "E012",
+   "segundos": 566.7,
+   "error": "",
+   "total": 531630000.0,
+   "media": 177210000.0,
+   "meseta": 180217078.13798836,
+   "auc": 0.8795936544906139,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 94902500.0,
+     "envios": 4349,
+     "aciertos": 195,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 101263640.89775562,
+     "envios_meseta": 3432,
+     "auc": 0.8629671745499392,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 183.8
+    },
+    "201909": {
+     "lista": 202317500.0,
+     "envios": 4403,
+     "aciertos": 294,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 204869445.13715708,
+     "envios_meseta": 3951,
+     "auc": 0.8740704420897571,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 189.5
+    },
+    "201910": {
+     "lista": 234410000.0,
+     "envios": 4476,
+     "aciertos": 325,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 234518148.37905237,
+     "envios_meseta": 3979,
+     "auc": 0.9017433468321453,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 192.7
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E012",
+    "delta_media": -68566666.66666666,
+    "delta_por_mes": {
+     "201908": -108900000.0,
+     "201909": -47300000.0,
+     "201910": -49500000.0
+    },
+    "meses_ganados": 0,
+    "pareado_media": -80886666.66666666,
+    "pareado_se": 3772570.594288312
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E016-suma-solo-las-baja-1-del-mes-m-1-sin-neg/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E016-suma-solo-las-baja-1-del-mes-m-1-sin-neg/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E016-suma-solo-las-baja-1-del-mes-m-1-sin-neg/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1664,11 +1762,12 @@
    "prioridad": "alta",
    "estado": "probada",
    "issue": "9",
-   "actualizado": "2026-10-27 04:34",
+   "actualizado": "2026-10-27 08:14",
    "experimentos": [
-    "E002"
+    "E002",
+    "E016"
    ],
-   "comentarios": 1
+   "comentarios": 2
   },
   {
    "id": "B5",
@@ -2275,6 +2374,7 @@
   "E012 (B5): sólo el general (sin especialista ni segunda etapa): 737,3 M (+3,3 M), pareado −0,1 ± 0,9 M, AUC 0,914 (la mejor), 18% más rápido. Empate con un modelo mucho más simple: se confirma como simplificación (que no pierda).",
   "E012 confirmado (simplificación, 20 semillas frescas): sólo el general le gana a la base por +2,9 M por mes en el ensamble (pareado +2,8 ± 0,6 M, 16 de 20 semillas, Wilcoxon p = 0,001). Es el nuevo vigente: un LightGBM multiclase con la ventana de variables de la primera competencia, sin especialista ni segunda etapa.",
   "E013 (E1, sobre E012): el general con 4 meses (toda la ventana): 756,0 M (+18,7 M), gana 2 de 3, pareado +6,9 ± 1,8 M por mes, AUC 0,9155: a confirmar. Sin especialista, el general aprovecha más los ejemplos del cuarto mes.",
-  "E014 (B1, sobre E012): BAJA+1 con peso 1: 730,7 M (−6,6 M), pierde los 3 meses por poco (pareado −0,2 ± 0,6 M): sin efecto. El medio peso queda."
+  "E014 (B1, sobre E012): BAJA+1 con peso 1: 730,7 M (−6,6 M), pierde los 3 meses por poco (pareado −0,2 ± 0,6 M): sin efecto. El medio peso queda.",
+  "E015 (B1, sobre E012): binaria BAJA+1 o BAJA+2 en lugar de multiclase: 739,5 M (+2,2 M) en el ensamble, pero cada semilla sola pierde (pareado −2,9 ± 1,4 M); tarda 227 s contra 564 (la multiclase arma tres árboles por ronda). Empate con menos de la mitad del tiempo: alternativa si el aula aprieta con los 15 minutos."
  ]
 }
