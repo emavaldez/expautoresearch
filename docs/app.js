@@ -155,7 +155,7 @@ function ruta() {
     a.toggleAttribute("aria-current", activa);
     if (activa) a.setAttribute("aria-current", "page");
   });
-  const vistas = { experimentos: vExperimentos, ideas: vIdeas, propuestas: vPropuestas, proponer: vPropuestas, metodo: vMetodo, papers: vPapers };
+  const vistas = { experimentos: vExperimentos, ideas: vIdeas, propuestas: vPropuestas, proponer: vPropuestas, aula: vAula, metodo: vMetodo, papers: vPapers };
   (vistas[seccion] || vExperimentos)(decodeURIComponent(id), seccion);
 }
 
@@ -367,6 +367,26 @@ function md(t) {
 }
 
 // ---------------------------------------------------------------- método y papers
+
+function vAula() {
+  const Au = D.aula || {};
+  const ex = (id) => D.experimentos.find((e) => e.id === id);
+  const fila = (nombre, e) => {
+    if (!e) return "";
+    const o = e.meses || {}, m = (e.modificado || {}).meses || {};
+    const ms = Object.keys(o);
+    return `<tr><td class="que"><a href="#/experimentos/${esc(e.id)}">${esc(e.id)}</a> ${esc(nombre)}<small>${esc(e.descripcion)}</small></td>${ms.map((k) => `<td class="num">${M(o[k].lista)}<br><span class="apagado">${m[k] ? M(m[k].lista) : "–"}</span></td>`).join("")}<td class="num"><strong>${M(e.total)}</strong><br><span class="apagado">${e.modificado ? M(Object.values(m).reduce((t, x) => t + x.lista, 0)) : "–"}</span></td></tr>`;
+  };
+  const mod = ex(Au.modelo), alt = ex(Au.alternativa);
+  const ref = D.experimentos.find((e) => e.modificado && e.descripcion.startsWith("el vigente"));
+  const ms = mod ? Object.keys(mod.meses) : D.escenario.meses_test.map(String);
+  vista(`<h2>Para el aula</h2><div class="texto-largo"><p>${esc(Au.texto || "")}</p>
+    <p><strong>Por qué ese umbral.</strong> En los meses normales de 2019 hay entre ${Au.saltos_2019 ? Au.saltos_2019.normal.join(" y ") : "–"} montos con salto contra el mes anterior; en el primer mes de la data modificada simulada, ${Au.saltos_2019 ? Au.saltos_2019.modificado_primer_mes : "–"}. La regla se activa sólo en el mes en que la escala cambia de golpe, que es donde la alternativa recupera plata.</p></div>
+    <h3>Cómo aguanta cada uno la data modificada</h3><p class="intro">Arriba, la ganancia con la data original de 2019; abajo, en gris, con la data modificada simulada sobre esos mismos meses.</p>
+    <table class="libro"><thead><tr><th>Modelo</th>${ms.map((k) => `<th class="num">${nombreMes(k)}</th>`).join("")}<th class="num">Total</th></tr></thead><tbody>
+    ${fila("modelo vigente, medido con la data modificada", ref)}${fila("alternativa robusta", alt)}</tbody></table>
+    <p class="nota">En el aula, la herramienta calcula las dos listas cada mes, entrega la que diga la regla y deja cambiarla a mano sin reentrenar. Nada de esto se eligió mirando 2020.</p>`);
+}
 
 function vMetodo() {
   const E = D.escenario;

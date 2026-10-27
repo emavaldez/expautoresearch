@@ -1,0 +1,1 @@
+11:38:11 búsqueda hpo01 sobre E019: 25 trials, semillas [800311, 800329, 800333], espacio ['learning_rate', 'num_leaves', 'min_data_in_leaf', 'feature_fraction', 'lambda_l2', 'num_rounds', 'submuestreo']
