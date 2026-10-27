@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 09:15",
+ "generado": "2026-10-27 09:26",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -1831,6 +1831,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E018-corte-probabilidad-calibrada-isotonica-m/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E018-corte-probabilidad-calibrada-isotonica-m/log.txt"
    }
+  },
+  {
+   "id": "E019",
+   "fecha": "2026-10-27 09:26",
+   "descripcion": "foto_mes deja de ser variable del modelo",
+   "idea": "P3",
+   "hipotesis": "Predicción: empata o mejora. foto_mes identifica el mes (regla del arnés) y el mes que se puntúa siempre cae fuera del rango que vio el árbol",
+   "estado": "descartado",
+   "vigente_al_correr": "E013",
+   "segundos": 629.3,
+   "error": "",
+   "total": 754930000.0,
+   "media": 251643333.33333334,
+   "meseta": 255593892.3524522,
+   "auc": 0.9154785054695123,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 211502500.0,
+     "envios": 4349,
+     "aciertos": 301,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 212561627.1820449,
+     "envios_meseta": 3985,
+     "auc": 0.9091207540133893,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 207.0
+    },
+    "201909": {
+     "lista": 261717500.0,
+     "envios": 4403,
+     "aciertos": 348,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 265509551.12219453,
+     "envios_meseta": 3188,
+     "auc": 0.9141978400914079,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 209.4
+    },
+    "201910": {
+     "lista": 281710000.0,
+     "envios": 4476,
+     "aciertos": 368,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 288710498.7531172,
+     "envios_meseta": 5156,
+     "auc": 0.9231169223037395,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 212.2
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E013",
+    "delta_media": -366666.66666665673,
+    "delta_por_mes": {
+     "201908": 0.0,
+     "201909": 0.0,
+     "201910": -1100000.0
+    },
+    "meses_ganados": 0,
+    "pareado_media": 1026666.6666666686,
+    "pareado_se": 584370.5065186716
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E019-foto-mes-deja-de-ser-variable-del-modelo/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E019-foto-mes-deja-de-ser-variable-del-modelo/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E019-foto-mes-deja-de-ser-variable-del-modelo/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1892,9 +1990,11 @@
    "prioridad": "fase 0",
    "estado": "probada",
    "issue": "4",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 09:26",
+   "experimentos": [
+    "E019"
+   ],
+   "comentarios": 1
   },
   {
    "id": "P4",
@@ -2593,6 +2693,7 @@
   "E015 (B1, sobre E012): binaria BAJA+1 o BAJA+2 en lugar de multiclase: 739,5 M (+2,2 M) en el ensamble, pero cada semilla sola pierde (pareado −2,9 ± 1,4 M); tarda 227 s contra 564 (la multiclase arma tres árboles por ronda). Empate con menos de la mitad del tiempo: alternativa si el aula aprieta con los 15 minutos.",
   "E016 (B4b, sobre E012): sumar sólo las BAJA+1 de m − 1 como ejemplos extra: 531,6 M (−205,7 M), AUC 0,880. Causa: el general usa foto_mes como variable (viene así de la primera competencia), y si m − 1 trae sólo bajas el árbol aprende \"mes m − 1 o posterior = baja\"; el mes que se puntúa cae de ese lado. Explica también E002. foto_mes como variable rompe la regla de no identificar el mes: probar sacarla.",
   "E017 (E2, sobre E012): el general no usa los meses con variables rotas (201905, 201910): 736,2 M (−1,1 M), pareado −2,4 ± 1,4 M. Pasar las variables rotas a NA ya alcanza; sacar el mes entero sólo quita ejemplos.",
-  "E018 (E13, sobre E012): corte por probabilidad calibrada (isotónica en los dos meses anteriores fuera de muestra) mayor que 2,5%: 707,7 M (−29,6 M), pierde los 3 meses. La calibración con la base fuera de muestra (entrenada con meses más viejos) no se traslada al modelo final: el 3,3% fijo queda."
+  "E018 (E13, sobre E012): corte por probabilidad calibrada (isotónica en los dos meses anteriores fuera de muestra) mayor que 2,5%: 707,7 M (−29,6 M), pierde los 3 meses. La calibración con la base fuera de muestra (entrenada con meses más viejos) no se traslada al modelo final: el 3,3% fijo queda.",
+  "E013 confirmado (20 semillas frescas): +6,2 M por mes en el ensamble contra E012, pareado +6,9 ± 0,8 M, gana en las 20 semillas. Nuevo vigente: sólo el general, con los 4 meses de la ventana."
  ]
 }

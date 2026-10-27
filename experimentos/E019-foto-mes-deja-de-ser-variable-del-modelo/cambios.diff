@@ -1,0 +1,11 @@
+--- E013/train.py
++++ E019/train.py
+@@ -311,7 +311,7 @@
+     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
+     train = train[train.foto_mes.isin(months)]
+     # Columnas: todas menos la historia del resumen de tarjetas (ver historia_de_resumen); el FE de la cátedra lo ve sólo el general.
+-    cols = [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente") and not historia_de_resumen(c)]
++    cols = [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)]  # P3: sin foto_mes
+     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
+     # igual sólo mira el último mes con clase, que el enmascarado no toca.
+     en_seg, p_esp = np.zeros(len(score), bool), None  # B5: sin especialista
