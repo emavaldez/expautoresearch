@@ -1,0 +1,25 @@
+{
+  "id": "E010",
+  "carpeta": "E010-lags-y-deltas-hasta-3-meses",
+  "fecha": "2026-10-27 06:01",
+  "descripcion": "lags y deltas hasta 3 meses",
+  "idea": "E4",
+  "hipotesis": "Predicción: incierto. Un mes más de historia puede mostrar caídas más lentas; agrega ~300 columnas",
+  "vigente_al_correr": "E000",
+  "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+  ],
+  "meses_test": [
+    201908,
+    201909,
+    201910
+  ],
+  "folds": {},
+  "segundos": 18.4,
+  "error": "Traceback (most recent call last):\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/run.py\", line 126, in main\n    folds = prepare.evaluar(mod, meses, semillas, log=log, guardar=C.CACHE / \"probs\" / id_)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/prepare.py\", line 304, in evaluar\n    p = _llamar(mod, train, score, s, params, intermedio)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/prepare.py\", line 284, in _llamar\n    return np.asarray(mod.train_and_predict(train, score, s, **kw), dtype=np.float64)\n                      ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py\", line 488, in train_and_predict\n    return segunda_etapa(train, score, seed, base(train, score, seed))\n                                             ~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py\", line 331, in base\n    assert len(internet) == 5, f\"se esperaban 5 columnas de internet y hay {internet}\"\n           ^^^^^^^^^^^^^^^^^^\nAssertionError: se esperaban 5 columnas de internet y hay ['internet', 'internet_lag1', 'internet_delta1', 'internet_lag2', 'internet_delta2', 'internet_lag3', 'internet_delta3']\n",
+  "estado": "error"
+}

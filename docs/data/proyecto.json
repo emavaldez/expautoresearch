@@ -986,6 +986,38 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E009-continua-al-50-en-lugar-de-20/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E009-continua-al-50-en-lugar-de-20/log.txt"
    }
+  },
+  {
+   "id": "E010",
+   "fecha": "2026-10-27 06:01",
+   "descripcion": "lags y deltas hasta 3 meses",
+   "idea": "E4",
+   "hipotesis": "Predicción: incierto. Un mes más de historia puede mostrar caídas más lentas; agrega ~300 columnas",
+   "estado": "error",
+   "vigente_al_correr": "E000",
+   "segundos": 18.4,
+   "error": "Traceback (most recent call last):\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/run.py\", line 126, in main\n    folds = prepare.evaluar(mod, meses, semillas, log=log, guardar=C.CACHE / \"probs\" / id_)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/prepare.py\", line 304, in evaluar\n    p = _llamar(mod, train, score, s, params, intermedio)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/prepare.py\", line 284, in _llamar\n    return np.asarray(mod.train_and_predict(train, score, s, **kw), dtype=np.float64)\n                      ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py\", line 488, in train_and_predict\n    return segunda_etapa(train, score, seed, base(train, score, seed))\n                                             ~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py\", line 331, in base\n    assert len(internet) == 5, f\"se esperaban 5 columnas de internet y hay {internet}\"\n           ^^^^^^^^^^^^^^^^^^\nAssertionError: se esperaban 5 columnas de internet y hay ['internet', 'internet_lag1', 'internet_delta1', 'internet_lag2', 'internet_delta2', 'internet_lag3', 'internet_delta3']\n",
+   "total": null,
+   "media": null,
+   "meseta": null,
+   "auc": null,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {},
+   "modificado": null,
+   "comparacion": null,
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E010-lags-y-deltas-hasta-3-meses/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E010-lags-y-deltas-hasta-3-meses/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -1223,11 +1255,13 @@
    "fuente_url": "https://arxiv.org/abs/2607.00473",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. Se informa la curva entera (ganancia contra k), no sólo el mejor punto.",
    "prioridad": "alta",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "15",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 06:01",
+   "experimentos": [
+    "E010"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E5",
@@ -1726,6 +1760,7 @@
   "E005 (B5): sin especialista: 731,8 M (−2,2 M), pareado −1,0 ± 1,3 M, AUC 0,914 (mejor que la base): otro empate. Ni la segunda etapa ni el especialista suman en 2019; falta probar las dos afuera (sólo el general).",
   "E006 (B1): BAJA+1 con peso 1 en lugar de 0,5: 738,4 M (+4,4 M), gana los 3 meses pero por poco (pareado +0,7 ± 1,0 M por mes): no llega al umbral. Señal chica a favor de darle más peso a las BAJA+1; con 20 semillas podría confirmarse o no.",
   "E007 (E1): el general con 4 meses (toda la ventana) en lugar de 3: 742,8 M (+8,8 M), gana 2 de 3, pareado +2,0 ± 1,0 M por mes, meseta y AUC suben (251,0 M; 0,9135). Queda a 0,1 M por mes del umbral de screening: es el candidato más firme hasta ahora (más ejemplos de baja).",
-  "E008 (E13b): corte por la proporción aprendida de los dos meses anteriores (fuera de muestra): 728,1 M (−5,9 M), gana 1 de 3. En 2019 la tasa de bajas es estable y el 3,3% ya está cerca del óptimo; la proporción aprendida con la base fuera de muestra (un modelo más pobre) mete ruido. El corte fijo queda."
+  "E008 (E13b): corte por la proporción aprendida de los dos meses anteriores (fuera de muestra): 728,1 M (−5,9 M), gana 1 de 3. En 2019 la tasa de bajas es estable y el 3,3% ya está cerca del óptimo; la proporción aprendida con la base fuera de muestra (un modelo más pobre) mete ruido. El corte fijo queda.",
+  "E009 (B3): CONTINUA al 50% en lugar de 20%: 727,4 M (−6,6 M), gana 1 de 3 y tarda 55% más. Más CONTINUA diluye las bajas sin mejorar el orden: el 20% queda."
  ]
 }

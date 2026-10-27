@@ -1,0 +1,20 @@
+--- E000/train.py
++++ E010/train.py
+@@ -124,7 +124,7 @@
+     base = [c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]
+     g = df.groupby("numero_de_cliente")[base]
+     new = {}
+-    for k in (1, 2):  # Feature Engineering histórico de la cátedra: lags y delta lags de orden 1 y 2
++    for k in (1, 2, 3):  # E4: lags y deltas de orden 1, 2 y 3
+         lag = g.shift(k)
+         new.update({f"{c}_lag{k}": lag[c] for c in base})
+         new.update({f"{c}_delta{k}": df[c] - lag[c] for c in base})
+@@ -196,7 +196,7 @@
+ 
+ TRAIN_MONTHS_BACK = 3  # el general usa los tres últimos meses con clase de la ventana
+ MESES_ENTRENAMIENTO = 4  # la ventana entera: m - 5 a m - 2 (la segunda etapa necesita los dos primeros para su base)
+-HISTORIA_MESES = 2       # lags de 1 y 2 meses
++HISTORIA_MESES = 3       # E4: lags de 1 a 3 meses
+ CORTE = {"tipo": "fraccion", "f": 0.033}
+ 
+ PARAMS = dict(

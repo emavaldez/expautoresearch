@@ -1,0 +1,23 @@
+06:01:31 E010: lags y deltas hasta 3 meses
+06:01:31 idea: E4 | hipótesis: Predicción: incierto. Un mes más de historia puede mostrar caídas más lentas; agrega ~300 columnas | vigente: E000
+06:01:31 meses de test [201908, 201909, 201910] (ventana de 6 meses) | semillas [800011, 800029, 800053, 800057, 800077]
+06:01:41 [201908] entrena con [201904, 201905, 201906] (381,249 filas) | puntúa 131,775 clientes, 542 BAJA+2 | 1952 columnas | features 10 s
+06:01:41 [201908] AVISO: pidió 4 meses de entrenamiento y hay 3 con historia completa en la ventana
+06:01:49 ERROR: Traceback (most recent call last):
+  File "/Users/emmanuelvaldez/experimento-autoresearch/run.py", line 126, in main
+    folds = prepare.evaluar(mod, meses, semillas, log=log, guardar=C.CACHE / "probs" / id_)
+  File "/Users/emmanuelvaldez/experimento-autoresearch/prepare.py", line 304, in evaluar
+    p = _llamar(mod, train, score, s, params, intermedio)
+  File "/Users/emmanuelvaldez/experimento-autoresearch/prepare.py", line 284, in _llamar
+    return np.asarray(mod.train_and_predict(train, score, s, **kw), dtype=np.float64)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py", line 488, in train_and_predict
+    return segunda_etapa(train, score, seed, base(train, score, seed))
+                                             ~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E010-lags-y-deltas-hasta-3-meses/train.py", line 331, in base
+    assert len(internet) == 5, f"se esperaban 5 columnas de internet y hay {internet}"
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: se esperaban 5 columnas de internet y hay ['internet', 'internet_lag1', 'internet_delta1', 'internet_lag2', 'internet_delta2', 'internet_lag3', 'internet_delta3']
+
+06:01:52 RESUMEN E010 | error
+06:01:52 para volver al vigente: python run.py --restaurar
