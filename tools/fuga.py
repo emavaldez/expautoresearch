@@ -23,7 +23,7 @@ from prepare import CLASE, MES
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("modelo", nargs="?", default=str(comun.RAIZ / "train.py"))
-    ap.add_argument("--mes", type=int, default=C.FOLDS_SELECCION[-1])
+    ap.add_argument("--mes", type=int, default=C.MESES_TEST[-1])
     a = ap.parse_args()
     mod = comun.cargar_modulo(Path(a.modelo), "modelo_fuga")
     df = prepare.cargar().drop(columns=[CLASE])

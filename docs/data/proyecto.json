@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 03:20",
+ "generado": "2026-10-27 03:27",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -16,8 +16,95 @@
   "semillas_screening": 5,
   "semillas_confirmacion": 20
  },
- "vigente": null,
- "experimentos": [],
+ "vigente": "E000",
+ "experimentos": [
+  {
+   "id": "E000",
+   "fecha": "2026-10-27 03:24",
+   "descripcion": "base: modelo de la primera competencia",
+   "idea": "B0",
+   "hipotesis": "Punto de partida: el modelo entregado en la primera competencia, llevado a estos datos",
+   "estado": "base",
+   "vigente_al_correr": null,
+   "segundos": 836.3,
+   "error": "",
+   "total": 370122500.0,
+   "media": 123374166.66666667,
+   "meseta": 134584428.51205316,
+   "auc": 0.9042408408500776,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "202007": {
+     "lista": 182957500.0,
+     "envios": 5107,
+     "aciertos": 294,
+     "baja2": 538,
+     "clientes": 154772,
+     "meseta": 185061009.97506234,
+     "envios_meseta": 5154,
+     "auc": 0.9105824235689188,
+     "train_meses": [
+      202002,
+      202003,
+      202004,
+      202005
+     ],
+     "filas_train": 593595,
+     "segundos": 355.6
+    },
+    "202008": {
+     "lista": 79310000.0,
+     "envios": 5156,
+     "aciertos": 201,
+     "baja2": 434,
+     "clientes": 156234,
+     "meseta": 100351066.08478802,
+     "envios_meseta": 2179,
+     "auc": 0.8968611536709594,
+     "train_meses": [
+      202003,
+      202004,
+      202005,
+      202006
+     ],
+     "filas_train": 600123,
+     "segundos": 239.9
+    },
+    "202009": {
+     "lista": 107855000.0,
+     "envios": 5198,
+     "aciertos": 228,
+     "baja2": 527,
+     "clientes": 157519,
+     "meseta": 118341209.47630921,
+     "envios_meseta": 3970,
+     "auc": 0.9052789453103546,
+     "train_meses": [
+      202004,
+      202005,
+      202006,
+      202007
+     ],
+     "filas_train": 606582,
+     "segundos": 239.8
+    }
+   },
+   "modificado": null,
+   "comparacion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/train.py",
+    "diff": null,
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E000-base-modelo-de-la-primera-competencia/log.txt"
+   }
+  }
+ ],
  "ideas": [
   {
    "id": "B0",
@@ -28,11 +115,13 @@
    "fuente_url": "https://github.com/emavaldez/primeracompetencia",
    "como_medir": "Es el primer vigente: todo lo demás se compara contra él.",
    "prioridad": "base",
-   "estado": "aprobada",
-   "issue": "",
-   "actualizado": "2026-10-27 03:14",
-   "experimentos": [],
-   "comentarios": 0
+   "estado": "probada",
+   "issue": "1",
+   "actualizado": "2026-10-27 03:27",
+   "experimentos": [
+    "E000"
+   ],
+   "comentarios": 1
   },
   {
    "id": "P1",
@@ -44,7 +133,7 @@
    "como_medir": "Sobre todo con la data modificada (202007 llega con mpayroll en cero, 202008 sin ctrx_quarter): ganancia de las tres listas con y sin la detección.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "2",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -59,7 +148,7 @@
    "como_medir": "Es un informe: no compite.",
    "prioridad": "fase 0",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "3",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -74,7 +163,7 @@
    "como_medir": "Pasa o no pasa: si hay fuga, el experimento no se corre.",
    "prioridad": "fase 0",
    "estado": "probada",
-   "issue": "",
+   "issue": "4",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -89,7 +178,7 @@
    "como_medir": "Es un informe: no compite.",
    "prioridad": "fase 0",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "5",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -104,7 +193,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "6",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -119,7 +208,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "7",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -134,7 +223,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. También el tiempo.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "8",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -149,7 +238,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "9",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -164,7 +253,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. A igual ganancia gana lo más simple.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "10",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -179,7 +268,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Se informa la curva ganancia contra meses.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "11",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -194,7 +283,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "propuesta",
-   "issue": "",
+   "issue": "12",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -209,7 +298,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "13",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -224,7 +313,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "14",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -239,7 +328,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Se informa la curva entera (ganancia contra k), no sólo el mejor punto.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "15",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -254,7 +343,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "16",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -269,7 +358,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "17",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -284,7 +373,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Se compara la cantidad de envíos contra la óptima de cada mes.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "18",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -299,7 +388,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Y sobre todo con la data modificada (montos inflados de golpe).",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "19",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -314,7 +403,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Con la data original y con la modificada.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "20",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -329,7 +418,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Pocos trials: el test es lo único que mide, así que la búsqueda sobreajusta.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "21",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -344,7 +433,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "baja",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "22",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -359,7 +448,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Contra TPE puro al mismo presupuesto.",
    "prioridad": "baja",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "23",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -374,7 +463,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Expectativa baja: en el paper sumó 0,006 de AUC.",
    "prioridad": "baja",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "24",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -389,7 +478,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "25",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -404,7 +493,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. Con menos columnas, a igual ganancia gana el más chico.",
    "prioridad": "baja",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "26",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -419,7 +508,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción. En la simulación, calibrar con un solo mes anduvo mal: probar con 2 y 3 meses.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "27",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -434,7 +523,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "alta",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "28",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -449,7 +538,7 @@
    "como_medir": "La curva entera; la cantidad sale de dónde se aplana.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "29",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -464,7 +553,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "30",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -479,7 +568,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "31",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -494,7 +583,7 @@
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente, con la regla de adopción.",
    "prioridad": "media",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "32",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -509,7 +598,7 @@
    "como_medir": "Al final: cuántas de las predicciones acertaron el signo.",
    "prioridad": "baja",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "33",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0
@@ -524,7 +613,7 @@
    "como_medir": "Regla del loop: se informa cuándo se usó.",
    "prioridad": "baja",
    "estado": "aprobada",
-   "issue": "",
+   "issue": "34",
    "actualizado": "2026-10-27 03:14",
    "experimentos": [],
    "comentarios": 0

@@ -1,23 +1,25 @@
 # Instrucciones para el agente
 
-Mejorás un modelo que marca qué clientes de 202108 son BAJA+2. Trabajás con experimentos chicos, de a uno, y todo
-queda registrado: el código exacto de cada corrida, su log, su resultado y la página del proyecto.
+Mejorás un modelo que marca qué clientes son BAJA+2 en el escenario de la Segunda Competencia: se reentrena todos los
+meses con los últimos 6 meses y se mide con la ganancia de sus listas de 202007, 202008 y 202009 (ver config.py).
+Trabajás con experimentos chicos, de a uno, y todo queda registrado: el código exacto de cada corrida, su log, su
+resultado y la página del proyecto.
 
 ## Al empezar cada sesión
 
 1. Leé `README.md`, `config.py` y `prepare.py` (sólo lectura), `train.py`, `experimentos.md` y `LECCIONES.md`.
-2. `git pull`, después `python tools/ideas.py sync` (trae lo que se propuso desde la página) y
-   `python tools/ideas.py lista`.
+2. `git pull`, después `python tools/ideas.py sync` (trae las propuestas de la página y las aprobaciones) y
+   `python tools/ideas.py lista` (sólo aprobadas y en curso: una propuesta sin la etiqueta `aprobada` NO se corre).
 3. Si no existe `fase0/informe.md`: `python tools/fase0.py`, leelo y anotá en `LECCIONES.md` lo que haya que tener en
    cuenta (variables rotas, deriva, estacionalidad). Marcá P1, P2 y P4:
    `python tools/ideas.py estado P1 probada --nota "..."`.
 4. Si todavía no hay experimentos, corré la base sin tocar `train.py`:
-   `python run.py "base: modelo del curso" --idea B0`.
+   `python run.py "base: modelo de la primera competencia" --idea B0`.
 
 ## El loop (hasta que una persona lo frene)
 
-1. **Elegí la próxima idea.** Primero las de la página con prioridad alta; después el plan en orden (fase 0, básicos,
-   prioridad 1, 2, 3, 4). Una idea por experimento; si tiene variantes (E1: 3, 6, 12 meses), cada variante es un
+1. **Elegí la próxima idea.** Sólo de la cola (`ideas.py lista`): primero las propuestas aprobadas con prioridad alta;
+   después el plan por prioridad. Una idea por experimento; si tiene variantes (E1: 3, 6, 12 meses), cada variante es un
    experimento.
 2. **Partí del vigente.** Si `train.py` no es el del vigente: `python run.py --restaurar`.
 3. **Editá sólo `train.py`** para probar la idea.
@@ -41,18 +43,18 @@ queda registrado: el código exacto de cada corrida, su log, su resultado y la p
 - **Hiperparámetros: no se mueven a mano.** Se diseña un espacio y se busca con `tools/hpo.py` (E8 a E10). El ganador
   se copia a `train.py` y se corre como un experimento más.
 - **Simplicidad.** A igual ganancia gana el código más simple. Lo que no mejora se deshace.
-- **Nunca corras `tools/sellado.py`.** La reserva y el test de 202108 los corre una persona al final.
 - **Semillas y corte no se eligen mirando una métrica.** Las semillas salen de los bloques de `config.py`; el corte,
   de la regla `CORTE` de `train.py`.
-- **Ideas de la página.** Con `--idea #N`, `run.py` comenta el issue con el resultado y lo cierra cuando termina.
+- **Ideas y comentarios.** Cada idea tiene su issue; `run.py` comenta ahí el resultado. Antes de correr una idea, leé
+  los comentarios de su issue (`gh issue view <n> --comments`): pueden traer variantes o advertencias.
 
 ## Cómo se decide
 
-- **Screening** (`run.py`, 5 semillas): pasa a confirmación si la media del ensamble en los folds de selección mejora
-  más de 3M contra el vigente y mejora en al menos 2 de los 3 folds.
-- **Confirmación** (`tools/comparar.py`, 20 semillas frescas): el ensamble mejora, la diferencia pareada por semilla
-  supera 2 errores estándar y el fold de control (202008) no empeora más de 2 errores estándar.
-- Si un cambio mejora la selección pero rompe el control, anotalo en `LECCIONES.md` aunque se confirme.
+- **Screening** (`run.py`, 5 semillas): pasa a confirmación si la ganancia media por mes de test (la de la lista)
+  mejora más de 3M contra el vigente y mejora en al menos 2 de los 3 meses.
+- **Confirmación** (`tools/comparar.py --modificado`, 20 semillas frescas): la lista del ensamble gana más y la
+  diferencia pareada por semilla supera 2 errores estándar. Con la data modificada sólo se informa: si un cambio
+  confirma pero pierde mucho con la data modificada, anotalo en `LECCIONES.md`.
 
 ## Búsquedas de hiperparámetros
 
@@ -67,5 +69,5 @@ Después copiá los mejores parámetros a `PARAMS` de `train.py` y corré `run.p
 ## Lo que decide una persona
 
 - Cuándo parar.
-- Los finalistas, la reserva y el test sellado (`tools/sellado.py`).
-- La comparación contra el modelo de referencia, cuando esté (`base/README.md`).
+- Qué propuestas se aprueban (etiqueta `aprobada` en el issue).
+- Romper la regla de la ventana de 6 meses (E1b).

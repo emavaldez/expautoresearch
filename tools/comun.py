@@ -20,9 +20,10 @@ RESULTADOS = RAIZ / "resultados.tsv"
 IDEAS = RAIZ / "ideas.tsv"
 ESTADO = RAIZ / "estado.json"
 
-COLUMNAS_RESULTADOS = ["id", "fecha", "idea", "descripcion", "media_seleccion", "delta_vs_vigente", "folds_ganados",
-                       "control", "segundos", "estado", "vigente_al_correr"]
-COLUMNAS_IDEAS = ["id", "origen", "titulo", "detalle", "fuente", "prioridad", "estado", "experimentos", "actualizado"]
+COLUMNAS_RESULTADOS = ["id", "fecha", "idea", "descripcion", "media_test", "media_meseta", "media_auc", "delta_vs_vigente",
+                       "meses_ganados", "modificado", "segundos", "estado", "vigente_al_correr"]
+COLUMNAS_IDEAS = ["id", "origen", "titulo", "detalle", "fuente", "fuente_url", "como_medir", "prioridad", "estado",
+                  "experimentos", "issue", "actualizado"]
 
 
 def ahora() -> str:

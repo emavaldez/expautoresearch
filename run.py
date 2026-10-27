@@ -5,7 +5,9 @@
 
 Qué hace:
   1. Copia train.py a experimentos/<id>-<slug>/ (el código exacto que corrió) y guarda el diff contra el vigente.
-  2. Evalúa en los folds de selección y de control con las 5 semillas de screening. Todo lo que imprime va a log.txt.
+  2. Evalúa en los meses de test (202007, 202008, 202009) con las 5 semillas de screening: entrena con lo que se sabía
+     en cada mes, arma la lista con el corte del modelo y la mide con la clase verdadera. Todo lo que imprime va a
+     log.txt. Con --modificado, además lo repite con la data alterada como en el aula.
   3. Compara contra el vigente, pareado por semilla, y decide: a_confirmar / descartado (o base si es el primero).
   4. Escribe resultado.json, agrega una fila a resultados.tsv, actualiza la idea, regenera la página y commitea.
 
@@ -41,8 +43,8 @@ def _alarma(*_):
 
 
 def comparar_con_vigente(res: dict, vig: dict) -> dict:
-    """Diferencias contra el vigente en los folds de selección: ensamble por fold y pareado por semilla."""
-    sel = [str(m) for m in C.FOLDS_SELECCION]
+    """Diferencias contra el vigente en los meses de test: ensamble por mes y pareado por semilla."""
+    sel = [str(m) for m in C.MESES_TEST]
     deltas = {m: res["folds"][m]["ensamble"]["ganancia"] - vig["folds"][m]["ensamble"]["ganancia"] for m in sel}
     semillas = [s for s in res["folds"][sel[0]]["semillas"] if s in vig["folds"][sel[0]]["semillas"]]
     pares = []
@@ -55,9 +57,9 @@ def comparar_con_vigente(res: dict, vig: dict) -> dict:
     se = (sum((x - media) ** 2 for x in pares) / (n - 1) / n) ** 0.5 if n > 1 else float("nan")
     return {
         "vigente": vig["id"],
-        "delta_media": res["media_seleccion"] - vig["media_seleccion"],
-        "delta_por_fold": deltas,
-        "folds_ganados": sum(d > 0 for d in deltas.values()),
+        "delta_media": res["media_test"] - vig["media_test"],
+        "delta_por_mes": deltas,
+        "meses_ganados": sum(d > 0 for d in deltas.values()),
         "pareado_media": media,
         "pareado_se": se,
     }
@@ -81,6 +83,7 @@ def main() -> int:
     ap.add_argument("--restaurar", action="store_true")
     ap.add_argument("--sin-commit", action="store_true")
     ap.add_argument("--sin-pagina", action="store_true")
+    ap.add_argument("--modificado", action="store_true", help="medir también con la data modificada del aula")
     a = ap.parse_args()
     if a.restaurar:
         restaurar()
@@ -109,12 +112,10 @@ def main() -> int:
         log_f.flush()
 
     semillas = prepare.semillas("screening")
-    meses = C.FOLDS_SELECCION + C.FOLDS_CONTROL
+    meses = C.MESES_TEST
     log(f"{id_}: {a.descripcion}")
     log(f"idea: {a.idea or '-'} | hipótesis: {a.hipotesis or '-'} | vigente: {vigente or '(ninguno: esta es la base)'}")
-    log(f"folds de selección {C.FOLDS_SELECCION}, control {C.FOLDS_CONTROL} | semillas {semillas}")
-    if C.SEMILLA_PRIMIGENIA == 290497:
-        log("AVISO: la semilla primigenia es la de ejemplo (config.SEMILLA_PRIMIGENIA); poné la tuya")
+    log(f"meses de test {C.MESES_TEST} (ventana de {C.VENTANA} meses) | semillas {semillas}")
 
     t0 = time.time()
     estado_exp, folds, error = None, {}, None
@@ -123,6 +124,10 @@ def main() -> int:
     try:
         mod = comun.cargar_modulo(carpeta / "train.py", f"modelo_{id_}")
         folds = prepare.evaluar(mod, meses, semillas, log=log, guardar=C.CACHE / "probs" / id_)
+        if a.modificado:
+            log("con la data modificada del aula:")
+            mod_folds = prepare.evaluar(mod, meses, semillas, df=prepare.cargar(modificado=True), log=log,
+                                        guardar=C.CACHE / "probs" / f"{id_}_modificado")
     except FueraDeTiempo:
         estado_exp, error = "fuera_de_presupuesto", f"cortado a los {C.PRESUPUESTO_S * 1.5:.0f} s"
     except Exception:
@@ -135,17 +140,22 @@ def main() -> int:
 
     res = {"id": id_, "carpeta": carpeta.name, "fecha": comun.ahora(), "descripcion": a.descripcion,
            "idea": a.idea, "hipotesis": a.hipotesis, "vigente_al_correr": vigente, "semillas": semillas,
-           "folds_seleccion": C.FOLDS_SELECCION, "folds_control": C.FOLDS_CONTROL, "folds": folds,
+           "meses_test": C.MESES_TEST, "folds": folds,
            "segundos": segundos, "error": error}
     comp = None
     if not error:
-        res["media_seleccion"] = prepare.media_ensamble(folds, C.FOLDS_SELECCION)
+        res["media_test"] = prepare.media_ensamble(folds, C.MESES_TEST)
+        res["total_test"] = res["media_test"] * len(C.MESES_TEST)
+        res["media_meseta"] = prepare.media_ensamble(folds, C.MESES_TEST, "meseta")
+        res["media_auc"] = prepare.media_ensamble(folds, C.MESES_TEST, "auc")
         res["media_sueltos"] = sum(
-            sum(v["ganancia"] for v in folds[str(m)]["semillas"].values()) / len(semillas) for m in C.FOLDS_SELECCION
-        ) / len(C.FOLDS_SELECCION)
-        res["control"] = prepare.media_ensamble(folds, C.FOLDS_CONTROL) if C.FOLDS_CONTROL else None
+            sum(v["ganancia"] for v in folds[str(m)]["semillas"].values()) / len(semillas) for m in C.MESES_TEST
+        ) / len(C.MESES_TEST)
         res["ratio_envios"] = sum(folds[str(m)]["ensamble"]["envios"] / folds[str(m)]["clientes"]
-                                  for m in C.FOLDS_SELECCION) / len(C.FOLDS_SELECCION)
+                                  for m in C.MESES_TEST) / len(C.MESES_TEST)
+        if a.modificado:
+            res["modificado"] = {"folds": mod_folds, "media_test": prepare.media_ensamble(mod_folds, C.MESES_TEST),
+                                 "media_meseta": prepare.media_ensamble(mod_folds, C.MESES_TEST, "meseta")}
         if segundos > C.PRESUPUESTO_S:
             estado_exp = "fuera_de_presupuesto"
         elif vigente is None:
@@ -153,7 +163,7 @@ def main() -> int:
         else:
             comp = comparar_con_vigente(res, comun.resultado(vigente))
             res["comparacion"] = comp
-            pasa = comp["delta_media"] > C.UMBRAL_SCREENING and comp["folds_ganados"] >= C.MIN_FOLDS_GANADOS
+            pasa = comp["delta_media"] > C.UMBRAL_SCREENING and comp["meses_ganados"] >= C.MIN_MESES_GANADOS
             estado_exp = "a_confirmar" if pasa else "descartado"
     res["estado"] = estado_exp
     (carpeta / "resultado.json").write_text(json.dumps(res, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -161,10 +171,12 @@ def main() -> int:
     filas = comun.leer_tsv(comun.RESULTADOS)
     filas.append({
         "id": id_, "fecha": res["fecha"], "idea": a.idea, "descripcion": a.descripcion,
-        "media_seleccion": round(res.get("media_seleccion", 0)) if not error else "",
+        "media_test": round(res.get("media_test", 0)) if not error else "",
+        "media_meseta": round(res.get("media_meseta", 0)) if not error else "",
+        "media_auc": round(res.get("media_auc", 0), 4) if not error else "",
         "delta_vs_vigente": round(comp["delta_media"]) if comp else "",
-        "folds_ganados": f"{comp['folds_ganados']}/{len(C.FOLDS_SELECCION)}" if comp else "",
-        "control": round(res["control"]) if res.get("control") is not None else "",
+        "meses_ganados": f"{comp['meses_ganados']}/{len(C.MESES_TEST)}" if comp else "",
+        "modificado": round(res["modificado"]["media_test"]) if res.get("modificado") else "",
         "segundos": segundos, "estado": estado_exp, "vigente_al_correr": vigente or "",
     })
     comun.escribir_tsv(comun.RESULTADOS, filas, comun.COLUMNAS_RESULTADOS)
@@ -174,16 +186,19 @@ def main() -> int:
         comun.guardar_estado(est)
     if a.idea:
         ideas.marcar(a.idea, "en-curso" if estado_exp == "a_confirmar" else "probada", id_,
-                     f"{estado_exp}, media {comun.millones(res.get('media_seleccion'))}")
+                     f"{estado_exp}, media {comun.millones(res.get('media_test'))}")
 
     resumen = f"{id_} | {estado_exp}"
     if not error:
-        resumen += f" | media selección {comun.millones(res['media_seleccion'])}"
+        resumen += (f" | test {comun.millones(res['total_test'])} en 3 meses (media {comun.millones(res['media_test'])},"
+                    f" meseta {comun.millones(res['media_meseta'])}, AUC {res['media_auc']:.4f})")
         if comp:
-            resumen += (f" | Δ {comun.millones(comp['delta_media'])} vs {vigente} | folds {comp['folds_ganados']}/"
-                        f"{len(C.FOLDS_SELECCION)} | pareado {comun.millones(comp['pareado_media'])} ± "
+            resumen += (f" | Δ media {comun.millones(comp['delta_media'])} vs {vigente} | meses {comp['meses_ganados']}/"
+                        f"{len(C.MESES_TEST)} | pareado {comun.millones(comp['pareado_media'])} ± "
                         f"{comun.millones(comp['pareado_se'])}")
-        resumen += f" | control {comun.millones(res['control'])} | {segundos:.0f} s"
+        if res.get("modificado"):
+            resumen += f" | modificado: media {comun.millones(res['modificado']['media_test'])}"
+        resumen += f" | {segundos:.0f} s"
     log("RESUMEN " + resumen)
     if estado_exp == "a_confirmar":
         log(f"siguiente paso: python tools/comparar.py {vigente} {id_}")

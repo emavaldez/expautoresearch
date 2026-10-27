@@ -9,7 +9,7 @@ const N = (x) => (x == null ? "–" : nf0.format(x));
 const A = (x) => (x == null ? "–" : x.toFixed(4).replace(".", ","));
 const signo = (x) => (x == null ? "–" : `${x > 0 ? "+" : x < 0 ? "−" : ""}${nf1.format(Math.abs(x) / 1e6)} M`);
 const claseSigno = (x) => (x == null || x === 0 ? "" : x > 0 ? "gana" : "pierde");
-const NOMBRE_MES = { "202007": "Julio 2020", "202008": "Agosto 2020", "202009": "Septiembre 2020" };
+const NOMBRE_MES = { "202007": "Julio", "202008": "Agosto", "202009": "Septiembre" };
 
 const ESTADO_EXP = {
   base: ["adoptado", "base"],
@@ -60,7 +60,7 @@ async function cargar() {
 function grafico() {
   const el = $("#grafico");
   const ex = D.experimentos.filter((e) => e.total != null);
-  const W = 960, H = 270, L = 62, R = 18, T = 18, B = 34;
+  const W = Math.max(Math.min(el.clientWidth || 960, 960), 480), H = Math.round(W * 0.28) + 40, L = 62, R = 18, T = 18, B = 34;
   if (!ex.length) {
     el.innerHTML = `<svg viewBox="0 0 ${W} 120" role="img" aria-label="Todavía no hay experimentos"><text class="vacio" x="0" y="60">El primer asiento es la base (B0): está corriendo.</text></svg>`;
     return;

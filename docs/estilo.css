@@ -177,7 +177,7 @@ h1 a { color: inherit; text-decoration: none; }
 .detalle dl { margin: 0; }
 .detalle dt { font: italic 400 15px var(--serif); color: var(--tinta-2); margin-top: 14px; }
 .detalle dt:first-child { margin-top: 0; }
-.detalle dd { margin: 2px 0 0; max-width: 60ch; }
+.detalle dd { margin: 2px 0 0; max-width: 60ch; font: 400 17px/1.5 var(--serif); }
 .detalle .meses { width: 100%; border-collapse: collapse; font: 400 14px/1.4 var(--sans); font-variant-numeric: tabular-nums; }
 .detalle .meses th { font: italic 400 14px var(--serif); color: var(--tinta-2); text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--tinta-3); }
 .detalle .meses th:first-child, .detalle .meses td:first-child { text-align: left; padding-left: 0; }

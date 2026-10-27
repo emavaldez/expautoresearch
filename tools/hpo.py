@@ -114,7 +114,7 @@ def correr(a) -> None:
         log_f.flush()
 
     df = prepare.cargar()
-    datos = {m: prepare.datos_fold(df, mod, m)[:3] for m in C.FOLDS_SELECCION}
+    datos = {m: prepare.datos_fold(df, mod, m)[:3] for m in C.MESES_TEST}
     del df
     log(f"búsqueda {a.nombre} sobre {a.base}: {a.trials} trials, semillas {semillas}, espacio {list(espacio)}")
 

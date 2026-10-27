@@ -1,0 +1,34 @@
+name: Proponer un experimento
+description: Algo para probar con el loop. Emmanuel la revisa y, si la aprueba, se corre con el mismo protocolo que el resto.
+title: "[propuesta] "
+labels: ["propuesta"]
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: Qué probar
+      description: Qué cambiar en el modelo o en el proceso
+    validations:
+      required: true
+  - type: textarea
+    id: porque
+    attributes:
+      label: Por qué debería mejorar
+      description: Qué esperás ver y en qué meses
+  - type: input
+    id: fuente
+    attributes:
+      label: Fuente
+      description: Un paper (con link), una clase, algo que viste o una idea propia
+      placeholder: https://arxiv.org/abs/... o "se me ocurrió porque..."
+  - type: textarea
+    id: medir
+    attributes:
+      label: Cómo medirlo
+      description: Si querés algo además de la ganancia de las tres listas de test (202007, 202008, 202009)
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad
+      options: ["alta", "media", "baja"]
+      default: 1

@@ -1,29 +1,84 @@
-"""Genera docs/index.html (la página de GitHub Pages) a partir de lo que hay en el repositorio.
+"""Genera los datos de la página (docs/data/proyecto.json). La página (docs/index.html, estilo.css, app.js) es fija y
+lee ese archivo; Vercel publica la carpeta docs/.
 
     python tools/pagina.py
 
-La corren solos run.py, comparar.py, hpo.py y sellado.py. Los datos van embebidos en el HTML, así que la página
-también se puede abrir directo desde el disco.
+La corren run.py y comparar.py al terminar. Los comentarios se leen en vivo desde los issues de GitHub; acá sólo se
+guarda cuántos tiene cada uno.
 """
 from __future__ import annotations
 
 import json
-import re
-import statistics
-import sys
+import shutil
+import subprocess
+from datetime import datetime
 
 import comun
 import config as C
 
-PLANTILLA = comun.RAIZ / "tools" / "pagina_plantilla.html"
-SALIDA = comun.RAIZ / "docs" / "index.html"
+SALIDA = comun.RAIZ / "docs" / "data" / "proyecto.json"
+BLOB = f"https://github.com/{C.REPO_GITHUB}/blob/main"
+
+PAPERS = [
+    ("A Rolling-Window Framework for Churn Prediction", "https://arxiv.org/abs/2606.06776", "alta", "sirve",
+     "Cuántos meses de entrenamiento y ventanas móviles: es la forma del escenario.", ["E1", "E1b", "E2", "E3"]),
+    ("How Early Is Early Enough?", "https://arxiv.org/abs/2607.00473", "alta", "sirve",
+     "Cuánta historia mirar en las variables, reportando la curva entera.", ["E4", "E5"]),
+    ("Seasonal false alarms in churn early-warning systems", "https://arxiv.org/abs/2608.18174", "alta", "sirve",
+     "Deltas interanuales y cortes con estacionalidad. Nuestra clase no es por umbral de caída, así que la parte de "
+     "etiquetas aplica poco.", ["E6", "E7", "P4"]),
+    ("Agentic Search Spaces for Tabular ML", "https://arxiv.org/abs/2609.16309", "alta", "sirve",
+     "El agente diseña el espacio de hiperparámetros y una búsqueda clásica elige.", ["E8"]),
+    ("The Hidden Costs of 99% Accuracy", "https://arxiv.org/abs/2610.00118", "alta", "sirve como método",
+     "Control de fuga y descarte de variables redundantes. No usamos SMOTE.", ["P3", "E21"]),
+    ("Calibrated, cost-sensitive ensemble for churn in retail banking", "https://doi.org/10.3389/frai.2026.1889639",
+     "alta", "sirve", "Corte por probabilidad calibrada, pesos por costo y ensamble de modelos distintos.",
+     ["E13", "E14", "E19", "E22", "B3"]),
+    ("When Is an LLM Worth It for HPO?", "https://arxiv.org/abs/2606.21641", "media", "sirve como control",
+     "El arranque fuerte de la búsqueda es la configuración por defecto, no el modelo de lenguaje.", ["E9"]),
+    ("Can LLMs Beat Classical HPO? A Study on autoresearch", "https://arxiv.org/abs/2603.24647", "media", "sirve",
+     "Híbrido agente + búsqueda clásica (Centaur).", ["E10"]),
+    ("MALMAS: multiagente con memoria para generar variables", "https://arxiv.org/abs/2604.20261", "media",
+     "sirve, con expectativa baja", "Variables generadas por roles con memoria y filtro de canaritos.", ["E11", "E12"]),
+    ("Data-Driven Telecom Marketing Optimization", "https://arxiv.org/abs/2607.10260", "media", "a medias",
+     "Cortes distintos por segmento. El dataset es chico y de telecomunicaciones.", ["E18"]),
+    ("ChurnNet", "https://arxiv.org/abs/2606.00169", "media", "no se prueba",
+     "Muestra que los modelos de series de tiempo no les ganan a los árboles: respalda no probar redes.", []),
+    ("Can We Predict Before Executing ML Agents? (FOREAGENT)", "https://arxiv.org/abs/2601.05930", "media",
+     "sirve para el loop", "Ordenar la cola de ideas por la ganancia que se espera.", ["E15"]),
+    ("Recovering Wasted Compute in Autoresearch Agents", "https://arxiv.org/abs/2608.10424", "baja",
+     "sirve para el loop", "Reglas para no repetir errores y explorar otras ramas.", ["E16"]),
+    ("TabFM-Auto", "https://arxiv.org/abs/2609.37989", "baja", "no se prueba",
+     "Los modelos fundacionales tabulares no escalan a 4,7 millones de filas y no están instalados.", []),
+    ("Explainable AI for churn: CRM integration", "https://arxiv.org/abs/2608.26151", "baja", "no se prueba",
+     "Explica predicciones con SHAP; no cambia la ganancia.", []),
+    ("Simulated Customers Never Walk Away", "https://arxiv.org/abs/2606.20708", "baja", "no se prueba",
+     "Trata de simular usuarios con modelos de lenguaje: otro problema.", []),
+    ("Profit Driven Decision Trees for Churn Prediction (ProfTree)", "https://arxiv.org/abs/1712.08101", "agregado",
+     "sirve", "Meter la ganancia en el entrenamiento: pesos por costo.", ["E19"]),
+    ("Predicting Customer Churn: XGBoost with Temporal Data", "https://arxiv.org/abs/1802.03396", "agregado", "sirve",
+     "Variables por ventanas de tiempo y lags por mes calendario.", ["B2", "E4"]),
+    ("e-Profits: ganancia por cliente", "https://arxiv.org/abs/2507.08860", "agregado", "no se prueba",
+     "Propone ganancia por cliente; acá todos los aciertos valen lo mismo.", []),
+]
 
 
-def _cola(texto: str, lineas: int) -> str:
-    partes = texto.splitlines()
-    if len(partes) <= lineas:
-        return texto
-    return f"[… {len(partes) - lineas} líneas antes; el log completo está en el repositorio]\n" + "\n".join(partes[-lineas:])
+def _comentarios() -> dict[str, int]:
+    if not shutil.which("gh"):
+        return {}
+    r = subprocess.run(["gh", "issue", "list", "-R", C.REPO_GITHUB, "--state", "all", "--limit", "500",
+                        "--json", "number,comments"], capture_output=True, text=True)
+    if r.returncode != 0:
+        return {}
+    return {str(i["number"]): len(i.get("comments") or []) for i in json.loads(r.stdout)}
+
+
+def _mes(f: dict) -> dict:
+    e = f["ensamble"]
+    return {"lista": e["ganancia"], "envios": e["envios"], "aciertos": e.get("aciertos"), "baja2": f["baja2"],
+            "clientes": f["clientes"], "meseta": e.get("meseta"), "envios_meseta": e.get("envios_meseta"),
+            "auc": e.get("auc"), "train_meses": f.get("train_meses"), "filas_train": f.get("filas_train"),
+            "segundos": f.get("segundos")}
 
 
 def _experimentos() -> list[dict]:
@@ -33,78 +88,56 @@ def _experimentos() -> list[dict]:
         if not ruta.exists():
             continue
         r = json.loads(ruta.read_text(encoding="utf-8"))
-        folds = []
-        for mes, f in (r.get("folds") or {}).items():
-            sueltos = [v["ganancia"] for v in f["semillas"].values()]
-            folds.append({
-                "mes": mes,
-                "tipo": "selección" if int(mes) in r.get("folds_seleccion", C.FOLDS_SELECCION) else "control",
-                "train_meses": f.get("train_meses"), "baja2": f.get("baja2"),
-                "ensamble": f["ensamble"]["ganancia"], "envios": f["ensamble"]["envios"],
-                "sueltos_media": statistics.mean(sueltos) if sueltos else None,
-                "sueltos_sd": statistics.stdev(sueltos) if len(sueltos) > 1 else 0,
-            })
-        comp = r.get("comparacion")
-        log = (carpeta / "log.txt").read_text(encoding="utf-8") if (carpeta / "log.txt").exists() else ""
-        diff = (carpeta / "cambios.diff").read_text(encoding="utf-8") if (carpeta / "cambios.diff").exists() else ""
-        if diff.count("\n") > 400:
-            diff = "\n".join(diff.splitlines()[:400]) + "\n[… diff recortado; completo en el repositorio]"
+        base = f"{BLOB}/experimentos/{carpeta.name}"
+        conf = r.get("confirmacion")
         salida.append({
-            "id": r["id"], "carpeta": carpeta.name, "fecha": r.get("fecha"), "descripcion": r.get("descripcion"),
-            "idea": r.get("idea"), "hipotesis": r.get("hipotesis"), "estado": r.get("estado"),
-            "media_seleccion": r.get("media_seleccion"), "control": r.get("control"), "segundos": r.get("segundos"),
-            "vigente_al_correr": r.get("vigente_al_correr"), "comparacion": comp,
-            "delta": comp["delta_media"] if comp else None,
-            "folds_ganados": f"{comp['folds_ganados']}/{len(C.FOLDS_SELECCION)}" if comp else None,
-            "confirmacion": r.get("confirmacion"), "error": (r.get("error") or "")[-3000:] or None,
-            "folds": folds, "log": _cola(log, 200), "diff": diff,
-            "archivos": sorted(p.name for p in carpeta.iterdir() if p.is_file()),
+            "id": r["id"], "fecha": r["fecha"], "descripcion": r["descripcion"], "idea": r.get("idea", ""),
+            "hipotesis": r.get("hipotesis", ""), "estado": r.get("estado"), "vigente_al_correr": r.get("vigente_al_correr"),
+            "segundos": r.get("segundos"), "error": (r.get("error") or "")[-1500:],
+            "total": r.get("total_test"), "media": r.get("media_test"), "meseta": r.get("media_meseta"),
+            "auc": r.get("media_auc"), "semillas": r.get("semillas"),
+            "meses": {m: _mes(f) for m, f in (r.get("folds") or {}).items()},
+            "modificado": ({"media": r["modificado"]["media_test"],
+                            "meses": {m: _mes(f) for m, f in r["modificado"]["folds"].items()}} if r.get("modificado") else None),
+            "comparacion": r.get("comparacion"),
+            "confirmacion": ({k: conf.get(k) for k in ("a", "b", "fecha", "ensamble_a", "ensamble_b", "pareado",
+                                                       "modificado", "decision")} if conf else None),
+            "archivos": {"codigo": f"{base}/train.py",
+                         "diff": f"{base}/cambios.diff" if (carpeta / "cambios.diff").exists() else None,
+                         "log": f"{base}/log.txt"},
         })
     return salida
 
 
-def _hpo() -> list[dict]:
-    salida = []
-    for carpeta in sorted((comun.RAIZ / "hpo").glob("*")):
-        trials = comun.leer_tsv(carpeta / "trials.tsv")
-        if not carpeta.is_dir() or not trials:
-            continue
-        mejor = max(trials, key=lambda t: float(t["valor"]))
-        arranque = next((t for t in trials if t.get("origen") == "arranque"), None)
-        estado_md = (carpeta / "estado.md").read_text(encoding="utf-8") if (carpeta / "estado.md").exists() else ""
-        base = re.search(r"Base: (\S+)", estado_md)
-        salida.append({"nombre": carpeta.name, "base": base.group(1) if base else None, "trials": len(trials),
-                       "mejor": float(mejor["valor"]),
-                       "mejores_params": json.dumps(json.loads(mejor["params"]), indent=1, ensure_ascii=False),
-                       "arranque": float(arranque["valor"]) if arranque else None})
-    return salida
-
-
-def datos() -> dict:
-    return {
-        "generado": comun.ahora(),
-        "repo": C.REPO_GITHUB,
-        "config": {"folds_seleccion": C.FOLDS_SELECCION, "folds_control": C.FOLDS_CONTROL,
-                   "folds_reserva": C.FOLDS_RESERVA, "mes_test": C.MES_TEST, "ganancia": C.GAN_ACIERTO,
-                   "costo": C.COSTO_ESTIMULO, "max_lecturas": C.MAX_LECTURAS_TEST, "umbral": C.UMBRAL_SCREENING},
-        "estado": comun.estado(),
-        "ideas": comun.leer_tsv(comun.IDEAS),
-        "experimentos": _experimentos(),
-        "hpo": _hpo(),
-        "sellado": {"reserva": comun.leer_tsv(comun.RAIZ / "sellado" / "reserva.tsv"),
-                    "test": comun.leer_tsv(comun.RAIZ / "sellado" / "test.tsv")},
-    }
-
-
 def generar() -> None:
-    texto = json.dumps(datos(), ensure_ascii=False).replace("</", "<\\/")
-    html = PLANTILLA.read_text(encoding="utf-8").replace("/*__DATOS__*/", texto)
-    SALIDA.parent.mkdir(exist_ok=True)
-    SALIDA.write_text(html, encoding="utf-8")
-    (SALIDA.parent / ".nojekyll").touch()
+    coment = _comentarios()
+    ideas = []
+    for f in comun.leer_tsv(comun.IDEAS):
+        ideas.append({**{k: f.get(k, "") for k in ("id", "origen", "titulo", "detalle", "fuente", "fuente_url",
+                                                  "como_medir", "prioridad", "estado", "issue", "actualizado")},
+                      "experimentos": [e for e in f.get("experimentos", "").split(",") if e],
+                      "comentarios": coment.get(f.get("issue", ""), 0)})
+    lecciones = [l[2:].strip() for l in (comun.RAIZ / "LECCIONES.md").read_text(encoding="utf-8").splitlines()
+                 if l.startswith("- ")] if (comun.RAIZ / "LECCIONES.md").exists() else []
+    datos = {
+        "generado": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "repo": C.REPO_GITHUB,
+        "escenario": {"meses_test": C.MESES_TEST, "ventana": C.VENTANA, "gap": C.GAP, "ganancia": C.GAN_ACIERTO,
+                      "costo": C.COSTO_ESTIMULO, "umbral_screening": C.UMBRAL_SCREENING,
+                      "min_meses_ganados": C.MIN_MESES_GANADOS, "semillas_screening": C.BLOQUES["screening"][1]
+                      - C.BLOQUES["screening"][0], "semillas_confirmacion": C.BLOQUES["confirmacion"][1]
+                      - C.BLOQUES["confirmacion"][0]},
+        "vigente": comun.estado().get("vigente"),
+        "experimentos": _experimentos(),
+        "ideas": ideas,
+        "papers": [{"titulo": t, "url": u, "prioridad": p, "veredicto": v, "para": d, "ideas": i}
+                   for t, u, p, v, d, i in PAPERS],
+        "lecciones": lecciones,
+    }
+    SALIDA.parent.mkdir(parents=True, exist_ok=True)
+    SALIDA.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"página: {SALIDA.relative_to(comun.RAIZ)} ({len(datos['experimentos'])} experimentos, {len(ideas)} ideas)")
 
 
 if __name__ == "__main__":
     generar()
-    print(f"página -> {SALIDA.relative_to(comun.RAIZ)}")
-    sys.exit(0)

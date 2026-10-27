@@ -4,11 +4,11 @@
     python tools/comparar.py E003 E007 --semillas 10
     python tools/comparar.py E003 E007 --solo-informe  # no toca estados
 
-Corre el train.py guardado de cada experimento (no el de la raíz) en los folds de selección y de control.
+Corre el train.py guardado de cada experimento (no el de la raíz) en los meses de test.
 Confirma B si:
-  - el ensamble de B le gana al de A en la media de los folds de selección,
-  - la diferencia pareada por semilla (media de los folds de selección) supera 2 errores estándar, y
-  - en el control no pierde más de 2 errores estándar.
+  - la lista del ensamble de B gana más que la de A en la media de los meses de test, y
+  - la diferencia pareada por semilla (media de los meses de test) supera 2 errores estándar.
+Con --modificado lo mide también con la data modificada del aula (se informa, no decide).
 Si B estaba "a_confirmar" y A es el vigente, B pasa a ser el vigente.
 La evaluación de cada experimento se guarda (eval_<bloque>_<n>.json) y se reutiliza en la próxima comparación.
 """
@@ -29,7 +29,7 @@ import prepare
 
 def evaluacion(id_: str, semillas: list[int], bloque: str, df, log) -> dict:
     ruta = comun.carpeta_experimento(id_) / f"eval_{bloque}_{len(semillas)}.json"
-    meses = C.FOLDS_SELECCION + C.FOLDS_CONTROL
+    meses = C.MESES_TEST
     if ruta.exists():
         guardada = json.loads(ruta.read_text(encoding="utf-8"))
         if guardada["semillas"] == semillas and guardada["meses"] == meses:
@@ -60,6 +60,7 @@ def main() -> int:
     ap.add_argument("--bloque", default="confirmacion", choices=list(C.BLOQUES))
     ap.add_argument("--solo-informe", action="store_true")
     ap.add_argument("--sin-commit", action="store_true")
+    ap.add_argument("--modificado", action="store_true")
     a = ap.parse_args()
 
     carpeta_b = comun.carpeta_experimento(a.b)
@@ -76,28 +77,33 @@ def main() -> int:
     fa = evaluacion(a.a, semillas, a.bloque, df, log)
     fb = evaluacion(a.b, semillas, a.bloque, df, log)
 
-    sel = C.FOLDS_SELECCION
+    sel = C.MESES_TEST
     ens_a = prepare.media_ensamble(fa, sel)
     ens_b = prepare.media_ensamble(fb, sel)
     par = pareado(fa, fb, sel, semillas)
-    ctrl = pareado(fa, fb, C.FOLDS_CONTROL, semillas) if C.FOLDS_CONTROL else None
-    por_fold = {str(m): {"a": fa[str(m)]["ensamble"]["ganancia"], "b": fb[str(m)]["ensamble"]["ganancia"]}
-                for m in sel + C.FOLDS_CONTROL}
+    ctrl = None
+    if a.modificado:
+        dfm = prepare.cargar(modificado=True)
+        fam = evaluacion(a.a, semillas, a.bloque + "_modificado", dfm, log)
+        fbm = evaluacion(a.b, semillas, a.bloque + "_modificado", dfm, log)
+        ctrl = pareado(fam, fbm, sel, semillas)
+        ctrl["ensamble_a"], ctrl["ensamble_b"] = prepare.media_ensamble(fam, sel), prepare.media_ensamble(fbm, sel)
+    por_fold = {str(m): {"a": fa[str(m)]["ensamble"]["ganancia"], "b": fb[str(m)]["ensamble"]["ganancia"]} for m in sel}
 
-    confirma = (ens_b > ens_a and par["media"] > 2 * par["se"]
-                and (ctrl is None or ctrl["media"] > -2 * ctrl["se"]))
+    confirma = ens_b > ens_a and par["media"] > 2 * par["se"]
     decision = "confirmado" if confirma else "rechazado"
     for m, v in por_fold.items():
         log(f"[{m}] ensamble {a.a} {comun.millones(v['a'])} | {a.b} {comun.millones(v['b'])} | "
             f"Δ {comun.millones(v['b'] - v['a'])}")
-    log(f"selección: ensamble Δ {comun.millones(ens_b - ens_a)} | pareado {comun.millones(par['media'])} ± "
+    log(f"test: ensamble Δ {comun.millones(ens_b - ens_a)} | pareado {comun.millones(par['media'])} ± "
         f"{comun.millones(par['se'])} ({par['gana']}/{par['n']} semillas, Wilcoxon p={par['p_wilcoxon']:.3f})")
     if ctrl:
-        log(f"control: pareado {comun.millones(ctrl['media'])} ± {comun.millones(ctrl['se'])}")
+        log(f"modificado: ensamble {comun.millones(ctrl['ensamble_a'])} -> {comun.millones(ctrl['ensamble_b'])} | pareado "
+            f"{comun.millones(ctrl['media'])} ± {comun.millones(ctrl['se'])}")
     log(f"DECISIÓN: {decision}")
 
     informe = {"a": a.a, "b": a.b, "fecha": comun.ahora(), "bloque": a.bloque, "semillas": semillas,
-               "ensamble_a": ens_a, "ensamble_b": ens_b, "pareado": par, "control": ctrl, "por_fold": por_fold,
+               "ensamble_a": ens_a, "ensamble_b": ens_b, "pareado": par, "modificado": ctrl, "por_mes": por_fold,
                "decision": decision}
     (carpeta_b / f"confirmacion_vs_{a.a}.json").write_text(json.dumps(informe, indent=2) + "\n", encoding="utf-8")
     log_f.close()

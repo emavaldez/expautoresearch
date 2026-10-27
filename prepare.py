@@ -1,19 +1,19 @@
-"""Arnés fijo: datos, clase ternaria, folds, semillas, métrica y evaluación.
+"""Arnés fijo: datos, clase ternaria, train y test, semillas, corte, métrica y evaluación.
 
 El loop de autoresearch NO edita este archivo: define el problema y cómo se mide. Lo único editable es train.py,
 que tiene que exponer esta interfaz:
 
-    MESES_ENTRENAMIENTO : int   meses con clase que usa (los más recientes que permite el gap)
+    MESES_ENTRENAMIENTO : int   meses con clase completa que usa, los más recientes dentro de la ventana
+                                (para puntuar m: entre m - 5 y m - 2, o sea 4 como máximo)
     HISTORIA_MESES      : int   meses de datos que make_features necesita antes de cada mes de entrenamiento
     make_features(df) -> df     recibe todas las filas de los meses necesarios (<= mes a puntuar), SIN la clase;
                                 devuelve una fila por fila de entrada, con el mismo índice
-    train_and_predict(train, score, seed, params=None) -> np.ndarray
-                                train: features + columna clase_ternaria; score: features del mes a puntuar.
+    train_and_predict(train, score, seed, params=None[, intermedio=None]) -> np.ndarray
+                                train: features + clase_ternaria; score: features del mes a puntuar; intermedio
+                                (opcional): features de m - 1 con la columna baja1 (sus BAJA+1 ya se conocen).
                                 Devuelve una probabilidad por fila de score.
 
-Opcional en train.py:
-    CORTE = {"tipo": "ratio"} | {"tipo": "fijo", "envios": n} | {"tipo": "umbral", "p": 0.0256}
-            cómo se decide cuántos estimular en el mes sin clase (ver tools/sellado.py). Por defecto "ratio".
+Opcional en train.py: CORTE (dict) o corte(prob, train, score) -> int, cuántos estimular (ver envios()).
 """
 from __future__ import annotations
 
@@ -75,29 +75,53 @@ def _leer(ruta: Path) -> pd.DataFrame:
     return pd.read_csv(ruta, engine="pyarrow")
 
 
-def cargar() -> pd.DataFrame:
-    """Dataset con la clase calculada, desde la caché (se arma la primera vez). La clase del mes de test y de los
-    meses posteriores queda siempre vacía: el modelo no la puede ver."""
-    cache = C.CACHE / "dataset.parquet"
+def modificar(df: pd.DataFrame) -> pd.DataFrame:
+    """La data "modificada" del aula, simulada (fija, con semilla): lo que nos pueden hacer en 202007-202009.
+
+    Montos con inflación de golpe (x1,30 / x1,35 / x1,40) y 2% de ruido; 202007: mpayroll en cero y Visa_status vacía en
+    el 30%; 202008: ctrx_quarter vacía y cliente_vip ausente; 202009: mcaja_ahorro x100 y cliente_antiguedad en años.
+    """
+    df = df.copy()
+    rng = np.random.default_rng(11)
+    montos = [c for c in df.columns if c.startswith(("m", "Visa_m", "Master_m"))]
+    for mes, f in ((202007, 1.30), (202008, 1.35), (202009, 1.40)):
+        sel = (df[MES] == mes).to_numpy()
+        df.loc[sel, montos] = (df.loc[sel, montos].to_numpy() * f * rng.normal(1, 0.02, (sel.sum(), len(montos)))).astype(np.float32)
+    m7, m8, m9 = (df[MES] == 202007).to_numpy(), (df[MES] == 202008).to_numpy(), (df[MES] == 202009).to_numpy()
+    df.loc[m7, "mpayroll"] = 0.0
+    df.loc[m7 & (rng.random(len(df)) < 0.3), "Visa_status"] = np.nan
+    df.loc[m8, ["ctrx_quarter", "cliente_vip"]] = np.nan
+    df.loc[m9, "mcaja_ahorro"] = df.loc[m9, "mcaja_ahorro"] * 100
+    df["cliente_antiguedad"] = df["cliente_antiguedad"].astype(np.float32)
+    df.loc[m9, "cliente_antiguedad"] = (df.loc[m9, "cliente_antiguedad"] / 12).round(1)
+    return df
+
+
+def cargar(modificado: bool = False) -> pd.DataFrame:
+    """Dataset con la clase calculada (por presencia, receta del curso), desde la caché. Sólo meses hasta
+    config.ULTIMO_MES_DATOS. Con modificado=True, 202007-202009 vienen alterados como en el aula (ver modificar)."""
+    cache = C.CACHE / ("dataset_modificado.parquet" if modificado else "dataset.parquet")
     if cache.exists() and (not C.DATOS.exists() or cache.stat().st_mtime >= C.DATOS.stat().st_mtime):
         return pd.read_parquet(cache)
-    if not C.DATOS.exists():
-        raise FileNotFoundError(f"No encuentro el dataset en {C.DATOS} (config.DATOS o la variable EXP_DATOS)")
-    t0 = time.time()
-    df = _leer(C.DATOS)
-    for c in df.columns:
-        if df[c].dtype == np.float64:
-            df[c] = df[c].astype(np.float32)
-    df[ID] = df[ID].astype(np.int64)
-    df[MES] = df[MES].astype(np.int64)
-    if CLASE not in df.columns:
-        df[CLASE] = clase_ternaria(df)
+    if modificado:
+        df = modificar(cargar(False))
     else:
-        df[CLASE] = pd.Categorical(df[CLASE], categories=["CONTINUA", "BAJA+1", "BAJA+2"])
-    df.loc[df[MES] >= C.MES_TEST, CLASE] = np.nan
+        if not C.DATOS.exists():
+            raise FileNotFoundError(f"No encuentro el dataset en {C.DATOS} (config.DATOS o la variable EXP_DATOS)")
+        t0 = time.time()
+        df = _leer(C.DATOS)
+        df = df[df[MES] <= C.ULTIMO_MES_DATOS].reset_index(drop=True)
+        for c in df.columns:
+            if df[c].dtype == np.float64:
+                df[c] = df[c].astype(np.float32)
+        df[ID] = df[ID].astype(np.int64)
+        df[MES] = df[MES].astype(np.int64)
+        if CLASE in df.columns:
+            df = df.drop(columns=[CLASE])
+        df[CLASE] = clase_ternaria(df)
+        print(f"caché armada: {len(df):,} filas, {df.shape[1]} columnas, {df[MES].nunique()} meses ({time.time() - t0:.0f} s)")
     C.CACHE.mkdir(parents=True, exist_ok=True)
     df.to_parquet(cache)
-    print(f"caché armada: {len(df):,} filas, {df.shape[1]} columnas, {df[MES].nunique()} meses ({time.time() - t0:.0f} s)")
     return df
 
 
@@ -169,18 +193,54 @@ def ganancia_en(prob: np.ndarray, es_baja2: np.ndarray, envios: int) -> float:
     return float(cum[envios - 1])
 
 
-# ---------------------------------------------------------------- folds
+# ---------------------------------------------------------------- corte y AUC
 
-def datos_fold(df: pd.DataFrame, mod, mes: int, ultima_clase: int | None = None):
-    """Arma train y score para puntuar `mes` con clase hasta `ultima_clase` (por defecto mes - GAP)."""
-    ultima = sumar_meses(mes, -C.GAP) if ultima_clase is None else ultima_clase
+def auc(prob: np.ndarray, y: np.ndarray) -> float:
+    y = np.asarray(y, dtype=bool)
+    npos, nneg = int(y.sum()), int((~y).sum())
+    if not npos or not nneg:
+        return float("nan")
+    r = pd.Series(np.asarray(prob)).rank().to_numpy()
+    return float((r[y].sum() - npos * (npos + 1) / 2) / (npos * nneg))
+
+
+def envios(mod, prob: np.ndarray, train: pd.DataFrame, score: pd.DataFrame) -> int:
+    """Cuántos clientes se estimulan en el mes puntuado, sin mirar su clase.
+
+    train.py puede definir corte(prob, train, score) -> int, o CORTE:
+      {"tipo": "fraccion", "f": 0.033}   una proporción fija de los clientes del mes (por defecto)
+      {"tipo": "fijo", "envios": n}
+      {"tipo": "umbral", "p": 0.025}      los de probabilidad >= p (si train_and_predict devuelve probabilidades calibradas)
+    """
+    f = getattr(mod, "corte", None)
+    if callable(f):
+        return max(1, min(int(f(prob, train, score)), len(prob)))
+    c = getattr(mod, "CORTE", {"tipo": "fraccion", "f": 0.033})
+    if c["tipo"] == "fraccion":
+        n = round(c["f"] * len(prob))
+    elif c["tipo"] == "fijo":
+        n = c["envios"]
+    elif c["tipo"] == "umbral":
+        n = int((np.asarray(prob) >= c["p"]).sum())
+    else:
+        raise ValueError(f"CORTE desconocido: {c}")
+    return max(1, min(int(n), len(prob)))
+
+
+# ---------------------------------------------------------------- train y test
+
+def datos_fold(df: pd.DataFrame, mod, mes: int):
+    """Arma lo que se sabe al puntuar `mes`: train (meses con clase completa dentro de la ventana), score (el mes) e
+    intermedio (m - 1, con la columna baja1: las BAJA+1 ya se conocen, el resto no se sabe)."""
+    ultima = sumar_meses(mes, -C.GAP)
+    desde_ventana = sumar_meses(mes, -(C.VENTANA - 1))
     historia = int(getattr(mod, "HISTORIA_MESES", 0))
-    n = int(getattr(mod, "MESES_ENTRENAMIENTO", 1))
+    n = int(getattr(mod, "MESES_ENTRENAMIENTO", C.VENTANA - C.GAP))
     primero = int(df[MES].min())
-    # un mes entra al entrenamiento sólo si tiene detrás toda la historia que pide make_features
-    candidatos = [m for m in meses_con_clase(df) if m <= ultima and sumar_meses(m, -historia) >= primero]
+    candidatos = [m for m in meses_con_clase(df)
+                  if desde_ventana <= m <= ultima and sumar_meses(m, -historia) >= primero]
     if not candidatos:
-        raise ValueError(f"No hay meses con clase <= {ultima} con {historia} meses de historia detrás")
+        raise ValueError(f"No hay meses con clase entre {desde_ventana} y {ultima} con {historia} meses de historia")
     train_meses = candidatos[-n:]
     desde = sumar_meses(train_meses[0], -historia)
     sub = df[(df[MES] >= desde) & (df[MES] <= mes)]
@@ -194,23 +254,38 @@ def datos_fold(df: pd.DataFrame, mod, mes: int, ultima_clase: int | None = None)
     train = X[en_train].copy()
     train[CLASE] = clase[en_train].to_numpy()
     score = X[(X[MES] == mes).to_numpy()]
+    previo = sumar_meses(mes, -1)
+    intermedio = X[(X[MES] == previo).to_numpy()].copy()
+    intermedio["baja1"] = (clase.loc[intermedio.index] == "BAJA+1").to_numpy()
     y = (clase.loc[score.index] == "BAJA+2").to_numpy()
     info = {"train_meses": train_meses, "filas_train": int(len(train)), "clientes": int(len(score)),
             "baja2": int(y.sum()), "columnas": int(score.shape[1])}
     if len(train_meses) < n:
-        info["aviso"] = f"pidió {n} meses de entrenamiento y hay {len(train_meses)} con historia completa"
-    return train, score, y, info
+        info["aviso"] = f"pidió {n} meses de entrenamiento y hay {len(train_meses)} con historia completa en la ventana"
+    return train, score, y, info, intermedio
+
+
+def _llamar(mod, train, score, s, params, intermedio):
+    import inspect
+    kw = {}
+    pars = inspect.signature(mod.train_and_predict).parameters
+    if params is not None:
+        kw["params"] = params
+    if "intermedio" in pars:
+        kw["intermedio"] = intermedio
+    return np.asarray(mod.train_and_predict(train, score, s, **kw), dtype=np.float64)
 
 
 def evaluar(mod, meses: list[int], semillas_: list[int], df: pd.DataFrame | None = None, log=print,
             guardar: Path | None = None, params: dict | None = None) -> dict:
-    """Entrena y puntúa cada mes con cada semilla. Mide cada modelo suelto y el ensamble (promedio de
-    probabilidades), que es lo que se entrega."""
+    """Para cada mes de test: entrena con lo que se sabía, puntúa con cada semilla y arma la lista con el ensamble
+    (promedio de probabilidades), que es lo que se entrega. La ganancia que decide es la de esa lista, con la clase
+    verdadera del mes. También se guardan la meseta de la curva (lo mejor que se podía con ese orden) y la AUC."""
     df = cargar() if df is None else df
     salida = {}
     for mes in meses:
         t0 = time.time()
-        train, score, y, info = datos_fold(df, mod, mes)
+        train, score, y, info, intermedio = datos_fold(df, mod, mes)
         log(f"[{mes}] entrena con {info['train_meses']} ({info['filas_train']:,} filas) | puntúa {info['clientes']:,} "
             f"clientes, {info['baja2']} BAJA+2 | {info['columnas']} columnas | features {time.time() - t0:.0f} s")
         if "aviso" in info:
@@ -218,18 +293,26 @@ def evaluar(mod, meses: list[int], semillas_: list[int], df: pd.DataFrame | None
         probs, por_semilla = [], {}
         for s in semillas_:
             t1 = time.time()
-            p = np.asarray(mod.train_and_predict(train, score, s, params) if params is not None
-                           else mod.train_and_predict(train, score, s), dtype=np.float64)
+            p = _llamar(mod, train, score, s, params, intermedio)
             if p.shape != (len(score),):
                 raise ValueError(f"train_and_predict devolvió {p.shape}, se esperaban {len(score)} probabilidades")
-            g, n = ganancia_suavizada(p, y)
-            por_semilla[str(s)] = {"ganancia": g, "envios": n}
+            k = envios(mod, p, train, score)
+            gm, nm = ganancia_suavizada(p, y)
+            por_semilla[str(s)] = {"ganancia": ganancia_en(p, y, k), "envios": k, "meseta": gm, "envios_meseta": nm,
+                                   "auc": auc(p, y)}
             probs.append(p)
-            log(f"[{mes}] semilla {s}: {g / 1e6:,.1f}M en {n:,} envíos ({time.time() - t1:.0f} s)")
+            log(f"[{mes}] semilla {s}: lista {ganancia_en(p, y, k) / 1e6:,.1f}M con {k:,} | meseta {gm / 1e6:,.1f}M en "
+                f"{nm:,} | AUC {auc(p, y):.4f} ({time.time() - t1:.0f} s)")
         ens = np.mean(probs, axis=0)
-        g, n = ganancia_suavizada(ens, y)
-        log(f"[{mes}] ENSAMBLE de {len(semillas_)}: {g / 1e6:,.1f}M en {n:,} envíos")
-        salida[str(mes)] = {**info, "semillas": por_semilla, "ensamble": {"ganancia": g, "envios": n},
+        k = envios(mod, ens, train, score)
+        g = ganancia_en(ens, y, k)
+        gm, nm = ganancia_suavizada(ens, y)
+        aciertos = int(np.asarray(y)[np.argsort(-ens, kind="stable")[:k]].sum())
+        log(f"[{mes}] ENSAMBLE de {len(semillas_)}: lista {g / 1e6:,.1f}M ({aciertos} de {int(y.sum())} BAJA+2 con {k:,} "
+            f"envíos) | meseta {gm / 1e6:,.1f}M en {nm:,} | AUC {auc(ens, y):.4f}")
+        salida[str(mes)] = {**info, "semillas": por_semilla,
+                            "ensamble": {"ganancia": g, "envios": k, "aciertos": aciertos, "meseta": gm,
+                                         "envios_meseta": nm, "auc": auc(ens, y)},
                             "segundos": round(time.time() - t0, 1)}
         if guardar is not None:
             guardar.mkdir(parents=True, exist_ok=True)
@@ -237,14 +320,5 @@ def evaluar(mod, meses: list[int], semillas_: list[int], df: pd.DataFrame | None
     return salida
 
 
-def media_ensamble(res: dict, meses: list[int]) -> float:
-    return float(np.mean([res[str(m)]["ensamble"]["ganancia"] for m in meses]))
-
-
-def predecir(mod, ultima_clase: int, mes: int, semillas_: list[int], df: pd.DataFrame | None = None, log=print):
-    """Entrena con clase hasta `ultima_clase` y puntúa `mes` (sin clase). Devuelve ids y probabilidad del ensamble."""
-    df = cargar() if df is None else df
-    train, score, _, info = datos_fold(df, mod, mes, ultima_clase=ultima_clase)
-    log(f"[{mes}] entrena con {info['train_meses']} ({info['filas_train']:,} filas), puntúa {info['clientes']:,}")
-    probs = [np.asarray(mod.train_and_predict(train, score, s), dtype=np.float64) for s in semillas_]
-    return score[ID].to_numpy(), np.mean(probs, axis=0)
+def media_ensamble(res: dict, meses: list[int], clave: str = "ganancia") -> float:
+    return float(np.mean([res[str(m)]["ensamble"][clave] for m in meses]))
