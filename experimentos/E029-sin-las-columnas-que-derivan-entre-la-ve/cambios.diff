@@ -1,0 +1,42 @@
+--- E019/train.py
++++ E029/train.py
+@@ -306,12 +306,39 @@
+     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
+ 
+ 
++_DERIVA = {}
++
++
++def sin_deriva(train: pd.DataFrame, score: pd.DataFrame, cols: list, umbral: float = 0.25) -> list:
++    """E20: PSI de cada columna entre el entrenamiento y el mes que se puntúa (10 cuantiles del entrenamiento, los
++    vacíos aparte); las de PSI >= 0,25 no entran. No usa la clase. Una vez por mes puntuado."""
++    clave = (int(score.foto_mes.iloc[0]), len(train), len(cols))
++    if clave not in _DERIVA:
++        a = train[cols].sample(min(80_000, len(train)), random_state=1).to_numpy(np.float64)
++        b = score[cols].sample(min(80_000, len(score)), random_state=1).to_numpy(np.float64)
++        quedan = []
++        for j, c in enumerate(cols):
++            x, y = a[:, j], b[:, j]
++            bordes = np.unique(np.nanquantile(x, np.linspace(0.1, 0.9, 9))) if np.isfinite(x).any() else np.array([])
++            def prop(v):
++                f = np.isfinite(v)
++                h = np.bincount(np.searchsorted(bordes, v[f], side="right"), minlength=len(bordes) + 1).astype(float)
++                return np.maximum(np.append(h, (~f).sum()) / max(len(v), 1), 1e-4)
++            pa, pb = prop(x), prop(y)
++            if np.sum((pb - pa) * np.log(pb / pa)) < umbral:
++                quedan.append(c)
++        _DERIVA[clave] = quedan
++        print(f"  E20: {len(quedan)} de {len(cols)} columnas sin deriva ({clave[0]})", flush=True)
++    return _DERIVA[clave]
++
++
+ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
+     """General + especialista de deudores con reparto. Devuelve P(BAJA+1) + P(BAJA+2) del general, con el reparto en el segmento."""
+     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
+     train = train[train.foto_mes.isin(months)]
+     # Columnas: todas menos la historia del resumen de tarjetas (ver historia_de_resumen); el FE de la cátedra lo ve sólo el general.
+     cols = [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)]  # P3: sin foto_mes
++    cols = sin_deriva(train, score, cols)  # E20
+     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
+     # igual sólo mira el último mes con clase, que el enmascarado no toca.
+     en_seg, p_esp = np.zeros(len(score), bool), None  # B5: sin especialista

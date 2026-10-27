@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 19:03",
+ "generado": "2026-10-27 19:14",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3015,6 +3015,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E028-sin-variables-redundantes-correlacion-ma/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E028-sin-variables-redundantes-correlacion-ma/log.txt"
    }
+  },
+  {
+   "id": "E029",
+   "fecha": "2026-10-27 19:14",
+   "descripcion": "sin las columnas que derivan entre la ventana y el mes (PSI mayor o igual a 0,25)",
+   "idea": "E20",
+   "hipotesis": "Predicción: empate o pierde poco con la data original (en 2019 casi nada deriva) y gana con la modificada. Es el control de drifting de la cátedra llevado al modelo",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 599.1,
+   "error": "",
+   "total": 745030000.0,
+   "media": 248343333.33333334,
+   "meseta": 254332984.20615128,
+   "auc": 0.9157415581333318,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 203802500.0,
+     "envios": 4349,
+     "aciertos": 294,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 208800573.5660848,
+     "envios_meseta": 2948,
+     "auc": 0.9091872535772899,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 203.7
+    },
+    "201909": {
+     "lista": 255117500.0,
+     "envios": 4403,
+     "aciertos": 342,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 263694208.22942644,
+     "envios_meseta": 3779,
+     "auc": 0.9139572211304123,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 196.9
+    },
+    "201910": {
+     "lista": 286110000.0,
+     "envios": 4476,
+     "aciertos": 372,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 290504170.8229426,
+     "envios_meseta": 3881,
+     "auc": 0.9240801996922932,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 197.6
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": -3300000.0,
+    "delta_por_mes": {
+     "201908": -7700000.0,
+     "201909": -6600000.0,
+     "201910": 4400000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -880000.0,
+    "pareado_se": 563284.0215103633
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E029-sin-las-columnas-que-derivan-entre-la-ve/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E029-sin-las-columnas-que-derivan-entre-la-ve/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E029-sin-las-columnas-que-derivan-entre-la-ve/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -3349,11 +3447,13 @@
    "fuente_url": "https://github.com/dmecoyfin/dmeyf2026/blob/main/monday/z701_drifting.ipynb",
    "como_medir": "Ganancia de las tres listas de test (201908, 201909, 201910) contra el vigente, con la regla de adopción. Con la data original y con la modificada simulada.",
    "prioridad": "media",
-   "estado": "aprobada",
+   "estado": "probada",
    "issue": "20",
-   "actualizado": "2026-10-27 03:53",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-27 19:14",
+   "experimentos": [
+    "E029"
+   ],
+   "comentarios": 1
   },
   {
    "id": "E8",
@@ -3808,7 +3908,8 @@
   "E025 (E8): E019 con los parámetros del mejor trial (254 hojas, 667 rondas, tasa 0,016, submuestreo 0,13): 760,4 M (+5,5 M), +1,8 M por mes, gana 2 de 3, pareado +1,9 ± 2,0 M; meseta y AUC suben (258,7 M; 0,918). No pasa el umbral y tarda 3.058 s contra ~640 (200 s por semilla y mes): en el aula, con 5 semillas, serían 17 minutos sólo para el modelo. Queda E019.",
   "E14: curva de semillas de E019 (bloque de búsqueda, las primeras N): total de las tres listas 1 → 758,2 M; 3 → 750,5; 5 → 763,7; 10 → 764,8; 20 → 760,4. De 5 en adelante es plano (diferencias de ruido); 3 queda abajo. En el aula van 5 semillas: es el mismo resultado que 10 o 20 en la mitad o la cuarta parte del tiempo.",
   "E026 (B2): lags por mes calendario: idéntico al vigente (754,9 M, misma AUC y meseta). En 2019 casi ningún cliente tiene huecos (el que se va no vuelve), así que el lag por fila y el del mes calendario coinciden: no hace nada.",
-  "E027 (E22): ensamble de la multiclase y la binaria (promedio de percentiles, con el nivel de la multiclase): 759,3 M (+4,4 M), gana 1 de 3, pareado −0,5 ± 0,9 M, 35% más lento. Empate: la binaria y la multiclase ordenan casi igual, no hay diversidad que sumar."
+  "E027 (E22): ensamble de la multiclase y la binaria (promedio de percentiles, con el nivel de la multiclase): 759,3 M (+4,4 M), gana 1 de 3, pareado −0,5 ± 0,9 M, 35% más lento. Empate: la binaria y la multiclase ordenan casi igual, no hay diversidad que sumar.",
+  "E028 (E21): sacar columnas con correlación mayor que 0,98 con otra (75 a 105 de 1.278): las tres listas aciertan exactamente lo mismo que el vigente; pareado −1,7 ± 0,8 M por semilla. No suma. Ojo: E019, E022 (mismo código) y E028 dan las mismas listas pero mesetas distintas por décimas: LightGBM con varios hilos no es determinístico en esta configuración."
  ],
  "aula": {
   "modelo": "E019",
