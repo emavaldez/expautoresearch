@@ -16,9 +16,9 @@
   <div class="marco cabecera-fila">
     <div>
       <h1><a href="#/experimentos">Libro de experimentos</a></h1>
-      <p class="bajada">Churn bancario para la Segunda Competencia de DMEyF. El modelo se define sólo con datos de 2019:
-        cada experimento cambia una cosa y se mide con la plata que habrían ganado sus listas de agosto, septiembre y
-        octubre de 2019. Se queda sólo lo que mejora.</p>
+      <p class="bajada">Churn bancario con datos de 2019. ¿Qué cambios sobre el baseline de la cátedra predicen mejor
+        quién se va, medido en un mes que nunca se usó para decidir? Cada hipótesis cambia una sola cosa, se elige en
+        agosto y se compara en octubre.</p>
     </div>
     <a class="boton" href="#/proponer">Proponer un experimento</a>
   </div>
@@ -26,17 +26,18 @@
 
 <main class="marco">
   <section class="saldo" aria-labelledby="saldo-titulo">
-    <h2 id="saldo-titulo" class="oculto">Ganancia en test de cada experimento</h2>
+    <h2 id="saldo-titulo" class="oculto">Diferencia contra el baseline por hipótesis</h2>
     <div id="grafico" class="grafico"></div>
     <p id="resumen" class="resumen"></p>
   </section>
 
   <nav class="pestanas" aria-label="Secciones">
-    <a href="#/experimentos" data-seccion="experimentos">Experimentos</a>
-    <a href="#/ideas" data-seccion="ideas">Ideas</a>
-    <a href="#/propuestas" data-seccion="propuestas">Propuestas</a>
+    <a href="#/protocolo" data-seccion="protocolo">Protocolo</a>
+    <a href="#/hipotesis" data-seccion="hipotesis">Hipótesis</a>
+    <a href="#/loop" data-seccion="loop">Loop de autoresearch</a>
     <a href="#/aula" data-seccion="aula">Para el aula</a>
-    <a href="#/metodo" data-seccion="metodo">Cómo medimos</a>
+    <a href="#/antecedentes" data-seccion="antecedentes">Antecedentes</a>
+    <a href="#/propuestas" data-seccion="propuestas">Propuestas</a>
     <a href="#/papers" data-seccion="papers">Papers</a>
   </nav>
 

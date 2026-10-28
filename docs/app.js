@@ -48,8 +48,8 @@ async function cargar() {
     $("#vista").innerHTML = `<p class="intro">No pude leer <code>data/proyecto.json</code> (${esc(e.message)}). Si abriste el archivo desde el disco, servilo con <code>python -m http.server</code> desde <code>docs/</code>.</p>`;
     return;
   }
-  grafico();
-  resumen();
+  bosque();
+  resumenProtocolo();
   $("#pie").innerHTML = `Actualizado ${esc(D.generado)}. Código, logs y resultados en <a href="https://github.com/${esc(D.repo)}">github.com/${esc(D.repo)}</a>.`;
   const pendientes = D.ideas.filter((i) => i.estado === "propuesta").length;
   if (pendientes) $('.pestanas a[data-seccion="propuestas"]').insertAdjacentHTML("beforeend", `<span class="cuenta">${pendientes}</span>`);
@@ -149,14 +149,16 @@ function resumen() {
 // ---------------------------------------------------------------- rutas
 
 function ruta() {
-  const [, seccion = "experimentos", id = ""] = (location.hash || "#/experimentos").split("/");
+  const [, seccion = "protocolo", id = ""] = (location.hash || "#/protocolo").split("/");
   document.querySelectorAll(".pestanas a").forEach((a) => {
-    const activa = a.dataset.seccion === (seccion === "proponer" ? "propuestas" : seccion);
+    const grupo = { proponer: "propuestas", experimentos: "antecedentes", ideas: "antecedentes", metodo: "antecedentes" };
+    const activa = a.dataset.seccion === (grupo[seccion] || seccion);
     a.toggleAttribute("aria-current", activa);
     if (activa) a.setAttribute("aria-current", "page");
   });
-  const vistas = { experimentos: vExperimentos, ideas: vIdeas, propuestas: vPropuestas, proponer: vPropuestas, aula: vAula, metodo: vMetodo, papers: vPapers };
-  (vistas[seccion] || vExperimentos)(decodeURIComponent(id), seccion);
+  const vistas = { protocolo: vProtocolo, hipotesis: vHipotesis, loop: vLoop, antecedentes: vAntecedentes, experimentos: vExperimentos,
+    ideas: vIdeas, propuestas: vPropuestas, proponer: vPropuestas, aula: vAula, metodo: vMetodo, papers: vPapers };
+  (vistas[seccion] || vProtocolo)(decodeURIComponent(id), seccion);
 }
 
 // ---------------------------------------------------------------- experimentos
@@ -417,6 +419,167 @@ function vPapers() {
     h += `<tr><td class="que"><a href="${esc(p.url)}">${esc(p.titulo)}</a><small>prioridad ${esc(p.prioridad)}</small></td><td>${esc(p.para)}</td><td><span class="estado ${p.veredicto.startsWith("no") ? "descartado" : "adoptado"}">${esc(p.veredicto)}</span></td><td>${p.ideas.map((i) => `<a href="#/ideas/${esc(i)}">${esc(i)}</a>`).join(", ") || "–"}</td></tr>`;
   }
   vista(h + "</tbody></table>");
+}
+
+// ---------------------------------------------------------------- protocolo, hipótesis y loop (la estructura del video)
+
+const H = () => D.hipotesis || [];
+const ESTADO_H = {
+  preregistrada: ["esperando", "preregistrada"], corriendo: ["pendiente", "corriendo"],
+  mejora: ["adoptado", "mejora"], "no mejora": ["descartado", "no mejora"], empeora: ["fallido", "empeora"], base: ["adoptado", "referencia"],
+};
+const A4 = (x) => (x == null ? "–" : x.toFixed(4).replace(".", ","));
+const dA = (x) => (x == null ? "–" : `${x > 0 ? "+" : x < 0 ? "−" : ""}${Math.abs(x).toFixed(4).replace(".", ",")}`);
+
+function bosque(metrica) {
+  metrica = metrica || bosque.metrica || "auc";
+  bosque.metrica = metrica;
+  const el = $("#grafico");
+  const filas = H().filter((h) => h.id !== "B0");
+  const con = filas.filter((h) => h.resultado && h.resultado.vs_base && h.resultado.vs_base[metrica]);
+  const W = Math.max(Math.min(el.clientWidth || 960, 960), 480), fila = 26, T = 34, B = 30, L = Math.min(250, W * 0.36), R = 24;
+  const Hh = T + B + filas.length * fila;
+  const vals = con.flatMap((h) => h.resultado.vs_base[metrica].ic || [h.resultado.vs_base[metrica].delta]);
+  const fmt = metrica === "auc" ? dA : (x) => signo(x);
+  let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
+  if (lo === hi) { lo = metrica === "auc" ? -0.005 : -10e6; hi = -lo; }
+  const pad = (hi - lo) * 0.12; lo -= pad; hi += pad;
+  const X = (v) => L + ((v - lo) / (hi - lo)) * (W - L - R);
+  let s = `<div class="tabs-metrica"><button class="${metrica === "auc" ? "on" : ""}" data-m="auc">AUC</button><button class="${metrica === "ganancia_meseta" ? "on" : ""}" data-m="ganancia_meseta">Ganancia meseta</button></div>`;
+  s += `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Diferencia contra el baseline en 201910, con intervalo de 95%, por hipótesis">`;
+  s += `<text x="${L}" y="16">diferencia contra el baseline en 201910 (intervalo de 95%)</text>`;
+  s += `<line class="cero" x1="${X(0)}" x2="${X(0)}" y1="${T - 6}" y2="${Hh - B + 4}"/>`;
+  filas.forEach((h, i) => {
+    const y = T + i * fila + fila / 2;
+    s += `<text class="rotulo-h" x="${L - 12}" y="${y + 4}" text-anchor="end"><tspan class="hid">${esc(h.id)}</tspan> ${esc(recortar(h.titulo, 30))}</text>`;
+    s += `<line class="guia" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/>`;
+    const v = h.resultado && h.resultado.vs_base && h.resultado.vs_base[metrica];
+    if (!v) { s += `<text class="pend" x="${X(0) + 8}" y="${y + 4}">${h.estado === "corriendo" ? "corriendo" : "pendiente"}</text>`; return; }
+    const [a, b] = v.ic || [v.delta, v.delta];
+    const cl = a > 0 ? "sube" : b < 0 ? "baja" : "neutro";
+    s += `<line class="ic ${cl}" x1="${X(a)}" x2="${X(b)}" y1="${y}" y2="${y}"/><circle class="est ${cl}" cx="${X(v.delta)}" cy="${y}" r="5" data-h="${esc(h.id)}" tabindex="0"><title>${esc(h.id)}: ${fmt(v.delta)} (${fmt(a)} a ${fmt(b)})</title></circle>`;
+  });
+  s += `<text x="${X(0)}" y="${Hh - 8}" text-anchor="middle">0</text></svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll(".tabs-metrica button").forEach((b) => b.addEventListener("click", () => bosque(b.dataset.m)));
+  el.querySelectorAll("circle.est").forEach((c) => c.addEventListener("click", () => (location.hash = `#/hipotesis/${c.dataset.h}`)));
+}
+
+function resumenProtocolo() {
+  const hs = H().filter((h) => h.id !== "B0");
+  const hechas = hs.filter((h) => h.resultado).length;
+  const b0 = H().find((h) => h.id === "B0");
+  let t = `${hs.length} hipótesis preregistradas, ${hechas} corridas. `;
+  if (b0 && b0.resultado) t += `El baseline de la cátedra da AUC <strong>${A4(b0.resultado.test.auc)}</strong> y ganancia meseta <strong>${M(b0.resultado.test.ganancia_meseta)}</strong> en 201910. `;
+  t += `Entrenamiento 201903-201906, validación 201908 (elige), test 201910 (sólo compara). <a href="#/protocolo">Cómo medimos</a>.`;
+  $("#resumen").innerHTML = t;
+}
+
+function mdLargo(t) {
+  const lineas = String(t || "").split("\n");
+  let h = "", lista = false, tabla = [];
+  const inline = (x) => esc(x).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/\*([^*]+)\*/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  const cerrarTabla = () => {
+    if (!tabla.length) return;
+    const filas = tabla.filter((f) => !/^\|\s*-/.test(f)).map((f) => f.replace(/^\||\|$/g, "").split("|").map((c) => c.trim()));
+    h += `<div class="scroll-x"><table class="libro"><thead><tr>${filas[0].map((c) => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${filas.slice(1).map((f) => `<tr>${f.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+    tabla = [];
+  };
+  let parrafo = [];
+  const cerrarParrafo = () => { if (parrafo.length) { h += `<p>${inline(parrafo.join(" "))}</p>`; parrafo = []; } };
+  for (const l of lineas) {
+    if (/^\|/.test(l)) { cerrarParrafo(); if (lista) { h += "</ul>"; lista = false; } tabla.push(l); continue; }
+    cerrarTabla();
+    if (/^#\s/.test(l)) { cerrarParrafo(); continue; }
+    if (/^##\s/.test(l)) { cerrarParrafo(); if (lista) { h += "</ul>"; lista = false; } h += `<h3>${inline(l.slice(3))}</h3>`; continue; }
+    if (/^\s*-\s/.test(l)) { cerrarParrafo(); if (!lista) { h += "<ul>"; lista = true; } h += `<li>${inline(l.replace(/^\s*-\s/, ""))}</li>`; continue; }
+    if (/^\s{2,}\S/.test(l) && lista) { h = h.replace(/<\/li>$/, " " + inline(l.trim()) + "</li>"); continue; }
+    if (!l.trim()) { cerrarParrafo(); if (lista) { h += "</ul>"; lista = false; } continue; }
+    parrafo.push(l.trim());
+  }
+  cerrarParrafo(); cerrarTabla(); if (lista) h += "</ul>";
+  return h;
+}
+
+function vProtocolo() {
+  vista(`<h2>Protocolo</h2><p class="intro">Escrito antes de correr: qué se pregunta, con qué datos, cómo se mide, cuándo una hipótesis se da por buena y qué puede salir mal. Sigue la estructura que pide la cátedra para el video.</p><div class="texto-largo protocolo">${mdLargo(D.protocolo)}</div>`);
+}
+
+function metricasFila(r) {
+  if (!r) return "";
+  const f = (k, fmt) => `<td class="num">${r.val ? fmt(r.val[k]) : "–"}</td><td class="num">${r.test ? fmt(r.test[k]) : "–"}</td>`;
+  return `<table class="meses"><thead><tr><th>Métrica</th><th>Validación 201908</th><th>Test 201910</th></tr></thead><tbody>
+    <tr><td>AUC</td>${f("auc", A4)}</tr><tr><td>Ganancia meseta</td>${f("ganancia_meseta", M)}</tr><tr><td>Ganancia de la lista (3,3%)</td>${f("ganancia_lista", M)}</tr>
+    <tr><td>AUC parcial (falsos positivos ≤ 5%)</td>${f("auc_parcial", A4)}</tr><tr><td>BAJA+2 en el 1% de arriba</td>${f("top1", (x) => (x == null ? "–" : N(x)))}</tr></tbody></table>`;
+}
+
+function vHipotesis(abierta) {
+  let h = `<h2>Hipótesis</h2><p class="intro">Cada hipótesis es un solo cambio sobre el baseline de la cátedra, con todo lo demás fijo: los mismos meses, las mismas 10 semillas, la misma búsqueda de 40 trials ordenada por AUC en 201908. Se compara con el baseline en 201910, pareado por semilla y con intervalo por remuestreo de clientes.</p>`;
+  h += `<table class="libro fija"><colgroup><col style="width:58px"><col><col style="width:150px"><col style="width:130px"><col style="width:130px"><col style="width:120px"></colgroup><thead><tr><th>Id</th><th>Hipótesis</th><th>Predicción</th><th class="num">Δ AUC test</th><th class="num">Δ ganancia</th><th>Estado</th></tr></thead><tbody>`;
+  for (const x of H()) {
+    const r = x.resultado, v = r && r.vs_base;
+    const [cl, nombre] = ESTADO_H[x.estado] || ["esperando", x.estado];
+    h += `<tr class="fila${abierta === x.id ? " abierta" : ""}" data-id="${esc(x.id)}" tabindex="0"><td class="id">${esc(x.id)}</td>
+      <td class="que">${esc(x.titulo)}<small>${esc(x.h1)}</small></td><td data-rotulo="Predicción"><span class="apagado">${esc(x.prediccion)}</span></td>
+      <td class="num ${v && v.auc ? claseSigno(v.auc.delta) : ""}" data-rotulo="Δ AUC">${v && v.auc ? dA(v.auc.delta) : x.id === "B0" && r ? A4(r.test.auc) : "–"}</td>
+      <td class="num ${v && v.ganancia_meseta ? claseSigno(v.ganancia_meseta.delta) : ""}" data-rotulo="Δ ganancia">${v && v.ganancia_meseta ? signo(v.ganancia_meseta.delta) : x.id === "B0" && r ? M(r.test.ganancia_meseta) : "–"}</td>
+      <td><span class="estado ${cl}">${nombre}</span></td></tr>`;
+    if (abierta === x.id) h += `<tr><td colspan="6" class="detalle-celda">${detalleHipotesis(x)}</td></tr>`;
+  }
+  vista(h + "</tbody></table>");
+  document.querySelectorAll("tr.fila").forEach((tr) => {
+    const ir = () => (location.hash = abierta === tr.dataset.id ? "#/hipotesis" : `#/hipotesis/${tr.dataset.id}`);
+    tr.addEventListener("click", (ev) => ev.target.closest("a") || ir());
+    tr.addEventListener("keydown", (k) => (k.key === "Enter" || k.key === " ") && (k.preventDefault(), ir()));
+  });
+  if (abierta) {
+    const fila = $(`tr.fila[data-id="${CSS.escape(abierta)}"]`);
+    if (fila) fila.scrollIntoView({ block: "start", behavior: "smooth" });
+    const x = H().find((y) => y.id === abierta);
+    if (x && x.issue) comentarios(x.issue, $("#comentarios"));
+  }
+}
+
+function detalleHipotesis(x) {
+  const r = x.resultado, v = r && r.vs_base;
+  const izq = `<dl>
+    <dt>Hipótesis</dt><dd>H1: ${esc(x.h1)}<br><span class="apagado">H0: el cambio no mejora la AUC en 201910.</span></dd>
+    <dt>Predicción</dt><dd>${esc(x.prediccion)}. ${esc(x.porque)}</dd>
+    <dt>Diseño</dt><dd>${esc(x.cambio)} Todo lo demás queda como en el baseline: entrenamiento 201903-201906 completo, búsqueda de 40 trials por AUC en 201908, 10 semillas, test 201910.</dd>
+    <dt>De dónde salió</dt><dd>${x.fuente_url ? `<a href="${esc(x.fuente_url)}">${esc(x.fuente)}</a>` : esc(x.fuente)}</dd>
+    ${x.conclusion ? `<dt>Conclusión</dt><dd>${esc(x.conclusion)}</dd>` : ""}
+    ${x.siguiente ? `<dt>Qué seguiríamos probando</dt><dd>${esc(x.siguiente)}</dd>` : ""}
+  </dl>`;
+  let der = r ? metricasFila(r) : `<p class="nota">Todavía no corrió. Los resultados aparecen acá: las métricas en validación y en test, la diferencia contra el baseline con su intervalo y la decisión según la regla fijada de antemano.</p>`;
+  if (v) {
+    const fila = (n, k, fmt) => v[k] ? `<tr><td>${n}</td><td class="num">${fmt(v[k].delta)}</td><td class="num">${fmt(v[k].ic[0])} a ${fmt(v[k].ic[1])}</td><td class="num">${v[k].pareado ? fmt(v[k].pareado.media) + " ± " + fmt(v[k].pareado.se).replace(/^[+−]/, "") : "–"}</td><td class="num">${v[k].p_holm == null ? "–" : v[k].p_holm.toFixed(3).replace(".", ",")}</td></tr>` : "";
+    der += `<div style="height:16px"></div><table class="meses"><thead><tr><th>Contra el baseline (201910)</th><th>Diferencia</th><th>Intervalo 95%</th><th>Por semilla</th><th>p (Holm)</th></tr></thead><tbody>${fila("AUC", "auc", dA)}${fila("Ganancia meseta", "ganancia_meseta", signo)}</tbody></table>`;
+    der += `<p class="nota">Decisión según la regla del protocolo: <strong>${esc(r.decision || "–")}</strong>.</p>`;
+  }
+  if (r && r.archivos) der += `<div class="enlaces"><a href="${esc(r.archivos.codigo)}">Código (train.py)</a><a href="${esc(r.archivos.busqueda)}">Búsqueda de hiperparámetros</a><a href="${esc(r.archivos.log)}">Log</a></div>`;
+  const com = x.issue ? `<div class="comentarios"><h4>Comentarios</h4><div id="comentarios"><p class="nota">Cargando…</p></div><p class="enlaces"><a href="https://github.com/${esc(D.repo)}/issues/${esc(x.issue)}#new_comment_field">Comentar en GitHub</a></p></div>` : "";
+  return `<div class="detalle"><div>${izq}</div><div>${der}</div>${com}</div>`;
+}
+
+function vLoop() {
+  const pasos = H().find((h) => h.id === "H11");
+  vista(`<h2>Loop de autoresearch</h2><div class="texto-largo">
+    <p>Es el método de <a href="https://github.com/karpathy/autoresearch">autoresearch de Karpathy</a> llevado a este problema: un arnés fijo que el agente no toca (datos, meses y métricas), un solo archivo que el agente modifica (<code>train.py</code>), instrucciones del loop en <code>program.md</code> y un presupuesto de tiempo fijo por corrida.</p>
+    <p>Arranca del baseline. En cada paso prueba un cambio y lo mantiene sólo si la AUC de validación (201908) sube más de 0,001 y la diferencia pareada por semilla supera dos errores estándar; si no, lo deshace. Todo queda registrado, también lo que se descartó. El test (201910) no interviene: se lee al final, para la hipótesis H11.</p>
+    ${pasos && pasos.resultado && pasos.resultado.pasos ? "" : `<p class="nota">Corre después de la fase A (las hipótesis H1 a H10 contra el baseline).</p>`}
+  </div>`);
+}
+
+function vAntecedentes() {
+  vista(`<h2>Antecedentes</h2><div class="texto-largo">
+    <p>Antes de las notas de la cátedra corrimos 40 experimentos con otro protocolo: la base era el modelo de la primera competencia, se entrenaba con una ventana móvil y se elegía por la ganancia de las listas de 201908, 201909 y 201910. No son comparables con las hipótesis de ahora (otra base, otro entrenamiento y otra métrica), y usaban 201910 para elegir. Quedan como registro y como fuente de hipótesis.</p>
+    <p>Lo que se llevó de ahí: sacarle piezas al modelo de la primera competencia lo mejoraba (H7 y H8 lo vuelven a probar), más meses de entrenamiento ayudan (H6), el percentil de los montos no sumaba en 2019 (H3), y usar el mes con sólo BAJA+1 o <code>foto_mes</code> como variable rompe el modelo.</p>
+  </div>
+  <div class="enlaces"><a href="#/experimentos">Los 40 experimentos del protocolo anterior</a><a href="#/ideas">El plan anterior</a><a href="#/metodo">Cómo se medía</a><a href="https://github.com/${esc(D.repo)}/blob/main/LECCIONES.md">Lecciones</a></div>
+  <div id="grafico-viejo" class="grafico" style="margin-top:22px"></div>`);
+  const tmp = $("#grafico"); const viejo = $("#grafico-viejo");
+  viejo.id = "grafico"; tmp.id = "grafico-hero"; grafico(); viejo.id = "grafico-viejo"; tmp.id = "grafico";
 }
 
 // ---------------------------------------------------------------- utilidades

@@ -63,6 +63,25 @@ PAPERS = [
 ]
 
 
+AULA = {
+    "modelo": "E019", "alternativa": "E024", "umbral_saltos": 20, "rango_salto": [0.8, 1.25],
+    "saltos_2019": {"normal": [4, 10], "modificado_primer_mes": 37},
+    "texto": ("En el aula llegan 202007, 202008 y 202009 de a uno, con la data modificada. El modelo es el vigente, "
+              "definido con 2019 y reentrenado cada mes con su ventana. Al lado se calcula siempre la alternativa robusta "
+              "(detecta variables rotas y pasa todos los montos a percentil por mes). Si el mes que llega tiene 20 o más "
+              "montos cuya mediana se movió fuera de 0,8 a 1,25 contra el mes anterior, se entrega la alternativa en ese mes."),
+    # Informe (no decide nada): el modelo congelado reentrenado mes a mes en 2020 y el ensayo del aula con cronómetro.
+    "preparacion": [["201912", 4605, 392, 601, 304.6], ["202001", 4717, 354, 521, 259.7], ["202002", 4824, 139, 213, 20.2],
+                    ["202003", 4894, 263, 398, 154.7], ["202004", 4911, 288, 524, 181.7], ["202005", 4959, 351, 566, 249.7],
+                    ["202006", 5039, 324, 610, 217.8]],
+    "ensayo": {"modificado": [["202007", "alternativa", 40, 190.7, 184.1], ["202008", "modelo", 3, 81.5, 81.5],
+                              ["202009", "modelo", 1, 115.6, 115.6]],
+               "original": [["202007", "modelo", 7, 186.3, 186.3], ["202008", "modelo", 4, 84.8, 84.8],
+                            ["202009", "modelo", 0, 117.8, 117.8]],
+               "minutos_por_mes": 7.8},
+}
+
+
 def _comentarios() -> dict[str, int]:
     if not shutil.which("gh"):
         return {}
@@ -90,6 +109,7 @@ def _experimentos() -> list[dict]:
         r = json.loads(ruta.read_text(encoding="utf-8"))
         base = f"{BLOB}/experimentos/{carpeta.name}"
         conf = r.get("confirmacion")
+        prod = json.loads((carpeta / "produccion.json").read_text(encoding="utf-8")) if (carpeta / "produccion.json").exists() else None
         salida.append({
             "id": r["id"], "fecha": r["fecha"], "descripcion": r["descripcion"], "idea": r.get("idea", ""),
             "hipotesis": r.get("hipotesis", ""), "estado": r.get("estado"), "vigente_al_correr": r.get("vigente_al_correr"),
@@ -100,6 +120,8 @@ def _experimentos() -> list[dict]:
             "modificado": ({"media": r["modificado"]["media_test"],
                             "meses": {m: _mes(f) for m, f in r["modificado"]["folds"].items()}} if r.get("modificado") else None),
             "comparacion": r.get("comparacion"),
+            "produccion": ({"original": {m: _mes(f) for m, f in prod["original"].items()},
+                            "modificado": {m: _mes(f) for m, f in prod.get("modificado", {}).items()}} if prod else None),
             "confirmacion": ({k: conf.get(k) for k in ("a", "b", "fecha", "ensamble_a", "ensamble_b", "pareado",
                                                        "modificado", "decision")} if conf else None),
             "archivos": {"codigo": f"{base}/train.py",
@@ -107,6 +129,24 @@ def _experimentos() -> list[dict]:
                          "log": f"{base}/log.txt"},
         })
     return salida
+
+
+def _hipotesis(coment: dict) -> list[dict]:
+    """Las hipótesis preregistradas (hipotesis.tsv) con el resultado de su experimento, si ya corrió
+    (experimentos_v3/<id>/resultado.json)."""
+    res = {}
+    for r in sorted((comun.RAIZ / "experimentos_v3").glob("*/resultado.json")):
+        d = json.loads(r.read_text(encoding="utf-8"))
+        d["carpeta"] = r.parent.name
+        res[d.get("hipotesis")] = d
+    out = []
+    for f in comun.leer_tsv(comun.RAIZ / "hipotesis.tsv"):
+        r = res.get(f["id"])
+        if r:
+            base = f"{BLOB}/experimentos_v3/{r['carpeta']}"
+            r["archivos"] = {"codigo": f"{base}/train.py", "log": f"{base}/log.txt", "busqueda": f"{base}/busqueda.tsv"}
+        out.append({**f, "resultado": r, "comentarios": coment.get(f.get("issue", ""), 0)})
+    return out
 
 
 def generar() -> None:
@@ -133,6 +173,9 @@ def generar() -> None:
         "papers": [{"titulo": t, "url": u, "prioridad": p, "veredicto": v, "para": d, "ideas": i}
                    for t, u, p, v, d, i in PAPERS],
         "lecciones": lecciones,
+        "aula": AULA,
+        "protocolo": (comun.RAIZ / "PROTOCOLO.md").read_text(encoding="utf-8") if (comun.RAIZ / "PROTOCOLO.md").exists() else "",
+        "hipotesis": _hipotesis(coment),
     }
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
