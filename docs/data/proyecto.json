@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-28 15:49",
+ "generado": "2026-10-28 16:10",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3704,6 +3704,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E035-franja-segunda-etapa-con-cross-fitting-y/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E035-franja-segunda-etapa-con-cross-fitting-y/log.txt"
    }
+  },
+  {
+   "id": "E036",
+   "fecha": "2026-10-28 16:10",
+   "descripcion": "franja: cascada, un modelo más grande sobre el 15% de arriba",
+   "idea": "E23",
+   "hipotesis": "Predicción: mejora poco. Concentra la capacidad del modelo donde se decide la lista",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 1254.9,
+   "error": "",
+   "total": 758230000.0,
+   "media": 252743333.33333334,
+   "meseta": 256245571.48794684,
+   "auc": 0.9154316892558093,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 206002500.0,
+     "envios": 4349,
+     "aciertos": 296,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 209785910.2244389,
+     "envios_meseta": 3860,
+     "auc": 0.9090296088394426,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 408.9
+    },
+    "201909": {
+     "lista": 260617500.0,
+     "envios": 4403,
+     "aciertos": 347,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 263980386.53366584,
+     "envios_meseta": 3046,
+     "auc": 0.914262322577197,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 425.0
+    },
+    "201910": {
+     "lista": 291610000.0,
+     "envios": 4476,
+     "aciertos": 377,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 294970417.7057357,
+     "envios_meseta": 4755,
+     "auc": 0.9230031363507886,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 420.2
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 1100000.0,
+    "delta_por_mes": {
+     "201908": -5500000.0,
+     "201909": -1100000.0,
+     "201910": 9900000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": 1026666.6666666686,
+    "pareado_se": 584370.5065186745
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E036-franja-cascada-un-modelo-mas-grande-sobr/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E036-franja-cascada-un-modelo-mas-grande-sobr/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E036-franja-cascada-un-modelo-mas-grande-sobr/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -4514,7 +4612,8 @@
   "E031 (E19): BAJA+2 con peso 3 en la multiclase: 751,6 M (−3,3 M), gana 1 de 3, pareado −1,0 ± 0,5 M. El submuestreo de CONTINUA ya balancea; pesar más la clase que paga no ordena mejor arriba.",
   "E032 (E7): corte del 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana: 758,3 M (+3,4 M en el ensamble), pero pareado −1,7 ± 0,5 M por semilla: no llega. En 2019 la tasa casi no se mueve y el 3,3% fijo sigue.",
   "E033 (E1b): el modelo nace con todos los meses con clase e historia (sin la ventana de 6): 762,6 M (+7,7 M), por semilla +2,9 ± 0,8 M por mes (más de 3 errores estándar), pero la media por mes da +2,6 M y no pasa el screening. 201908 igual (mismos 4 meses), 201909 con 5 meses −4,4 M en la lista pero +1,9 en la meseta, 201910 con 6 meses +12,1 M. Más meses ayudan. Por decisión de Emmanuel, el modelo de 201912 nace así (201903-201910); en 2020 la ventana de 6 vuelve a dejar 4 meses, y eso cuesta plata.",
-  "E034 (franja, enfoque 1): segunda etapa con cross-fitting por mes (4 meses fuera de muestra, franja de 0,6 a 3 veces los envíos, todas las variables): 760,4 M (+5,5 M), pareado +1,0 ± 0,4 M por mes: chico pero consistente; no pasa el umbral. Candidato para la mezcla. 18 minutos."
+  "E034 (franja, enfoque 1): segunda etapa con cross-fitting por mes (4 meses fuera de muestra, franja de 0,6 a 3 veces los envíos, todas las variables): 760,4 M (+5,5 M), pareado +1,0 ± 0,4 M por mes: chico pero consistente; no pasa el umbral. Candidato para la mezcla. 18 minutos.",
+  "E035 (franja, enfoque 2): como el 1 pero con las variables elegidas por canaritos en la franja: 759,3 M (+4,4 M), pareado +0,4 ± 0,5 M: no mejora al 1; elegir variables con ~6.000 filas de franja por mes mete ruido."
  ],
  "aula": {
   "modelo": "E019",

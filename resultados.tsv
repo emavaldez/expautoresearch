@@ -35,3 +35,4 @@ E032	2026-10-27 19:48	E7	corte: 3,3% corregido por la tasa de BAJA+2 del último
 E033	2026-10-28 15:11	E1b	el modelo nace con todos los meses de 2019 (sin la ventana de 6)	254210000	258267290	0.9161	2566667	1/3		770.6	descartado	E019
 E034	2026-10-28 15:30	E23	franja: segunda etapa con cross-fitting por mes (4 meses fuera de muestra)	253476667	256850137	0.9155	1833333	1/3		1099.4	descartado	E019
 E035	2026-10-28 15:49	E23	franja: segunda etapa con cross-fitting y variables elegidas con canaritos	253110000	257113022	0.9156	1466667	1/3		1138.1	descartado	E019
+E036	2026-10-28 16:10	E23	franja: cascada, un modelo más grande sobre el 15% de arriba	252743333	256245571	0.9154	1100000	1/3		1254.9	descartado	E019

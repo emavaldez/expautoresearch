@@ -1,0 +1,26 @@
+15:49:49 E036: franja: cascada, un modelo más grande sobre el 15% de arriba
+15:49:49 idea: E23 | hipótesis: Predicción: mejora poco. Concentra la capacidad del modelo donde se decide la lista | vigente: E019
+15:49:49 meses de test [201908, 201909, 201910] (ventana de 6 meses) | semillas [800011, 800029, 800053, 800057, 800077]
+15:49:59 [201908] entrena con [201903, 201904, 201905, 201906] (506,871 filas) | puntúa 131,775 clientes, 542 BAJA+2 | 1648 columnas | features 10 s
+15:53:13 [201908] semilla 800011: lista 202.7M con 4,349 | meseta 203.0M en 3,720 | AUC 0.9076 (194 s)
+15:54:04 [201908] semilla 800029: lista 208.2M con 4,349 | meseta 207.1M en 3,810 | AUC 0.9083 (51 s)
+15:54:55 [201908] semilla 800053: lista 206.0M con 4,349 | meseta 209.8M en 3,943 | AUC 0.9059 (51 s)
+15:55:46 [201908] semilla 800057: lista 200.5M con 4,349 | meseta 207.2M en 3,622 | AUC 0.9061 (51 s)
+15:56:38 [201908] semilla 800077: lista 209.3M con 4,349 | meseta 207.6M en 4,303 | AUC 0.9098 (52 s)
+15:56:38 [201908] ENSAMBLE de 5: lista 206.0M (296 de 542 BAJA+2 con 4,349 envíos) | meseta 209.8M en 3,860 | AUC 0.9090
+15:56:48 [201909] entrena con [201904, 201905, 201906, 201907] (511,102 filas) | puntúa 133,419 clientes, 612 BAJA+2 | 1648 columnas | features 10 s
+16:00:13 [201909] semilla 800011: lista 260.6M con 4,403 | meseta 260.6M en 5,697 | AUC 0.9123 (204 s)
+16:01:05 [201909] semilla 800029: lista 260.6M con 4,403 | meseta 266.3M en 3,226 | AUC 0.9132 (53 s)
+16:01:58 [201909] semilla 800053: lista 257.3M con 4,403 | meseta 262.3M en 3,407 | AUC 0.9120 (52 s)
+16:02:50 [201909] semilla 800057: lista 258.4M con 4,403 | meseta 260.2M en 3,456 | AUC 0.9130 (53 s)
+16:03:43 [201909] semilla 800077: lista 258.4M con 4,403 | meseta 264.5M en 2,901 | AUC 0.9144 (53 s)
+16:03:43 [201909] ENSAMBLE de 5: lista 260.6M (347 de 612 BAJA+2 con 4,403 envíos) | meseta 264.0M en 3,046 | AUC 0.9143
+16:03:54 [201910] entrena con [201905, 201906, 201907, 201908] (516,761 filas) | puntúa 135,633 clientes, 631 BAJA+2 | 1648 columnas | features 10 s
+16:07:15 [201910] semilla 800011: lista 292.7M con 4,476 | meseta 290.9M en 4,475 | AUC 0.9218 (202 s)
+16:08:07 [201910] semilla 800029: lista 296.0M con 4,476 | meseta 297.0M en 4,726 | AUC 0.9218 (52 s)
+16:08:59 [201910] semilla 800053: lista 292.7M con 4,476 | meseta 293.3M en 4,424 | AUC 0.9208 (52 s)
+16:09:51 [201910] semilla 800057: lista 292.7M con 4,476 | meseta 292.8M en 4,358 | AUC 0.9229 (52 s)
+16:10:43 [201910] semilla 800077: lista 285.0M con 4,476 | meseta 289.7M en 4,840 | AUC 0.9230 (52 s)
+16:10:43 [201910] ENSAMBLE de 5: lista 291.6M (377 de 631 BAJA+2 con 4,476 envíos) | meseta 295.0M en 4,755 | AUC 0.9230
+16:10:43 RESUMEN E036 | descartado | test 758,2M en 3 meses (media 252,7M, meseta 256,2M, AUC 0.9154) | Δ media 1,1M vs E019 | meses 1/3 | pareado 1,0M ± 0,6M | 1255 s
+16:10:43 para volver al vigente: python run.py --restaurar
