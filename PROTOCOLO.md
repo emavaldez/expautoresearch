@@ -151,5 +151,7 @@ Dos ideas necesitan instalar algo que no está en la Mac y esperan el OK: H29 (`
   - Se instalaron `torch` y `tabpfn` (OK de Emmanuel). H29 (la red) vuelve a su lugar en la cola; corre en un proceso
     aparte porque torch y LightGBM en el mismo proceso se caen en macOS (choque de OpenMP). Hasta 20 épocas.
   - H30 (TabPFN) espera que Emmanuel acepte la licencia de Prior Labs para bajar los pesos.
+  - Emmanuel aceptó la licencia; entre los pasos 10 y 11, H30 pasó a correr TabPFN en un proceso aparte (como la
+    red) y volvió a su lugar en la cola. El vigente y H8 dan exactamente lo mismo que antes del cambio.
   - El código de H29 y H30 se agregó a `v3/train.py` entre los pasos 7 y 8; se comprobó que el vigente da exactamente
     las mismas probabilidades que antes.

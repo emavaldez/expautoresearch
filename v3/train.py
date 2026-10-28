@@ -559,21 +559,21 @@ def segunda_etapa(tr, va, y_va, cols, params, seed, pares):
         print(f"  franja: {len(y):,} filas, {int(y.sum())} BAJA+2, {len(_ELEGIDAS[clave])} variables", flush=True)
     el = _ELEGIDAS[clave]
     c = calibracion(l, y)
+    franjas = [None if D is None else np.flatnonzero(en_franja(p)) for D, p in pares]
+    a_puntuar = [(D.iloc[k][el].to_numpy(np.float32), logit(p[k])) for (D, p), k in zip(pares, franjas) if D is not None]
     if CAMBIOS["H30"]:
-        puntaje = tabpfn_franja(X[el].to_numpy(np.float32), l, y, seed)
+        puntajes = iter(tabpfn_franja(X[el].to_numpy(np.float32), l, y, a_puntuar, seed))
     else:
         modelo = lgb.train({**PARAMS_2, "seed": int(seed)},
                            lgb.Dataset(X[el].to_numpy(np.float32), y, init_score=c[0] + c[1] * l), RONDAS_2)
-        puntaje = lambda M, lp: modelo.predict(M, raw_score=True) + c[0] + c[1] * lp  # noqa: E731
+        puntajes = iter([modelo.predict(M, raw_score=True) + c[0] + c[1] * lp for M, lp in a_puntuar])
     out = []
-    for D, p in pares:
+    for (D, p), idx in zip(pares, franjas):
         if D is None:
             out.append(None)
             continue
         p = p.copy()
-        idx = np.flatnonzero(en_franja(p))
-        s = puntaje(D.iloc[idx][el].to_numpy(np.float32), logit(p[idx]))
-        s = rankdata(s) + rankdata(p[idx])
+        s = rankdata(next(puntajes)) + rankdata(p[idx])
         nuevo = np.empty(len(idx))
         nuevo[np.argsort(-s, kind="stable")] = np.sort(p[idx])[::-1]
         p[idx] = nuevo
@@ -716,16 +716,43 @@ def red(tr, va, y_va, te, seed, epocas=20, paciencia=2):
 
 # ---------------------------------------------------------------- TabPFN en la franja (H30)
 
-def tabpfn_franja(M, l, y, seed, max_filas=10_000):
+# Como la red: TabPFN usa torch, así que corre en un proceso aparte que no carga LightGBM.
+TABPFN_HIJO = r"""
+import sys
+import numpy as np
+import torch
+from tabpfn import TabPFNClassifier
+d, seed, n = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+m = TabPFNClassifier(device="mps" if torch.backends.mps.is_available() else "cpu", random_state=seed)
+m.fit(np.load(f"{d}/X.npy"), np.load(f"{d}/y.npy"))
+for i in range(n):
+    np.save(f"{d}/p{i}.npy", m.predict_proba(np.load(f"{d}/Z{i}.npy"))[:, 1])
+"""
+
+
+def tabpfn_franja(M, l, y, a_puntuar, seed, max_filas=10_000):
     """H30: TabPFN aprende la franja (las variables elegidas y el logit de la base) con hasta 10.000 filas (todas las
-    BAJA+2 y CONTINUA al azar). Devuelve una función que puntúa (matriz, logit de la base)."""
-    from tabpfn import TabPFNClassifier
+    BAJA+2 y CONTINUA al azar) y puntúa cada (matriz, logit) de a_puntuar."""
+    import shutil
+    import subprocess
+    import sys
+    import tempfile
+    from pathlib import Path
+    import config
     rng = np.random.default_rng(int(seed))
     pos, neg = np.flatnonzero(y == 1), np.flatnonzero(y == 0)
     filas = np.concatenate([pos, rng.choice(neg, min(len(neg), max_filas - len(pos)), replace=False)])
-    modelo = TabPFNClassifier(random_state=int(seed))
-    modelo.fit(np.column_stack([M[filas], l[filas]]), y[filas].astype(int))
-    return lambda X, lp: modelo.predict_proba(np.column_stack([X, lp]))[:, 1]
+    (config.CACHE / "v3").mkdir(parents=True, exist_ok=True)
+    d = Path(tempfile.mkdtemp(prefix="tabpfn_", dir=config.CACHE / "v3"))
+    try:
+        np.save(d / "X.npy", np.column_stack([M[filas], l[filas]]).astype(np.float32))
+        np.save(d / "y.npy", y[filas].astype(int))
+        for i, (Z, lz) in enumerate(a_puntuar):
+            np.save(d / f"Z{i}.npy", np.column_stack([Z, lz]).astype(np.float32))
+        subprocess.run([sys.executable, "-c", TABPFN_HIJO, str(d), str(int(seed)), str(len(a_puntuar))], check=True)
+        return [np.load(d / f"p{i}.npy") for i in range(len(a_puntuar))]
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
 
 
 # ---------------------------------------------------------------- el modelo
