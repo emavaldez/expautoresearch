@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-28 16:39",
+ "generado": "2026-10-28 16:58",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3932,6 +3932,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E038-franja-el-doble-de-peso-a-los-casos-difi/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E038-franja-el-doble-de-peso-a-los-casos-difi/log.txt"
    }
+  },
+  {
+   "id": "E039",
+   "fecha": "2026-10-28 16:58",
+   "descripcion": "franja: especialista con sólo variables de tendencia",
+   "idea": "E23",
+   "hipotesis": "Predicción: empate o mejora chica. La baja gradual se ve en las tendencias; un modelo que sólo mira eso puede reordenar distinto",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 1130.7,
+   "error": "",
+   "total": 751630000.0,
+   "media": 250543333.33333334,
+   "meseta": 253732487.53117204,
+   "auc": 0.9151099301928395,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 202702500.0,
+     "envios": 4349,
+     "aciertos": 293,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 204792500.0,
+     "envios_meseta": 3593,
+     "auc": 0.9082123530995813,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 366.8
+    },
+    "201909": {
+     "lista": 266117500.0,
+     "envios": 4403,
+     "aciertos": 352,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 268127605.9850374,
+     "envios_meseta": 3492,
+     "auc": 0.9144336483956693,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 379.3
+    },
+    "201910": {
+     "lista": 282810000.0,
+     "envios": 4476,
+     "aciertos": 369,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 288277356.6084788,
+     "envios_meseta": 5472,
+     "auc": 0.9226837890832679,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 383.8
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": -1100000.0,
+    "delta_por_mes": {
+     "201908": -8800000.0,
+     "201909": 4400000.0,
+     "201910": 1100000.0
+    },
+    "meses_ganados": 2,
+    "pareado_media": -4693333.333333338,
+    "pareado_se": 993389.2601705684
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E039-franja-especialista-con-solo-variables-d/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E039-franja-especialista-con-solo-variables-d/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E039-franja-especialista-con-solo-variables-d/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -4744,7 +4842,8 @@
   "E033 (E1b): el modelo nace con todos los meses con clase e historia (sin la ventana de 6): 762,6 M (+7,7 M), por semilla +2,9 ± 0,8 M por mes (más de 3 errores estándar), pero la media por mes da +2,6 M y no pasa el screening. 201908 igual (mismos 4 meses), 201909 con 5 meses −4,4 M en la lista pero +1,9 en la meseta, 201910 con 6 meses +12,1 M. Más meses ayudan. Por decisión de Emmanuel, el modelo de 201912 nace así (201903-201910); en 2020 la ventana de 6 vuelve a dejar 4 meses, y eso cuesta plata.",
   "E034 (franja, enfoque 1): segunda etapa con cross-fitting por mes (4 meses fuera de muestra, franja de 0,6 a 3 veces los envíos, todas las variables): 760,4 M (+5,5 M), pareado +1,0 ± 0,4 M por mes: chico pero consistente; no pasa el umbral. Candidato para la mezcla. 18 minutos.",
   "E035 (franja, enfoque 2): como el 1 pero con las variables elegidas por canaritos en la franja: 759,3 M (+4,4 M), pareado +0,4 ± 0,5 M: no mejora al 1; elegir variables con ~6.000 filas de franja por mes mete ruido.",
-  "E036 (franja, enfoque 3): cascada, un modelo de 63 hojas entrenado con el 15% de arriba (fuera de muestra) reordena la franja: 758,2 M (+3,3 M), pareado +1,0 ± 0,6 M: chico, en la línea del enfoque 1."
+  "E036 (franja, enfoque 3): cascada, un modelo de 63 hojas entrenado con el 15% de arriba (fuera de muestra) reordena la franja: 758,2 M (+3,3 M), pareado +1,0 ± 0,6 M: chico, en la línea del enfoque 1.",
+  "E038 (franja, enfoque 5): el doble de peso a las filas de entrenamiento que caen en la franja (fuera de muestra): 757,1 M (+2,2 M), pareado −0,3 ± 1,7 M: empate. Concentrar el peso cerca del corte no cambia el orden."
  ],
  "aula": {
   "modelo": "E019",
