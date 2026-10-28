@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-28 15:12",
+ "generado": "2026-10-28 15:30",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3508,6 +3508,104 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E033-el-modelo-nace-con-todos-los-meses-de-20/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E033-el-modelo-nace-con-todos-los-meses-de-20/log.txt"
    }
+  },
+  {
+   "id": "E034",
+   "fecha": "2026-10-28 15:30",
+   "descripcion": "franja: segunda etapa con cross-fitting por mes (4 meses fuera de muestra)",
+   "idea": "E23",
+   "hipotesis": "Predicción: mejora poco. La segunda etapa no sumaba porque aprendía de sólo 2 meses puntuados por una base pobre; con cross-fitting son 4 meses y la base es la misma del vigente",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 1099.4,
+   "error": "",
+   "total": 760430000.0,
+   "media": 253476666.66666666,
+   "meseta": 256850137.15710723,
+   "auc": 0.9155348230735334,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 209302500.0,
+     "envios": 4349,
+     "aciertos": 299,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 210835299.25187033,
+     "envios_meseta": 4078,
+     "auc": 0.9090679761354014,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 366.5
+    },
+    "201909": {
+     "lista": 261717500.0,
+     "envios": 4403,
+     "aciertos": 348,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 266538160.8478803,
+     "envios_meseta": 3109,
+     "auc": 0.9143138495091727,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 365.4
+    },
+    "201910": {
+     "lista": 289410000.0,
+     "envios": 4476,
+     "aciertos": 375,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 293176951.37157106,
+     "envios_meseta": 4987,
+     "auc": 0.9232226435760263,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 366.6
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 1833333.3333333135,
+    "delta_por_mes": {
+     "201908": -2200000.0,
+     "201909": 0.0,
+     "201910": 7700000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": 953333.3333333253,
+    "pareado_se": 411582.3125451333
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E034-franja-segunda-etapa-con-cross-fitting-p/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E034-franja-segunda-etapa-con-cross-fitting-p/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E034-franja-segunda-etapa-con-cross-fitting-p/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -4316,7 +4414,8 @@
   "E029 (E20): sacar las columnas con PSI ≥ 0,25 entre la ventana y el mes puntuado (126 a 139 de 1.278): 745,0 M (−9,9 M), gana 1 de 3, pareado −0,9 ± 0,6 M. En 2019 lo que \"deriva\" contra la ventana son sobre todo fechas de cierre y montos con estacionalidad que igual informan; sacarlas pierde un poco. Queda como herramienta de diagnóstico del tablero, no como regla del modelo.",
   "E030 (E12): tasa histórica de BAJA+2 del grupo del cliente (transacciones del trimestre × antigüedad, fuera de muestra por mes): 756,0 M (+1,1 M), pareado +0,3 ± 1,4 M: empate. El árbol ya arma ese cruce solo.",
   "E031 (E19): BAJA+2 con peso 3 en la multiclase: 751,6 M (−3,3 M), gana 1 de 3, pareado −1,0 ± 0,5 M. El submuestreo de CONTINUA ya balancea; pesar más la clase que paga no ordena mejor arriba.",
-  "E032 (E7): corte del 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana: 758,3 M (+3,4 M en el ensamble), pero pareado −1,7 ± 0,5 M por semilla: no llega. En 2019 la tasa casi no se mueve y el 3,3% fijo sigue."
+  "E032 (E7): corte del 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana: 758,3 M (+3,4 M en el ensamble), pero pareado −1,7 ± 0,5 M por semilla: no llega. En 2019 la tasa casi no se mueve y el 3,3% fijo sigue.",
+  "E033 (E1b): el modelo nace con todos los meses con clase e historia (sin la ventana de 6): 762,6 M (+7,7 M), por semilla +2,9 ± 0,8 M por mes (más de 3 errores estándar), pero la media por mes da +2,6 M y no pasa el screening. 201908 igual (mismos 4 meses), 201909 con 5 meses −4,4 M en la lista pero +1,9 en la meseta, 201910 con 6 meses +12,1 M. Más meses ayudan. Por decisión de Emmanuel, el modelo de 201912 nace así (201903-201910); en 2020 la ventana de 6 vuelve a dejar 4 meses, y eso cuesta plata."
  ],
  "aula": {
   "modelo": "E019",

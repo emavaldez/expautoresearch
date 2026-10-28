@@ -33,3 +33,4 @@ E030	2026-10-27 19:25	E12	tasa histórica de BAJA+2 del grupo del cliente (trans
 E031	2026-10-27 19:37	E19	BAJA+2 con peso 3 (las BAJA+1 siguen en 0,5)	250543333	253790071	0.9151	-1100000	1/3		677.0	descartado	E019
 E032	2026-10-27 19:48	E7	corte: 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana	252761667	255593892	0.9155	1118333	2/3		649.5	descartado	E019
 E033	2026-10-28 15:11	E1b	el modelo nace con todos los meses de 2019 (sin la ventana de 6)	254210000	258267290	0.9161	2566667	1/3		770.6	descartado	E019
+E034	2026-10-28 15:30	E23	franja: segunda etapa con cross-fitting por mes (4 meses fuera de muestra)	253476667	256850137	0.9155	1833333	1/3		1099.4	descartado	E019
