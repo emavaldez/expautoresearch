@@ -1,0 +1,15 @@
+[20:42:46] === H15: H15 --train v3/base_b0.py --busqueda --arranque defaults
+[20:42:50] features: 762 columnas, 1,286,487 filas (3 s)
+[20:42:56] trial 0: AUC 0.8784 meseta 161.1M rondas 25 (6 s) {'num_leaves': 31, 'learning_rate': 0.1, 'min_data_in_leaf': 20, 'feature_fraction': 1.0, 'bagging_fraction': 1.0}
+[20:43:24] trial 1: AUC 0.9085 meseta 197.0M rondas 706 (28 s) {'num_leaves': 8, 'learning_rate': 0.01125279982145136, 'min_data_in_leaf': 1117, 'feature_fraction': 0.2938555963942238, 'bagging_fraction': 0.5852514393290797}
+[20:43:48] trial 2: AUC 0.9055 meseta 203.9M rondas 108 (24 s) {'num_leaves': 308, 'learning_rate': 0.03855300808713331, 'min_data_in_leaf': 681, 'feature_fraction': 0.32373273962900784, 'bagging_fraction': 0.3077719606924789}
+[20:43:54] trial 3: AUC 0.9012 meseta 190.4M rondas 73 (6 s) {'num_leaves': 9, 'learning_rate': 0.15508660668642746, 'min_data_in_leaf': 3551, 'feature_fraction': 0.18928104198875884, 'bagging_fraction': 0.9128294627863336}
+[20:44:06] trial 4: AUC 0.9100 meseta 202.4M rondas 85 (12 s) {'num_leaves': 360, 'learning_rate': 0.06182231701846447, 'min_data_in_leaf': 4068, 'feature_fraction': 0.49352695702054794, 'bagging_fraction': 0.46262861325809984}
+[20:44:27] trial 5: AUC 0.9106 meseta 207.6M rondas 232 (21 s) {'num_leaves': 41, 'learning_rate': 0.0251111401336142, 'min_data_in_leaf': 2097, 'feature_fraction': 0.5738694345914512, 'bagging_fraction': 0.5641965009183967}
+[20:45:00] trial 6: AUC 0.9106 meseta 205.6M rondas 431 (33 s) {'num_leaves': 28, 'learning_rate': 0.011453579281493265, 'min_data_in_leaf': 1360, 'feature_fraction': 0.44167951274913636, 'bagging_fraction': 0.7014396283040688}
+[20:45:11] trial 7: AUC 0.9084 meseta 199.6M rondas 273 (11 s) {'num_leaves': 15, 'learning_rate': 0.014152515266129194, 'min_data_in_leaf': 2355, 'feature_fraction': 0.9605415659207613, 'bagging_fraction': 0.555988578486902}
+[20:45:39] trial 8: AUC 0.9034 meseta 189.3M rondas 31 (28 s) {'num_leaves': 259, 'learning_rate': 0.09904264869008628, 'min_data_in_leaf': 800, 'feature_fraction': 0.585463004181043, 'bagging_fraction': 0.5088852518209332}
+[20:45:51] trial 9: AUC 0.8999 meseta 184.2M rondas 148 (12 s) {'num_leaves': 9, 'learning_rate': 0.060359017885652295, 'min_data_in_leaf': 149, 'feature_fraction': 0.33071291614143966, 'bagging_fraction': 0.4968166712331031}
+[20:46:10] trial 10: AUC 0.9094 meseta 207.1M rondas 162 (18 s) {'num_leaves': 101, 'learning_rate': 0.022182696236514206, 'min_data_in_leaf': 174, 'feature_fraction': 0.7888525166611532, 'bagging_fraction': 0.7989559115784096}
+[20:46:27] trial 11: AUC 0.9070 meseta 209.6M rondas 165 (17 s) {'num_leaves': 43, 'learning_rate': 0.021296378370387992, 'min_data_in_leaf': 255, 'feature_fraction': 0.6361475188358905, 'bagging_fraction': 0.7243741536856875}
+[20:46:56] trial 12: AUC 0.9108 meseta 208.9M rondas 160 (29 s) {'num_leaves': 50, 'learning_rate': 0.022019408887095367, 'min_data_in_leaf': 1510, 'feature_fraction': 0.47198216606982746, 'bagging_fraction': 0.6710168134758581}

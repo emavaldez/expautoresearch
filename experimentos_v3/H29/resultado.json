@@ -1,0 +1,297 @@
+{
+ "id": "H29",
+ "hipotesis": "H29",
+ "variante": null,
+ "paso": 26,
+ "vigente": "H1b",
+ "decision": "se descarta",
+ "segundos": 471,
+ "fecha": "2026-10-28 20:42",
+ "pred_auc": "-0.0010",
+ "semillas": [
+  800011,
+  800029,
+  800053,
+  800057,
+  800077
+ ],
+ "params": {
+  "num_leaves": 56,
+  "learning_rate": 0.026251230543003472,
+  "min_data_in_leaf": 4997,
+  "feature_fraction": 0.6594210941714631,
+  "bagging_fraction": 0.7742347538844919
+ },
+ "info": [
+  {
+   "rondas": 409,
+   "variables": 760,
+   "red": {
+    "auc_val_sola": 0.8969,
+    "curva": [
+     0.8618,
+     0.8787,
+     0.881,
+     0.8829,
+     0.8855,
+     0.8888,
+     0.8904,
+     0.8915,
+     0.8918,
+     0.8926,
+     0.8941,
+     0.8946,
+     0.8968,
+     0.8969,
+     0.8936,
+     0.8945
+    ],
+    "dispositivo": "mps"
+   },
+   "segundos": 210.1
+  },
+  {
+   "rondas": 403,
+   "variables": 760,
+   "red": {
+    "auc_val_sola": 0.8922,
+    "curva": [
+     0.8588,
+     0.8775,
+     0.8811,
+     0.8826,
+     0.8847,
+     0.8865,
+     0.8876,
+     0.8905,
+     0.8922,
+     0.8872,
+     0.8904
+    ],
+    "dispositivo": "mps"
+   },
+   "segundos": 94.8
+  },
+  {
+   "rondas": 466,
+   "variables": 760,
+   "red": {
+    "auc_val_sola": 0.8909,
+    "curva": [
+     0.8535,
+     0.8748,
+     0.8786,
+     0.8794,
+     0.8832,
+     0.8829,
+     0.8862,
+     0.8886,
+     0.8871,
+     0.8903,
+     0.8909,
+     0.8895,
+     0.8904
+    ],
+    "dispositivo": "mps"
+   },
+   "segundos": 50.3
+  },
+  {
+   "rondas": 485,
+   "variables": 760,
+   "red": {
+    "auc_val_sola": 0.8928,
+    "curva": [
+     0.8635,
+     0.8788,
+     0.8808,
+     0.8826,
+     0.8833,
+     0.8858,
+     0.8865,
+     0.8878,
+     0.8928,
+     0.8913,
+     0.8921
+    ],
+    "dispositivo": "mps"
+   },
+   "segundos": 50.4
+  },
+  {
+   "rondas": 309,
+   "variables": 760,
+   "red": {
+    "auc_val_sola": 0.8976,
+    "curva": [
+     0.8426,
+     0.8742,
+     0.8775,
+     0.8812,
+     0.8836,
+     0.8826,
+     0.8849,
+     0.887,
+     0.8873,
+     0.8909,
+     0.8889,
+     0.8923,
+     0.893,
+     0.8934,
+     0.8943,
+     0.8946,
+     0.8954,
+     0.8959,
+     0.8953,
+     0.8976
+    ],
+    "dispositivo": "mps"
+   },
+   "segundos": 46.7
+  }
+ ],
+ "val": {
+  "auc": 0.9102030107757934,
+  "ganancia_meseta": 206040081.04738155,
+  "envios_meseta": 3681,
+  "ganancia_lista": 199402500.0,
+  "envios_lista": 4349,
+  "ganancia_maxima": 207652500.0,
+  "envios_maxima": 3729,
+  "auc_parcial": 0.4559583342875991,
+  "top1": 167,
+  "baja2": 543,
+  "clientes": 131775
+ },
+ "por_semilla": {
+  "val": [
+   {
+    "auc": 0.9101727900215687,
+    "ganancia_meseta": 203400355.36159602,
+    "envios_meseta": 4053,
+    "ganancia_lista": 199402500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 205342500.0,
+    "envios_maxima": 3893,
+    "auc_parcial": 0.4545675761605107,
+    "top1": 170,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9077449625433854,
+    "ganancia_meseta": 205774544.88778055,
+    "envios_meseta": 3553,
+    "ganancia_lista": 201602500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 207542500.0,
+    "envios_maxima": 3613,
+    "auc_parcial": 0.4573897890421552,
+    "top1": 168,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9081601733934543,
+    "ganancia_meseta": 201975498.7531172,
+    "envios_meseta": 5150,
+    "ganancia_lista": 192802500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 204022500.0,
+    "envios_maxima": 5221,
+    "auc_parcial": 0.4510104102534396,
+    "top1": 170,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9103544723965722,
+    "ganancia_meseta": 203464133.41645885,
+    "envios_meseta": 5083,
+    "ganancia_lista": 200502500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 204875000.0,
+    "envios_maxima": 4990,
+    "auc_parcial": 0.45539756282773414,
+    "top1": 168,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9098789533545921,
+    "ganancia_meseta": 201488110.97256857,
+    "envios_meseta": 3737,
+    "ganancia_lista": 200502500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 203995000.0,
+    "envios_maxima": 3662,
+    "auc_parcial": 0.44924782528449475,
+    "top1": 163,
+    "baja2": 543,
+    "clientes": 131775
+   }
+  ]
+ },
+ "vs_vigente": {
+  "auc": {
+   "delta": -0.004599806486133007,
+   "pareado": {
+    "media": -0.00442015753917091,
+    "se": 0.0007853430964976103,
+    "ganadas": 0,
+    "n": 5,
+    "p_wilcoxon": 1.0
+   }
+  },
+  "ganancia_meseta": {
+   "delta": -1101577.3067331612,
+   "pareado": {
+    "media": -2714215.7107231915,
+    "se": 893164.9414234343,
+    "ganadas": 1,
+    "n": 5,
+    "p_wilcoxon": 0.96875
+   }
+  },
+  "ganancia_lista": {
+   "delta": -4400000.0,
+   "pareado": {
+    "media": -5500000.0,
+    "se": 1807484.4397670482,
+    "ganadas": 0,
+    "n": 5,
+    "p_wilcoxon": 1.0
+   }
+  },
+  "auc_parcial": {
+   "delta": -0.003967612445062385,
+   "pareado": {
+    "media": -0.003963896421974922,
+    "se": 0.0013816614356056793,
+    "ganadas": 0,
+    "n": 5,
+    "p_wilcoxon": 1.0
+   }
+  },
+  "top1": {
+   "delta": -1,
+   "pareado": {
+    "media": 1.0,
+    "se": 2.024845673131659,
+    "ganadas": 4,
+    "n": 5,
+    "p_wilcoxon": 0.3125
+   }
+  },
+  "ganancia_maxima": {
+   "delta": -1677500.0,
+   "pareado": {
+    "media": -2931500.0,
+    "se": 985927.7356885747,
+    "ganadas": 1,
+    "n": 5,
+    "p_wilcoxon": 0.96875
+   }
+  }
+ }
+}

@@ -44,7 +44,14 @@ CAMBIOS = {
     "H5": False,    # submuestreo de CONTINUA al 20%
     "H23": False,   # sólo 201904 a 201906
     "H26": False,   # BAJA+2 sintéticas (SMOTE)
-    "H29": False,   # red sobre la historia (necesita instalar torch)
+    "H29": False,   # red sobre la historia (corre en un proceso aparte)
+    # H28: propuestas del agente al vaciarse la cola (MALMAS), leyendo LECCIONES.md: combinar columnas distintas
+    "H28c": False,  # productos que se apagaron (de > 0 a 0) y cuántos montos y conteos están en 0
+    "H28a": False,  # totales entre productos y canales (tarjetas, préstamos, inversiones, transacciones)
+    "H28b": False,  # razones dentro del mes (uso del límite, pago sobre saldo, saldo y rentabilidad por producto)
+    "H28d": False,  # qué fracción de montos y conteos bajó contra el mes anterior y contra hace dos
+    "H28f": False,  # parte digital de las transacciones (homebanking y app sobre el total)
+    "H28e": False,  # cuántos campos faltan en la fila
 }
 
 MESES_ENTRENAMIENTO = ([201904, 201905, 201906] if CAMBIOS["H23"] else
@@ -245,6 +252,67 @@ def tendencia_y_promedio(X: pd.DataFrame) -> dict:
     return out
 
 
+def _suma(df, cols):
+    return df[list(cols)].sum(axis=1, min_count=1).to_numpy(np.float32)
+
+
+def agregar_combinadas(df: pd.DataFrame) -> None:
+    """H28a, H28b, H28e, H28f: columnas nuevas del mes, antes de la historia (así llevan lags y deltas como las crudas)."""
+    if not any(CAMBIOS[k] for k in ("H28a", "H28b", "H28e", "H28f")):
+        return
+    nuevas = {}
+    if CAMBIOS["H28e"]:  # antes de sumar columnas, para contar sólo las crudas
+        nuevas["n_faltantes"] = df[base_cols(df)].isna().sum(axis=1).to_numpy(np.float32)
+    tot = {
+        "tc_consumo": _suma(df, ["mtarjeta_visa_consumo", "mtarjeta_master_consumo"]),
+        "tc_transacciones": _suma(df, ["ctarjeta_visa_transacciones", "ctarjeta_master_transacciones"]),
+        "tc_limite": _suma(df, ["Visa_mlimitecompra", "Master_mlimitecompra"]),
+        "tc_saldo": _suma(df, ["Visa_msaldototal", "Master_msaldototal"]),
+        "tc_pagado": _suma(df, ["Visa_mpagado", "Master_mpagado"]),
+        "tc_minimo": _suma(df, ["Visa_mpagominimo", "Master_mpagominimo"]),
+        "prestamos_total": _suma(df, ["mprestamos_personales", "mprestamos_prendarios", "mprestamos_hipotecarios"]),
+        "inversiones_total": _suma(df, ["mplazo_fijo_dolares", "mplazo_fijo_pesos", "minversion1_pesos",
+                                        "minversion1_dolares", "minversion2"]),
+        "transacciones_total": _suma(df, ["ctarjeta_debito_transacciones", "ctarjeta_visa_transacciones",
+                                          "ctarjeta_master_transacciones", "chomebanking_transacciones",
+                                          "ccajas_transacciones", "catm_trx", "catm_trx_other", "cmobile_app_trx"]),
+    }
+    if CAMBIOS["H28a"]:
+        nuevas.update(tot)
+    if CAMBIOS["H28b"]:
+        prod = df["cproductos"].to_numpy(np.float32)
+        edad = df["cliente_edad"].to_numpy(np.float32)
+        nuevas.update({
+            "tc_uso_limite": razon(tot["tc_saldo"], tot["tc_limite"]),
+            "tc_pago_sobre_saldo": razon(tot["tc_pagado"], tot["tc_saldo"]),
+            "saldo_por_producto": razon(df["mcuentas_saldo"].to_numpy(np.float32), prod),
+            "rentabilidad_por_producto": razon(df["mrentabilidad"].to_numpy(np.float32), prod),
+            "antiguedad_sobre_edad": razon(df["cliente_antiguedad"].to_numpy(np.float32), edad * 12),
+        })
+    if CAMBIOS["H28f"]:
+        digital = _suma(df, ["chomebanking_transacciones", "cmobile_app_trx"])
+        nuevas["parte_digital"] = razon(digital, tot["transacciones_total"])
+    for c, v in nuevas.items():
+        df[c] = v
+
+
+def apagadas_y_bajas(X: pd.DataFrame, magnitudes: list[str]) -> dict:
+    """H28c y H28d: resúmenes por cliente sobre todos los montos y conteos (el árbol no puede contar columnas)."""
+    M = X[magnitudes].to_numpy(np.float32)
+    L1 = X[[f"{c}_lag1" for c in magnitudes]].to_numpy(np.float32)
+    L2 = X[[f"{c}_lag2" for c in magnitudes]].to_numpy(np.float32)
+    out = {}
+    if CAMBIOS["H28c"]:
+        out["n_apagadas1"] = ((L1 > 0) & (M == 0)).sum(axis=1).astype(np.float32)
+        out["n_apagadas2"] = ((L2 > 0) & (M == 0)).sum(axis=1).astype(np.float32)
+        out["n_en_cero"] = (M == 0).sum(axis=1).astype(np.float32)
+    if CAMBIOS["H28d"]:
+        for k, L in ((1, L1), (2, L2)):
+            ok = ~np.isnan(M) & ~np.isnan(L)
+            out[f"frac_bajaron{k}"] = razon(((M < L) & ok).sum(axis=1).astype(np.float32), ok.sum(axis=1).astype(np.float32))
+    return out
+
+
 def make_features(df: pd.DataFrame) -> pd.DataFrame:
     if CAMBIOS["H4"]:
         rotas_a_na(df)
@@ -254,6 +322,8 @@ def make_features(df: pd.DataFrame) -> pd.DataFrame:
         a_percentil(df, montos_que_derivan(df))
     if CAMBIOS["H16"]:
         restar_moda(df)
+    magnitudes = [c for c in base_cols(df) if es_magnitud(c)]
+    agregar_combinadas(df)
     seq = historia_red(df) if CAMBIOS["H29"] else {}
     X = lags_y_deltas(df, LAGS, TARJETAS if CAMBIOS["H17"] else (), CAMBIOS["H32"])
     if seq:
@@ -261,6 +331,8 @@ def make_features(df: pd.DataFrame) -> pd.DataFrame:
     extra = {}
     if CAMBIOS["H2"]:
         extra.update(razones_y_ventana(X))
+    if CAMBIOS["H28c"] or CAMBIOS["H28d"]:
+        extra.update(apagadas_y_bajas(X, magnitudes))
     if extra:
         X = pd.concat([X, pd.DataFrame(extra, index=X.index)], axis=1)
     if CAMBIOS["H21"]:
