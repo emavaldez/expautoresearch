@@ -20,7 +20,7 @@ ID, MES, CLASE = "numero_de_cliente", "foto_mes", "clase_ternaria"
 
 CAMBIOS = {
     "H2": False,    # razones y ventana de 3 meses (montos y conteos)
-    "H1b": False,   # BAJA+1 también como positivo
+    "H1b": True,   # BAJA+1 también como positivo
     "H6": False,    # entrenar con 201901 a 201906
     "H20": False,   # BAJA+1 a medio peso
     "H21": False,   # tendencia y promedio de 3 meses de la cátedra
