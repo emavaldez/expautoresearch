@@ -53,3 +53,4 @@ hasta 201912: nada de 2020 entra acá.
 - E034 (franja, enfoque 1): segunda etapa con cross-fitting por mes (4 meses fuera de muestra, franja de 0,6 a 3 veces los envíos, todas las variables): 760,4 M (+5,5 M), pareado +1,0 ± 0,4 M por mes: chico pero consistente; no pasa el umbral. Candidato para la mezcla. 18 minutos.
 - E035 (franja, enfoque 2): como el 1 pero con las variables elegidas por canaritos en la franja: 759,3 M (+4,4 M), pareado +0,4 ± 0,5 M: no mejora al 1; elegir variables con ~6.000 filas de franja por mes mete ruido.
 - E036 (franja, enfoque 3): cascada, un modelo de 63 hojas entrenado con el 15% de arriba (fuera de muestra) reordena la franja: 758,2 M (+3,3 M), pareado +1,0 ± 0,6 M: chico, en la línea del enfoque 1.
+- E038 (franja, enfoque 5): el doble de peso a las filas de entrenamiento que caen en la franja (fuera de muestra): 757,1 M (+2,2 M), pareado −0,3 ± 1,7 M: empate. Concentrar el peso cerca del corte no cambia el orden.
