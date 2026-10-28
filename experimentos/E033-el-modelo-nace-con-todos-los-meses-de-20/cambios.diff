@@ -1,0 +1,14 @@
+--- E019/train.py
++++ E033/train.py
+@@ -194,8 +194,9 @@
+ 
+ # ---------------------------------------------------------------- modelo
+ 
+-TRAIN_MONTHS_BACK = 4  # E1
+-MESES_ENTRENAMIENTO = 4  # la ventana entera: m - 5 a m - 2 (la segunda etapa necesita los dos primeros para su base)
++TRAIN_MONTHS_BACK = 99  # E1b: el general usa todos los meses que recibe
++MESES_ENTRENAMIENTO = 99  # E1b: todos los meses con clase y con historia
++NACIMIENTO = True  # E1b: sin la ventana de 6 meses (como el modelo que nace en 201912 con todo 2019)
+ HISTORIA_MESES = 2       # lags de 1 y 2 meses
+ CORTE = {"tipo": "fraccion", "f": 0.033}
+ 

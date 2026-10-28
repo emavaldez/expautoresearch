@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-27 19:50",
+ "generado": "2026-10-28 15:12",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3407,6 +3407,107 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E032-corte-3-3-corregido-por-la-tasa-de-baja/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E032-corte-3-3-corregido-por-la-tasa-de-baja/log.txt"
    }
+  },
+  {
+   "id": "E033",
+   "fecha": "2026-10-28 15:11",
+   "descripcion": "el modelo nace con todos los meses de 2019 (sin la ventana de 6)",
+   "idea": "E1b",
+   "hipotesis": "Predicción: mejora poco. 201908 queda igual (antes de 201903 no hay meses con historia), 201909 entrena con 5 meses y 201910 con 6",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 770.6,
+   "error": "",
+   "total": 762630000.0,
+   "media": 254210000.0,
+   "meseta": 258267290.10806313,
+   "auc": 0.9161454613401853,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 211502500.0,
+     "envios": 4349,
+     "aciertos": 301,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 212561627.1820449,
+     "envios_meseta": 3985,
+     "auc": 0.9091207540133893,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 218.4
+    },
+    "201909": {
+     "lista": 257317500.0,
+     "envios": 4403,
+     "aciertos": 344,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 267405679.5511222,
+     "envios_meseta": 2859,
+     "auc": 0.9138069957628326,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 636724,
+     "segundos": 264.5
+    },
+    "201910": {
+     "lista": 293810000.0,
+     "envios": 4476,
+     "aciertos": 379,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 294834563.59102243,
+     "envios_meseta": 5976,
+     "auc": 0.9255086342443339,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 768499,
+     "segundos": 286.9
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 2566666.6666666567,
+    "delta_por_mes": {
+     "201908": 0.0,
+     "201909": -4400000.0,
+     "201910": 12100000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": 2933333.3333333256,
+    "pareado_se": 819891.5917499246
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E033-el-modelo-nace-con-todos-los-meses-de-20/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E033-el-modelo-nace-con-todos-los-meses-de-20/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E033-el-modelo-nace-con-todos-los-meses-de-20/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -3611,11 +3712,13 @@
    "fuente_url": "https://arxiv.org/abs/2606.06776",
    "como_medir": "Ganancia de las tres listas (202007-202009) contra el vigente.",
    "prioridad": "media",
-   "estado": "propuesta",
+   "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-10-27 19:50",
-   "experimentos": [],
-   "comentarios": 0
+   "actualizado": "2026-10-28 15:11",
+   "experimentos": [
+    "E033"
+   ],
+   "comentarios": 3
   },
   {
    "id": "E2",
