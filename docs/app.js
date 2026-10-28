@@ -427,7 +427,7 @@ const H = () => D.hipotesis || [];
 const ESTADO_H = {
   preregistrada: ["esperando", "preregistrada"], corriendo: ["pendiente", "corriendo"],
   mejora: ["adoptado", "mejora"], "no mejora": ["descartado", "no mejora"], empeora: ["fallido", "empeora"], base: ["adoptado", "referencia"],
-  "quedó": ["adoptado", "quedó"], descartada: ["descartado", "descartada"], "necesita instalar": ["pendiente", "espera instalación"],
+  "quedó": ["adoptado", "quedó"], descartada: ["descartado", "descartada"], "necesita instalar": ["pendiente", "espera instalación"], "espera licencia": ["pendiente", "espera licencia"],
   error: ["fallido", "error"],
 };
 // Cómo se agrupan en la página y contra qué se comparan.

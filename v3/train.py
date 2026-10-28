@@ -254,7 +254,10 @@ def make_features(df: pd.DataFrame) -> pd.DataFrame:
         a_percentil(df, montos_que_derivan(df))
     if CAMBIOS["H16"]:
         restar_moda(df)
+    seq = historia_red(df) if CAMBIOS["H29"] else {}
     X = lags_y_deltas(df, LAGS, TARJETAS if CAMBIOS["H17"] else (), CAMBIOS["H32"])
+    if seq:
+        X = pd.concat([X, pd.DataFrame(seq, index=X.index)], axis=1)
     extra = {}
     if CAMBIOS["H2"]:
         extra.update(razones_y_ventana(X))
@@ -266,8 +269,8 @@ def make_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def columnas(df: pd.DataFrame) -> list[str]:
-    """Todo menos el cliente, el mes (identificaría el mes) y la clase."""
-    return [c for c in df.columns if c not in (ID, MES, CLASE)]
+    """Todo menos el cliente, el mes (identificaría el mes), la clase y la secuencia de la red (H29)."""
+    return [c for c in df.columns if c not in (ID, MES, CLASE) and "__s" not in c]
 
 
 # ---------------------------------------------------------------- clase, pesos y filas
@@ -556,8 +559,12 @@ def segunda_etapa(tr, va, y_va, cols, params, seed, pares):
         print(f"  franja: {len(y):,} filas, {int(y.sum())} BAJA+2, {len(_ELEGIDAS[clave])} variables", flush=True)
     el = _ELEGIDAS[clave]
     c = calibracion(l, y)
-    modelo = lgb.train({**PARAMS_2, "seed": int(seed)},
-                       lgb.Dataset(X[el].to_numpy(np.float32), y, init_score=c[0] + c[1] * l), RONDAS_2)
+    if CAMBIOS["H30"]:
+        puntaje = tabpfn_franja(X[el].to_numpy(np.float32), l, y, seed)
+    else:
+        modelo = lgb.train({**PARAMS_2, "seed": int(seed)},
+                           lgb.Dataset(X[el].to_numpy(np.float32), y, init_score=c[0] + c[1] * l), RONDAS_2)
+        puntaje = lambda M, lp: modelo.predict(M, raw_score=True) + c[0] + c[1] * lp  # noqa: E731
     out = []
     for D, p in pares:
         if D is None:
@@ -565,7 +572,7 @@ def segunda_etapa(tr, va, y_va, cols, params, seed, pares):
             continue
         p = p.copy()
         idx = np.flatnonzero(en_franja(p))
-        s = modelo.predict(D.iloc[idx][el].to_numpy(np.float32), raw_score=True) + c[0] + c[1] * logit(p[idx])
+        s = puntaje(D.iloc[idx][el].to_numpy(np.float32), logit(p[idx]))
         s = rankdata(s) + rankdata(p[idx])
         nuevo = np.empty(len(idx))
         nuevo[np.argsort(-s, kind="stable")] = np.sort(p[idx])[::-1]
@@ -574,11 +581,156 @@ def segunda_etapa(tr, va, y_va, cols, params, seed, pares):
     return out
 
 
+# ---------------------------------------------------------------- red sobre la historia (H29, ChurnNet)
+
+MESES_RED = 6  # la red lee el mes actual y los 5 anteriores de las 152 crudas
+
+
+def historia_red(df: pd.DataFrame) -> dict:
+    """Lags 1 a 5 de las crudas (columnas c__s1 ... c__s5), sólo para la red: LightGBM no las ve."""
+    base = base_cols(df)
+    ids, per = df[ID].to_numpy(np.int64), _periodo(df[MES].to_numpy(np.int64))
+    orden = np.lexsort((per, ids))
+    ids_o, v_o = ids[orden], df[base].to_numpy(np.float32)[orden]
+    out = {}
+    for k in range(1, MESES_RED):
+        mismo = np.zeros(len(ids_o), dtype=bool)
+        mismo[k:] = ids_o[k:] == ids_o[:-k]
+        lag_o = np.full_like(v_o, np.nan)
+        lag_o[k:] = v_o[:-k]
+        lag_o[~mismo] = np.nan
+        lag = np.empty_like(lag_o)
+        lag[orden] = lag_o
+        out.update({f"{c}__s{k}": lag[:, j] for j, c in enumerate(base)})
+    return out
+
+
+def _tensor(D: pd.DataFrame, crudas: list[str], q: np.ndarray) -> np.ndarray:
+    """(clientes, 6 meses, variables), del más viejo al actual; cada variable en su percentil de entrenamiento
+    (0 a 1) y -1 donde falta (incluidos los meses antes de que el cliente aparezca)."""
+    pasos = [[f"{c}__s{k}" for c in crudas] for k in range(MESES_RED - 1, 0, -1)] + [crudas]
+    out = np.empty((len(D), MESES_RED, len(crudas)), dtype=np.float32)
+    for t, cols in enumerate(pasos):
+        M = D[cols].to_numpy(np.float32)
+        for j in range(len(crudas)):
+            x = M[:, j]
+            r = np.searchsorted(q[:, j], x, side="right") / q.shape[0]
+            out[:, t, j] = np.where(np.isnan(x), -1.0, r)
+    return out
+
+
+# La red corre en un proceso aparte que sólo carga torch: en macOS, torch y LightGBM en el mismo proceso chocan (cada uno
+# trae su OpenMP) y la GRU se cae con un segfault. Los datos van y vuelven por archivos .npy.
+RED_HIJO = r"""
+import json, sys
+import numpy as np
+import torch
+d, seed, epocas, paciencia = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
+torch.manual_seed(seed)
+rng = np.random.default_rng(seed)
+disp = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+Xtr = torch.from_numpy(np.load(f"{d}/Xtr.npy"))
+ytr = torch.from_numpy(np.load(f"{d}/ytr.npy"))
+Xva = torch.from_numpy(np.load(f"{d}/Xva.npy")).to(disp)
+y_va = np.load(f"{d}/yva.npy")
+
+def auc(p, y):
+    r = np.empty(len(p)); r[np.argsort(p, kind="stable")] = np.arange(1, len(p) + 1)
+    n1 = y.sum(); n0 = len(y) - n1
+    return float((r[y].sum() - n1 * (n1 + 1) / 2) / (n1 * n0))
+
+class Red(torch.nn.Module):
+    def __init__(self, f, h=64):
+        super().__init__()
+        self.gru = torch.nn.GRU(f, h, batch_first=True)
+        self.sal = torch.nn.Sequential(torch.nn.Linear(h, 32), torch.nn.ReLU(), torch.nn.Linear(32, 1))
+    def forward(self, x):
+        _, h = self.gru(x)
+        return self.sal(h[-1]).squeeze(-1)
+
+m = Red(Xtr.shape[2]).to(disp)
+opt = torch.optim.Adam(m.parameters(), lr=1e-3)
+perdida = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor(10.0, device=disp))
+
+def puntuar(X):
+    m.eval()
+    with torch.no_grad():
+        return torch.cat([torch.sigmoid(m(X[i:i + 16384])) for i in range(0, len(X), 16384)]).cpu().numpy()
+
+mejor, estado, sin_mejora, curva = -1.0, None, 0, []
+for _ in range(epocas):
+    m.train()
+    for b in np.array_split(rng.permutation(len(Xtr)), max(1, len(Xtr) // 4096)):
+        b = torch.from_numpy(b)
+        opt.zero_grad()
+        perdida(m(Xtr[b].to(disp)), ytr[b].to(disp)).backward()
+        opt.step()
+    a = auc(puntuar(Xva), y_va)
+    curva.append(round(a, 4))
+    if a > mejor:
+        mejor, estado, sin_mejora = a, {k: v.detach().clone() for k, v in m.state_dict().items()}, 0
+    else:
+        sin_mejora += 1
+        if sin_mejora >= paciencia:
+            break
+m.load_state_dict(estado)
+np.save(f"{d}/pva.npy", puntuar(Xva))
+try:
+    np.save(f"{d}/pte.npy", puntuar(torch.from_numpy(np.load(f"{d}/Xte.npy")).to(disp)))
+except FileNotFoundError:
+    pass
+json.dump({"auc_val_sola": round(mejor, 4), "curva": curva, "dispositivo": str(disp)}, open(f"{d}/info.json", "w"))
+"""
+
+
+def red(tr, va, y_va, te, seed, epocas=20, paciencia=2):
+    """H29: una GRU chica sobre los 6 meses de historia, early stopping por AUC en 201908, en un proceso aparte.
+    Devuelve (p_va, p_te, info)."""
+    import json
+    import shutil
+    import subprocess
+    import sys
+    import tempfile
+    from pathlib import Path
+    import config
+    crudas = [c for c in base_cols(tr) if f"{c}__s1" in tr.columns]
+    q = np.nanquantile(tr[crudas].to_numpy(np.float32), np.linspace(0, 1, 101), axis=0)
+    q = np.where(np.isnan(q), np.inf, q)
+    y, _ = objetivo(tr)
+    (config.CACHE / "v3").mkdir(parents=True, exist_ok=True)
+    d = Path(tempfile.mkdtemp(prefix="red_", dir=config.CACHE / "v3"))
+    try:
+        np.save(d / "Xtr.npy", _tensor(tr, crudas, q))
+        np.save(d / "ytr.npy", (y == y.max()).astype(np.float32))
+        np.save(d / "Xva.npy", _tensor(va, crudas, q))
+        np.save(d / "yva.npy", np.asarray(y_va, dtype=bool))
+        if te is not None:
+            np.save(d / "Xte.npy", _tensor(te, crudas, q))
+        subprocess.run([sys.executable, "-c", RED_HIJO, str(d), str(int(seed)), str(epocas), str(paciencia)], check=True)
+        p_va = np.load(d / "pva.npy").astype(np.float64)
+        p_te = np.load(d / "pte.npy").astype(np.float64) if te is not None else None
+        return p_va, p_te, json.loads((d / "info.json").read_text())
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+# ---------------------------------------------------------------- TabPFN en la franja (H30)
+
+def tabpfn_franja(M, l, y, seed, max_filas=10_000):
+    """H30: TabPFN aprende la franja (las variables elegidas y el logit de la base) con hasta 10.000 filas (todas las
+    BAJA+2 y CONTINUA al azar). Devuelve una función que puntúa (matriz, logit de la base)."""
+    from tabpfn import TabPFNClassifier
+    rng = np.random.default_rng(int(seed))
+    pos, neg = np.flatnonzero(y == 1), np.flatnonzero(y == 0)
+    filas = np.concatenate([pos, rng.choice(neg, min(len(neg), max_filas - len(pos)), replace=False)])
+    modelo = TabPFNClassifier(random_state=int(seed))
+    modelo.fit(np.column_stack([M[filas], l[filas]]), y[filas].astype(int))
+    return lambda X, lp: modelo.predict_proba(np.column_stack([X, lp]))[:, 1]
+
+
 # ---------------------------------------------------------------- el modelo
 
 def train_and_predict(tr, va, y_va, te, params, seed):
-    if CAMBIOS["H29"] or CAMBIOS["H30"]:
-        raise NotImplementedError("H29 y H30 necesitan instalar torch / tabpfn (esperan el OK)")
     cols = seleccion(tr, va, y_va, params)
     p_va, (p_te,), rondas = general(tr, va, y_va, [te], cols, params, seed)
     if CAMBIOS["H27"]:
@@ -589,6 +741,10 @@ def train_and_predict(tr, va, y_va, te, params, seed):
         p_va[kv] = repartir(p_va[kv], ev)
         if te is not None:
             p_te[kt] = repartir(p_te[kt], et)
-    if CAMBIOS["H8"]:
+    info = {"rondas": rondas, "variables": len(cols)}
+    if CAMBIOS["H29"]:
+        r_va, r_te, info["red"] = red(tr, va, y_va, te, seed)
+        p_va, p_te = mezcla(p_va, r_va), (None if te is None else mezcla(p_te, r_te))
+    if CAMBIOS["H8"] or CAMBIOS["H30"]:
         p_va, p_te = segunda_etapa(tr, va, y_va, cols, params, seed, [(va, p_va), (te, p_te)])
-    return p_va, p_te, {"rondas": rondas, "variables": len(cols)}
+    return p_va, p_te, info

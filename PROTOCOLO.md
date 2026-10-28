@@ -147,3 +147,9 @@ Dos ideas necesitan instalar algo que no está en la Mac y esperan el OK: H29 (`
     float32 no distingue enteros de más de 16,7 millones. Quedaban 214 números con dos clientes distintos, con la clase
     y los lags mezclados (y 1 a 3 BAJA+2 por mes tapadas). Afectó a los experimentos viejos (E000 a E040), no a la
     herramienta del aula, que convierte el id primero.
+- 2026-10-28, con el loop en el paso 8:
+  - Se instalaron `torch` y `tabpfn` (OK de Emmanuel). H29 (la red) vuelve a su lugar en la cola; corre en un proceso
+    aparte porque torch y LightGBM en el mismo proceso se caen en macOS (choque de OpenMP). Hasta 20 épocas.
+  - H30 (TabPFN) espera que Emmanuel acepte la licencia de Prior Labs para bajar los pesos.
+  - El código de H29 y H30 se agregó a `v3/train.py` entre los pasos 7 y 8; se comprobó que el vigente da exactamente
+    las mismas probabilidades que antes.

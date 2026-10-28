@@ -1,0 +1,196 @@
+{
+ "id": "H1b",
+ "hipotesis": "H1b",
+ "variante": null,
+ "paso": 2,
+ "vigente": "B0",
+ "decision": "queda",
+ "segundos": 142,
+ "fecha": "2026-10-28 18:27",
+ "pred_auc": "0.0015",
+ "semillas": [
+  800011,
+  800029,
+  800053,
+  800057,
+  800077
+ ],
+ "params": {
+  "num_leaves": 56,
+  "learning_rate": 0.026251230543003472,
+  "min_data_in_leaf": 4997,
+  "feature_fraction": 0.6594210941714631,
+  "bagging_fraction": 0.7742347538844919
+ },
+ "info": [
+  {
+   "rondas": 409,
+   "variables": 760,
+   "segundos": 28.2
+  },
+  {
+   "rondas": 403,
+   "variables": 760,
+   "segundos": 26.7
+  },
+  {
+   "rondas": 466,
+   "variables": 760,
+   "segundos": 29.8
+  },
+  {
+   "rondas": 485,
+   "variables": 760,
+   "segundos": 30.6
+  },
+  {
+   "rondas": 309,
+   "variables": 760,
+   "segundos": 21.5
+  }
+ ],
+ "val": {
+  "auc": 0.9148028172619264,
+  "ganancia_meseta": 207141658.3541147,
+  "envios_meseta": 3618,
+  "ganancia_lista": 203802500.0,
+  "envios_lista": 4349,
+  "ganancia_maxima": 209330000.0,
+  "envios_maxima": 3428,
+  "auc_parcial": 0.45992594673266146,
+  "top1": 168,
+  "baja2": 543,
+  "clientes": 131775
+ },
+ "por_semilla": {
+  "val": [
+   {
+    "auc": 0.912608483175509,
+    "ganancia_meseta": 203067063.59102243,
+    "envios_meseta": 3833,
+    "ganancia_lista": 200502500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 205315000.0,
+    "envios_maxima": 3254,
+    "auc_parcial": 0.4559438519015485,
+    "top1": 167,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9124899437230195,
+    "ganancia_meseta": 208677749.3765586,
+    "envios_meseta": 4139,
+    "ganancia_lista": 207102500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 210567500.0,
+    "envios_maxima": 3983,
+    "auc_parcial": 0.4578831444336219,
+    "top1": 166,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9145241014970521,
+    "ganancia_meseta": 204028603.49127182,
+    "envios_meseta": 4412,
+    "ganancia_lista": 203802500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 205727500.0,
+    "envios_maxima": 4439,
+    "auc_parcial": 0.4576255488150714,
+    "top1": 167,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9161280678521118,
+    "ganancia_meseta": 207959251.8703242,
+    "envios_meseta": 4216,
+    "ganancia_lista": 208202500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 210485000.0,
+    "envios_maxima": 4186,
+    "auc_parcial": 0.45924740765289696,
+    "top1": 164,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.912661543157735,
+    "ganancia_meseta": 205941053.6159601,
+    "envios_meseta": 3125,
+    "ganancia_lista": 202702500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 208340000.0,
+    "envios_maxima": 2984,
+    "auc_parcial": 0.45673269287507023,
+    "top1": 170,
+    "baja2": 543,
+    "clientes": 131775
+   }
+  ]
+ },
+ "vs_vigente": {
+  "auc": {
+   "delta": 0.0037192647842707593,
+   "pareado": {
+    "media": 0.003578562509795247,
+    "se": 0.0009260352036159927,
+    "ganadas": 5,
+    "n": 5,
+    "p_wilcoxon": 0.03125
+   }
+  },
+  "ganancia_meseta": {
+   "delta": -195654.61346632242,
+   "pareado": {
+    "media": -51639.650872826576,
+    "se": 2531339.393829775,
+    "ganadas": 2,
+    "n": 5,
+    "p_wilcoxon": 0.59375
+   }
+  },
+  "ganancia_lista": {
+   "delta": -3300000.0,
+   "pareado": {
+    "media": 1100000.0,
+    "se": 1594051.4420808381,
+    "ganadas": 3,
+    "n": 5,
+    "p_wilcoxon": 0.25
+   }
+  },
+  "auc_parcial": {
+   "delta": -0.0019095980273417523,
+   "pareado": {
+    "media": -0.0029352989860533694,
+    "se": 0.0014336015278521767,
+    "ganadas": 0,
+    "n": 5,
+    "p_wilcoxon": 1.0
+   }
+  },
+  "top1": {
+   "delta": -8,
+   "pareado": {
+    "media": -8.8,
+    "se": 1.1135528725660042,
+    "ganadas": 0,
+    "n": 5,
+    "p_wilcoxon": 1.0
+   }
+  },
+  "ganancia_maxima": {
+   "delta": 687500.0,
+   "pareado": {
+    "media": -154000.0,
+    "se": 2623427.9340206776,
+    "ganadas": 2,
+    "n": 5,
+    "p_wilcoxon": 0.59375
+   }
+  }
+ }
+}

@@ -7,3 +7,4 @@ datos/
 *.parquet
 *.csv.gz
 .venv/
+v3/loop.log
