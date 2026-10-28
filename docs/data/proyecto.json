@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-28 16:20",
+ "generado": "2026-10-28 16:39",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3833,6 +3833,104 @@
     "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py",
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/log.txt"
+   }
+  },
+  {
+   "id": "E038",
+   "fecha": "2026-10-28 16:39",
+   "descripcion": "franja: el doble de peso a los casos difíciles (los de la franja)",
+   "idea": "E23",
+   "hipotesis": "Predicción: incierto. Un solo modelo que presta más atención a los clientes cerca del corte",
+   "estado": "descartado",
+   "vigente_al_correr": "E019",
+   "segundos": 1101.8,
+   "error": "",
+   "total": 757130000.0,
+   "media": 252376666.66666666,
+   "meseta": 257081841.23025766,
+   "auc": 0.9158100958450207,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {
+    "201908": {
+     "lista": 211502500.0,
+     "envios": 4349,
+     "aciertos": 301,
+     "baja2": 542,
+     "clientes": 131775,
+     "meseta": 215194769.32668328,
+     "envios_meseta": 3949,
+     "auc": 0.9084902312984177,
+     "train_meses": [
+      201903,
+      201904,
+      201905,
+      201906
+     ],
+     "filas_train": 506871,
+     "segundos": 360.2
+    },
+    "201909": {
+     "lista": 259517500.0,
+     "envios": 4403,
+     "aciertos": 346,
+     "baja2": 612,
+     "clientes": 133419,
+     "meseta": 262585635.91022444,
+     "envios_meseta": 2824,
+     "auc": 0.9149858158216816,
+     "train_meses": [
+      201904,
+      201905,
+      201906,
+      201907
+     ],
+     "filas_train": 511102,
+     "segundos": 368.2
+    },
+    "201910": {
+     "lista": 286110000.0,
+     "envios": 4476,
+     "aciertos": 372,
+     "baja2": 631,
+     "clientes": 135633,
+     "meseta": 293465118.4538653,
+     "envios_meseta": 5585,
+     "auc": 0.9239542404149627,
+     "train_meses": [
+      201905,
+      201906,
+      201907,
+      201908
+     ],
+     "filas_train": 516761,
+     "segundos": 372.6
+    }
+   },
+   "modificado": null,
+   "comparacion": {
+    "vigente": "E019",
+    "delta_media": 733333.3333333135,
+    "delta_por_mes": {
+     "201908": 0.0,
+     "201909": -2200000.0,
+     "201910": 4400000.0
+    },
+    "meses_ganados": 1,
+    "pareado_media": -293333.33333333733,
+    "pareado_se": 1748504.1225763992
+   },
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E038-franja-el-doble-de-peso-a-los-casos-difi/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E038-franja-el-doble-de-peso-a-los-casos-difi/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E038-franja-el-doble-de-peso-a-los-casos-difi/log.txt"
    }
   }
  ],
