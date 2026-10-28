@@ -289,3 +289,8 @@ pre.error { white-space: pre-wrap; font: 12px/1.45 ui-monospace, Menlo, monospac
 .protocolo table { margin: 6px 0 14px; }
 .scroll-x { overflow-x: auto; }
 .protocolo td:first-child { white-space: nowrap; }
+
+/* Filas de grupo en la tabla de hipótesis (base, principal, cola del loop, búsqueda, ...) */
+table.libro tr.grupo td { background: var(--papel-hondo); padding-top: 14px; font-family: var(--sans); font-size: 0.86rem; }
+table.libro tr.grupo td strong { margin-right: 8px; }
+table.libro td small { color: var(--tinta-3); }

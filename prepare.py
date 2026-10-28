@@ -4,7 +4,8 @@ El loop de autoresearch NO edita este archivo: define el problema y cómo se mid
 que tiene que exponer esta interfaz:
 
     MESES_ENTRENAMIENTO : int   meses con clase completa que usa, los más recientes dentro de la ventana
-                                (para puntuar m: entre m - 5 y m - 2, o sea 4 como máximo)
+                                (para puntuar m: entre m - 5 y m - 2, o sea 4 como máximo; con NACIMIENTO = True,
+                                todos los que tengan historia, como el modelo de 201912 que nace con todo 2019)
     HISTORIA_MESES      : int   meses de datos que make_features necesita antes de cada mes de entrenamiento
     make_features(df) -> df     recibe todas las filas de los meses necesarios (<= mes a puntuar), SIN la clase;
                                 devuelve una fila por fila de entrada, con el mismo índice
@@ -119,11 +120,14 @@ def cargar(modificado: bool = False, produccion: bool = False) -> pd.DataFrame:
         t0 = time.time()
         df = _leer(C.DATOS)
         df = df[df[MES] <= hasta].reset_index(drop=True)
+        # El id va a entero ANTES de bajar los decimales a float32: viene como double y float32 no representa
+        # enteros de más de 2^24 (16,7 millones; hay hasta 78 millones), así que clientes distintos quedaban con el
+        # mismo número (214 ids en 2019, con la clase y los lags mezclados).
+        df[ID] = df[ID].astype(np.int64)
+        df[MES] = df[MES].astype(np.int64)
         for c in df.columns:
             if df[c].dtype == np.float64:
                 df[c] = df[c].astype(np.float32)
-        df[ID] = df[ID].astype(np.int64)
-        df[MES] = df[MES].astype(np.int64)
         if CLASE in df.columns:
             df = df.drop(columns=[CLASE])
         df[CLASE] = clase_ternaria(df)
@@ -241,7 +245,9 @@ def datos_fold(df: pd.DataFrame, mod, mes: int):
     """Arma lo que se sabe al puntuar `mes`: train (meses con clase completa dentro de la ventana), score (el mes) e
     intermedio (m - 1, con la columna baja1: las BAJA+1 ya se conocen, el resto no se sabe)."""
     ultima = sumar_meses(mes, -C.GAP)
-    desde_ventana = sumar_meses(mes, -(C.VENTANA - 1))
+    # Modo nacimiento (train.py con NACIMIENTO = True): como el modelo de 201912, que nace con todo lo que hay en 2019;
+    # usa todos los meses con clase y con historia, sin la ventana de 6 meses de los reentrenamientos.
+    desde_ventana = int(df[MES].min()) if getattr(mod, "NACIMIENTO", False) else sumar_meses(mes, -(C.VENTANA - 1))
     historia = int(getattr(mod, "HISTORIA_MESES", 0))
     n = int(getattr(mod, "MESES_ENTRENAMIENTO", C.VENTANA - C.GAP))
     primero = int(df[MES].min())

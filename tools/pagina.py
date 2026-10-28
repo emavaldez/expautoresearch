@@ -138,10 +138,10 @@ def _hipotesis(coment: dict) -> list[dict]:
     for r in sorted((comun.RAIZ / "experimentos_v3").glob("*/resultado.json")):
         d = json.loads(r.read_text(encoding="utf-8"))
         d["carpeta"] = r.parent.name
-        res[d.get("hipotesis")] = d
+        res[d["carpeta"]] = d
     out = []
     for f in comun.leer_tsv(comun.RAIZ / "hipotesis.tsv"):
-        r = res.get(f["id"])
+        r = res.get(f.get("experimento") or f["id"])  # con variantes (H24), la que eligió el loop
         if r:
             base = f"{BLOB}/experimentos_v3/{r['carpeta']}"
             r["archivos"] = {"codigo": f"{base}/train.py", "log": f"{base}/log.txt", "busqueda": f"{base}/busqueda.tsv"}
@@ -176,6 +176,7 @@ def generar() -> None:
         "aula": AULA,
         "protocolo": (comun.RAIZ / "PROTOCOLO.md").read_text(encoding="utf-8") if (comun.RAIZ / "PROTOCOLO.md").exists() else "",
         "hipotesis": _hipotesis(coment),
+        "loop": comun.leer_tsv(comun.RAIZ / "v3" / "loop.tsv"),
     }
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

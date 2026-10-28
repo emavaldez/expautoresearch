@@ -1,0 +1,41 @@
+{
+ "objetivo": "auc",
+ "arranque": null,
+ "trials": 40,
+ "mejor_trial": 34,
+ "valor": 0.9115469186646746,
+ "params": {
+  "num_leaves": 56,
+  "learning_rate": 0.026251230543003472,
+  "min_data_in_leaf": 4997,
+  "feature_fraction": 0.6594210941714631,
+  "bagging_fraction": 0.7742347538844919
+ },
+ "espacio": {
+  "num_leaves": [
+   "intlog",
+   8,
+   512
+  ],
+  "learning_rate": [
+   "log",
+   0.01,
+   0.2
+  ],
+  "min_data_in_leaf": [
+   "intlog",
+   20,
+   5000
+  ],
+  "feature_fraction": [
+   "float",
+   0.1,
+   1.0
+  ],
+  "bagging_fraction": [
+   "float",
+   0.3,
+   1.0
+  ]
+ }
+}

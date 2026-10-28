@@ -427,7 +427,19 @@ const H = () => D.hipotesis || [];
 const ESTADO_H = {
   preregistrada: ["esperando", "preregistrada"], corriendo: ["pendiente", "corriendo"],
   mejora: ["adoptado", "mejora"], "no mejora": ["descartado", "no mejora"], empeora: ["fallido", "empeora"], base: ["adoptado", "referencia"],
+  "quedó": ["adoptado", "quedó"], descartada: ["descartado", "descartada"], "necesita instalar": ["pendiente", "espera instalación"],
+  error: ["fallido", "error"],
 };
+// Cómo se agrupan en la página y contra qué se comparan.
+const FASES = [
+  ["base", "Baseline", "La referencia de la cátedra."],
+  ["principal", "Hipótesis principal", "El modelo final del loop contra el baseline, en 201910."],
+  ["loop", "La cola del loop", "En el orden en que corren (por la predicción). Cada una se decide contra el vigente en 201908; las diferencias de esta tabla son de 201908."],
+  ["busqueda", "Cómo buscar los hiperparámetros", "El baseline con otra búsqueda, los mismos 40 trials; contra el baseline en 201910."],
+  ["loop-metodo", "Sobre el loop", "Si el agente predice bien, si cortar temprano ahorra, si más semillas suman."],
+  ["corte", "Dónde cortar", "Sobre el modelo final: sólo cambian la ganancia de la lista. Se eligen en 201908."],
+];
+const contra = (x) => (x.resultado && (x.resultado.vs_base || x.resultado.vs_vigente)) || null;
 const A4 = (x) => (x == null ? "–" : x.toFixed(4).replace(".", ","));
 const dA = (x) => (x == null ? "–" : `${x > 0 ? "+" : x < 0 ? "−" : ""}${Math.abs(x).toFixed(4).replace(".", ",")}`);
 
@@ -435,7 +447,7 @@ function bosque(metrica) {
   metrica = metrica || bosque.metrica || "auc";
   bosque.metrica = metrica;
   const el = $("#grafico");
-  const filas = H().filter((h) => h.id !== "B0");
+  const filas = H().filter((h) => ["principal", "busqueda", "loop-metodo"].includes(h.fase));
   const con = filas.filter((h) => h.resultado && h.resultado.vs_base && h.resultado.vs_base[metrica]);
   const W = Math.max(Math.min(el.clientWidth || 960, 960), 480), fila = 26, T = 34, B = 30, L = Math.min(250, W * 0.36), R = 24;
   const Hh = T + B + filas.length * fila;
@@ -469,7 +481,8 @@ function resumenProtocolo() {
   const hs = H().filter((h) => h.id !== "B0");
   const hechas = hs.filter((h) => h.resultado).length;
   const b0 = H().find((h) => h.id === "B0");
-  let t = `${hs.length} hipótesis preregistradas, ${hechas} corridas. `;
+  const enCola = hs.filter((h) => h.fase === "loop"), pasadas = enCola.filter((h) => h.estado === "quedó" || h.estado === "descartada");
+  let t = `${hs.length} hipótesis preregistradas; el loop lleva ${pasadas.length} de ${enCola.length} ideas (${enCola.filter((h) => h.estado === "quedó").length} quedaron). `;
   if (b0 && b0.resultado) t += `El baseline de la cátedra da AUC <strong>${A4(b0.resultado.test.auc)}</strong> y ganancia meseta <strong>${M(b0.resultado.test.ganancia_meseta)}</strong> en 201910. `;
   t += `Entrenamiento 201903-201906, validación 201908 (elige), test 201910 (sólo compara). <a href="#/protocolo">Cómo medimos</a>.`;
   $("#resumen").innerHTML = t;
@@ -515,10 +528,16 @@ function metricasFila(r) {
 }
 
 function vHipotesis(abierta) {
-  let h = `<h2>Hipótesis</h2><p class="intro">Cada hipótesis es un solo cambio sobre el baseline de la cátedra, con todo lo demás fijo: los mismos meses, las mismas 10 semillas, la misma búsqueda de 40 trials ordenada por AUC en 201908. Se compara con el baseline en 201910, pareado por semilla y con intervalo por remuestreo de clientes.</p>`;
-  h += `<table class="libro fija"><colgroup><col style="width:58px"><col><col style="width:150px"><col style="width:130px"><col style="width:130px"><col style="width:120px"></colgroup><thead><tr><th>Id</th><th>Hipótesis</th><th>Predicción</th><th class="num">Δ AUC test</th><th class="num">Δ ganancia</th><th>Estado</th></tr></thead><tbody>`;
-  for (const x of H()) {
-    const r = x.resultado, v = r && r.vs_base;
+  let h = `<h2>Hipótesis</h2><p class="intro">Todo es un loop: la hipótesis principal (H11) es que el loop, partiendo del baseline y probando las ideas de la cola de a una, termina en un modelo mejor en 201910. Cada idea de la cola es un solo cambio, con su predicción escrita antes de correr, y se decide contra el vigente en 201908 (201910 no se mira). Aparte quedan las preguntas sobre cómo buscar los hiperparámetros, sobre el loop mismo y sobre dónde cortar.</p>`;
+  h += `<table class="libro fija"><colgroup><col style="width:58px"><col><col style="width:150px"><col style="width:130px"><col style="width:130px"><col style="width:120px"></colgroup><thead><tr><th>Id</th><th>Hipótesis</th><th>Predicción</th><th class="num">Δ AUC</th><th class="num">Δ ganancia</th><th>Estado</th></tr></thead><tbody>`;
+  const orden = (x) => (x.fase === "loop" ? Number(x.orden) || 99 : 0);
+  const filas = FASES.flatMap(([f, titulo, nota]) => {
+    const g = H().filter((x) => x.fase === f).sort((a, b) => orden(a) - orden(b));
+    return g.length ? [{ grupo: titulo, nota }, ...g] : [];
+  });
+  for (const x of filas) {
+    if (x.grupo) { h += `<tr class="grupo"><td colspan="6"><strong>${esc(x.grupo)}</strong> <span class="apagado">${esc(x.nota)}</span></td></tr>`; continue; }
+    const r = x.resultado, v = contra(x);
     const [cl, nombre] = ESTADO_H[x.estado] || ["esperando", x.estado];
     h += `<tr class="fila${abierta === x.id ? " abierta" : ""}" data-id="${esc(x.id)}" tabindex="0"><td class="id">${esc(x.id)}</td>
       <td class="que">${esc(x.titulo)}<small>${esc(x.h1)}</small></td><td data-rotulo="Predicción"><span class="apagado">${esc(x.prediccion)}</span></td>
@@ -543,10 +562,18 @@ function vHipotesis(abierta) {
 
 function detalleHipotesis(x) {
   const r = x.resultado, v = r && r.vs_base;
+  const DISENO = {
+    base: "Entrenamiento 201903-201906 completo, búsqueda de 40 trials por AUC en 201908, 10 semillas, test 201910.",
+    principal: "El loop parte del baseline y recorre la cola; el modelo final se compara con el baseline en 201910, con 10 semillas.",
+    loop: "Un paso del loop: el vigente más este cambio, con los parámetros del vigente y 5 semillas, contra el vigente en 201908. Si cumple la regla queda; si no, se deshace. 201910 no se mira.",
+    busqueda: "Mismo presupuesto (40 trials) y 10 semillas; contra el baseline en 201910.",
+    "loop-metodo": "Se mide sobre el registro del loop o sobre el modelo final.",
+    corte: "Sobre el modelo final; la regla se elige con 201908 y se informa en 201910.",
+  };
   const izq = `<dl>
-    <dt>Hipótesis</dt><dd>H1: ${esc(x.h1)}<br><span class="apagado">H0: el cambio no mejora la AUC en 201910.</span></dd>
-    <dt>Predicción</dt><dd>${esc(x.prediccion)}. ${esc(x.porque)}</dd>
-    <dt>Diseño</dt><dd>${esc(x.cambio)} Todo lo demás queda como en el baseline: entrenamiento 201903-201906 completo, búsqueda de 40 trials por AUC en 201908, 10 semillas, test 201910.</dd>
+    <dt>Hipótesis</dt><dd>H1: ${esc(x.h1)}<br><span class="apagado">H0: no hay diferencia.</span></dd>
+    <dt>Predicción</dt><dd>${esc(x.prediccion)}${x.pred_auc ? ` (ΔAUC esperada en 201908: ${dA(Number(x.pred_auc))})` : ""}. ${esc(x.porque)}</dd>
+    <dt>Diseño</dt><dd>${esc(x.cambio)} ${DISENO[x.fase] || ""}</dd>
     <dt>De dónde salió</dt><dd>${x.fuente_url ? `<a href="${esc(x.fuente_url)}">${esc(x.fuente)}</a>` : esc(x.fuente)}</dd>
     ${x.conclusion ? `<dt>Conclusión</dt><dd>${esc(x.conclusion)}</dd>` : ""}
     ${x.siguiente ? `<dt>Qué seguiríamos probando</dt><dd>${esc(x.siguiente)}</dd>` : ""}
@@ -556,6 +583,10 @@ function detalleHipotesis(x) {
     const fila = (n, k, fmt) => v[k] ? `<tr><td>${n}</td><td class="num">${fmt(v[k].delta)}</td><td class="num">${fmt(v[k].ic[0])} a ${fmt(v[k].ic[1])}</td><td class="num">${v[k].pareado ? fmt(v[k].pareado.media) + " ± " + fmt(v[k].pareado.se).replace(/^[+−]/, "") : "–"}</td><td class="num">${v[k].p_holm == null ? "–" : v[k].p_holm.toFixed(3).replace(".", ",")}</td></tr>` : "";
     der += `<div style="height:16px"></div><table class="meses"><thead><tr><th>Contra el baseline (201910)</th><th>Diferencia</th><th>Intervalo 95%</th><th>Por semilla</th><th>p (Holm)</th></tr></thead><tbody>${fila("AUC", "auc", dA)}${fila("Ganancia meseta", "ganancia_meseta", signo)}</tbody></table>`;
     der += `<p class="nota">Decisión según la regla del protocolo: <strong>${esc(r.decision || "–")}</strong>.</p>`;
+  } else if (r && r.vs_vigente) {
+    const w = r.vs_vigente, f2 = (n, k, fmt) => `<tr><td>${n}</td><td class="num">${fmt(w[k].delta)}</td><td class="num">${fmt(w[k].pareado.media)} ± ${fmt(w[k].pareado.se).replace(/^[+−]/, "")}</td><td class="num">${w[k].pareado.ganadas} de ${w[k].pareado.n}</td></tr>`;
+    der += `<div style="height:16px"></div><table class="meses"><thead><tr><th>Contra el vigente (${esc(r.vigente)}, 201908)</th><th>Ensamble</th><th>Por semilla</th><th>Semillas que ganan</th></tr></thead><tbody>${f2("AUC", "auc", dA)}${f2("Ganancia meseta", "ganancia_meseta", signo)}</tbody></table>`;
+    der += `<p class="nota">Paso ${esc(r.paso)} del loop: <strong>${esc(r.decision)}</strong>.</p>`;
   }
   if (r && r.archivos) der += `<div class="enlaces"><a href="${esc(r.archivos.codigo)}">Código (train.py)</a><a href="${esc(r.archivos.busqueda)}">Búsqueda de hiperparámetros</a><a href="${esc(r.archivos.log)}">Log</a></div>`;
   const com = x.issue ? `<div class="comentarios"><h4>Comentarios</h4><div id="comentarios"><p class="nota">Cargando…</p></div><p class="enlaces"><a href="https://github.com/${esc(D.repo)}/issues/${esc(x.issue)}#new_comment_field">Comentar en GitHub</a></p></div>` : "";
@@ -563,12 +594,26 @@ function detalleHipotesis(x) {
 }
 
 function vLoop() {
-  const pasos = H().find((h) => h.id === "H11");
-  vista(`<h2>Loop de autoresearch</h2><div class="texto-largo">
-    <p>Es el método de <a href="https://github.com/karpathy/autoresearch">autoresearch de Karpathy</a> llevado a este problema: un arnés fijo que el agente no toca (datos, meses y métricas), un solo archivo que el agente modifica (<code>train.py</code>), instrucciones del loop en <code>program.md</code> y un presupuesto de tiempo fijo por corrida.</p>
-    <p>Arranca del baseline. En cada paso prueba un cambio y lo mantiene sólo si la AUC de validación (201908) sube más de 0,001 y la diferencia pareada por semilla supera dos errores estándar; si no, lo deshace. Todo queda registrado, también lo que se descartó. El test (201910) no interviene: se lee al final, para la hipótesis H11.</p>
-    ${pasos && pasos.resultado && pasos.resultado.pasos ? "" : `<p class="nota">Corre después de la fase A (las hipótesis H1 a H10 contra el baseline).</p>`}
-  </div>`);
+  const pasos = D.loop || [];
+  const titulo = Object.fromEntries(H().map((h) => [h.id, h.titulo]));
+  let t = `<h2>Loop de autoresearch</h2><div class="texto-largo">
+    <p>Es el método de <a href="https://github.com/karpathy/autoresearch">autoresearch de Karpathy</a> llevado a este problema: un arnés fijo que el agente no toca (<code>v3/arnes.py</code>: datos, meses, semillas y métricas), un solo archivo que el agente modifica (<code>v3/train.py</code>), instrucciones del loop en <code>v3/program.md</code>, y todo registrado.</p>
+    <p>Arranca del baseline. En cada paso prende un cambio de la cola y lo mantiene sólo si la AUC de validación (201908) sube más de 0,001 y la diferencia pareada por semilla supera dos errores estándar (los que sacan algo, si no empeoran; los pensados para la ganancia, si la meseta sube 2 M). Si queda, se commitea; si no, se deshace. El test (201910) no interviene: se lee al final, para H11.</p>
+  </div>`;
+  if (!pasos.length) t += `<p class="nota">Arranca cuando termina el baseline.</p>`;
+  else {
+    t += `<table class="libro fija"><colgroup><col style="width:50px"><col><col style="width:110px"><col style="width:120px"><col style="width:120px"><col style="width:120px"></colgroup><thead><tr><th class="num">Paso</th><th>Idea</th><th class="num">Predicción</th><th class="num">Δ AUC 201908</th><th class="num">Δ meseta</th><th>Decisión</th></tr></thead><tbody>`;
+    for (const p of pasos) {
+      const q = p.decision === "queda";
+      t += `<tr><td class="num">${esc(p.paso)}</td><td><a href="#/hipotesis/${esc(p.id)}">${esc(p.id)}</a> ${esc(titulo[p.id] || "")}${p.variante ? ` <span class="apagado">(${esc(p.variante)})</span>` : ""}</td>
+        <td class="num apagado">${p.pred_auc ? dA(Number(p.pred_auc)) : "–"}</td>
+        <td class="num ${p.d_auc ? claseSigno(Number(p.d_auc)) : ""}">${p.d_auc ? `${dA(Number(p.d_auc))}<small> ± ${A4(Number(p.se_auc))}</small>` : "–"}</td>
+        <td class="num ${p.d_meseta ? claseSigno(Number(p.d_meseta)) : ""}">${p.d_meseta ? signo(Number(p.d_meseta)) : "–"}</td>
+        <td><span class="estado ${q ? "adoptado" : p.decision.startsWith("error") ? "fallido" : "descartado"}">${esc(q ? "queda" : p.decision.startsWith("error") ? "error" : "se descarta")}</span></td></tr>`;
+    }
+    t += `</tbody></table>`;
+  }
+  vista(t);
 }
 
 function vAntecedentes() {
