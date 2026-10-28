@@ -45,7 +45,9 @@ resultado y la página del proyecto.
   rondas) antes de seguir.
 - **Hiperparámetros: no se mueven a mano.** Se diseña un espacio y se busca con `tools/hpo.py` (E8 a E10). El ganador
   se copia a `train.py` y se corre como un experimento más.
-- **Simplicidad.** A igual ganancia gana el código más simple. Lo que no mejora se deshace.
+- **Simplicidad.** A igual ganancia gana el código más simple. Lo que no mejora se deshace. Si un cambio que SACA
+  algo empata en el screening, se confirma con `tools/comparar.py <vigente> <nuevo> --simplificacion`: se adopta si
+  no pierde (diferencia pareada mayor que −2 errores estándar).
 - **Semillas y corte no se eligen mirando una métrica.** Las semillas salen de los bloques de `config.py`; el corte,
   de la regla `CORTE` de `train.py`.
 - **Ideas y comentarios.** Cada idea tiene su issue; `run.py` comenta ahí el resultado. Antes de correr una idea, leé

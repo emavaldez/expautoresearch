@@ -114,7 +114,7 @@ def correr(a) -> None:
         log_f.flush()
 
     df = prepare.cargar()
-    datos = {m: prepare.datos_fold(df, mod, m)[:3] for m in C.MESES_TEST}
+    datos = {m: prepare.datos_fold(df, mod, m) for m in C.MESES_TEST}
     del df
     log(f"búsqueda {a.nombre} sobre {a.base}: {a.trials} trials, semillas {semillas}, espacio {list(espacio)}")
 
@@ -124,7 +124,7 @@ def correr(a) -> None:
     estudio.set_user_attr("semillas", semillas)
     if a.arranque and not estudio.trials:
         base = {**getattr(mod, "PARAMS", {}), "num_rounds": getattr(mod, "NUM_ROUNDS", None),
-                "submuestreo": getattr(mod, "SUBMUESTREO_CONTINUA", None)}
+                "submuestreo": getattr(mod, "UNDERSAMPLING", None)}
         inicial = {k: base[k] for k in espacio if base.get(k) is not None}
         estudio.enqueue_trial(inicial, user_attrs={"origen": "arranque"})
 
@@ -132,9 +132,24 @@ def correr(a) -> None:
         t0 = time.time()
         params = _sugerir(trial, espacio)
         ganancias = []
-        for m, (train, score, y) in datos.items():
-            probs = [mod.train_and_predict(train, score, s, dict(params)) for s in semillas]
-            ganancias.append(prepare.ganancia_suavizada(np.mean(probs, axis=0), y)[0])
+        orig = (dict(mod.PARAMS), getattr(mod, "NUM_ROUNDS", None), getattr(mod, "UNDERSAMPLING", None))
+        p = dict(params)
+        nr, sub = p.pop("num_rounds", None), p.pop("submuestreo", None)
+        mod.PARAMS.update(p)
+        if nr is not None:
+            mod.NUM_ROUNDS = int(nr)
+        if sub is not None:
+            mod.UNDERSAMPLING = float(sub)
+        try:
+            for m, (train, score, y, info, intermedio) in datos.items():
+                probs = [prepare._llamar(mod, train, score, s, None, intermedio) for s in semillas]
+                ganancias.append(prepare.ganancia_suavizada(np.mean(probs, axis=0), y)[0])
+        finally:
+            mod.PARAMS.clear(); mod.PARAMS.update(orig[0])
+            if orig[1] is not None:
+                mod.NUM_ROUNDS = orig[1]
+            if orig[2] is not None:
+                mod.UNDERSAMPLING = orig[2]
         valor = float(np.mean(ganancias))
         trial.set_user_attr("segundos", time.time() - t0)
         trial.set_user_attr("por_fold", ganancias)

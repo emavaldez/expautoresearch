@@ -8,7 +8,9 @@ Corre el train.py guardado de cada experimento (no el de la raíz) en los meses 
 Confirma B si:
   - la lista del ensamble de B gana más que la de A en la media de los meses de test, y
   - la diferencia pareada por semilla (media de los meses de test) supera 2 errores estándar.
-Con --modificado lo mide también con la data modificada del aula (se informa, no decide).
+Con --modificado lo mide también con la data modificada simulada (se informa, no decide).
+Con --simplificacion (B es más simple que A): confirma si B no pierde, es decir si la diferencia pareada es mayor que
+-2 errores estándar.
 Si B estaba "a_confirmar" y A es el vigente, B pasa a ser el vigente.
 La evaluación de cada experimento se guarda (eval_<bloque>_<n>.json) y se reutiliza en la próxima comparación.
 """
@@ -61,6 +63,7 @@ def main() -> int:
     ap.add_argument("--solo-informe", action="store_true")
     ap.add_argument("--sin-commit", action="store_true")
     ap.add_argument("--modificado", action="store_true")
+    ap.add_argument("--simplificacion", action="store_true", help="B es más simple: alcanza con que no pierda")
     a = ap.parse_args()
 
     carpeta_b = comun.carpeta_experimento(a.b)
@@ -90,7 +93,7 @@ def main() -> int:
         ctrl["ensamble_a"], ctrl["ensamble_b"] = prepare.media_ensamble(fam, sel), prepare.media_ensamble(fbm, sel)
     por_fold = {str(m): {"a": fa[str(m)]["ensamble"]["ganancia"], "b": fb[str(m)]["ensamble"]["ganancia"]} for m in sel}
 
-    confirma = ens_b > ens_a and par["media"] > 2 * par["se"]
+    confirma = (par["media"] > -2 * par["se"]) if a.simplificacion else (ens_b > ens_a and par["media"] > 2 * par["se"])
     decision = "confirmado" if confirma else "rechazado"
     for m, v in por_fold.items():
         log(f"[{m}] ensamble {a.a} {comun.millones(v['a'])} | {a.b} {comun.millones(v['b'])} | "
@@ -112,7 +115,7 @@ def main() -> int:
     if not a.solo_informe:
         res_b = comun.resultado(a.b)
         est = comun.estado()
-        if res_b.get("estado") == "a_confirmar" and est.get("vigente") == a.a:
+        if (res_b.get("estado") == "a_confirmar" or a.simplificacion) and est.get("vigente") == a.a:
             res_b["estado"] = decision
             res_b["confirmacion"] = informe
             (carpeta_b / "resultado.json").write_text(json.dumps(res_b, indent=2, ensure_ascii=False) + "\n",

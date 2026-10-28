@@ -1,0 +1,210 @@
+--- E019/train.py
++++ E040/train.py
+@@ -306,7 +306,7 @@
+     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
+ 
+ 
+-def base(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
++def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, objetivo="multiclase") -> np.ndarray:
+     """General + especialista de deudores con reparto. Devuelve P(BAJA+1) + P(BAJA+2) del general, con el reparto en el segmento."""
+     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
+     train = train[train.foto_mes.isin(months)]
+@@ -318,8 +318,14 @@
+     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
+     keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
+     train = train[keep | (train.clase_ternaria != "CONTINUA").to_numpy()]
+-    y = train.clase_ternaria.map({"CONTINUA": 0, "BAJA+1": 1, "BAJA+2": 2})
+-    w = np.where(train.clase_ternaria == "BAJA+1", PESO_BAJA1, 1.0)
++    if objetivo == "binaria":
++        y = (train.clase_ternaria != "CONTINUA").astype(int)
++        w = np.ones(len(train))
++    else:
++        y = train.clase_ternaria.map({"CONTINUA": 0, "BAJA+1": 1, "BAJA+2": 2})
++        w = np.where(train.clase_ternaria == "BAJA+1", PESO_BAJA1, 1.0)
++    if peso_fila is not None:  # enfoque 5
++        w = w * peso_fila.reindex(train.index).fillna(1.0).to_numpy()
+     # internet cambió de régimen: a igual actividad, tener internet >= 2 dos meses seguidos no subía la baja en 202104-05
+     # (1-3% contra 2-6% del resto) y en 202106 la duplica (6-7% contra 2-4%). El promedio de los tres meses borra lo que
+     # vale hoy, así que su efecto se aprende SÓLO del último mes con clase: en los meses anteriores de entrenamiento va
+@@ -334,8 +340,12 @@
+     train.loc[viejos, [c for c in internet if "_delta" not in c]] = RESTO_INTERNET
+     train.loc[viejos, [c for c in internet if "_delta" in c]] = 0
+     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
+-    model = lgb.train({**PARAMS, "objective": "multiclass", "num_class": 3, "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
+-    p = model.predict(score[cols])[:, 1:].sum(axis=1)
++    if objetivo == "binaria":
++        model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
++        p = model.predict(score[cols])
++    else:
++        model = lgb.train({**PARAMS, "objective": "multiclass", "num_class": 3, "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
++        p = model.predict(score[cols])[:, 1:].sum(axis=1)
+     if p_esp is not None:
+         # Mes por mes: el perfil y el orden son de los clientes de UN mes. Al puntuar 202108 hay un solo mes (da lo mismo),
+         # pero base_fuera_de_muestra puntúa mayo y junio en una sola llamada, y repartir todo junto le daría a un cliente
+@@ -482,7 +492,165 @@
+ 
+ 
+ 
++
++# ---------------------------------------------------------------- franja dudosa: diez enfoques (ENFOQUE = 1 a 10)
++#
++# La franja son los clientes que el general deja entre 0,6 y 3 veces la cantidad de envíos: ahí se decide la lista.
++# Todos los enfoques aprenden de la franja de los meses de entrenamiento puntuados FUERA DE MUESTRA (cross-fitting por
++# mes: cada mes de la ventana lo puntúa el general entrenado con los otros meses) y, salvo el 5 y el 9, reordenan la
++# franja del mes que se puntúa sin cambiar los valores de probabilidad (como la segunda etapa de la primera competencia).
++ENFOQUE = 7            # 0: sin tocar la franja (el vigente)
++FRANJA_REL = (0.6, 3.0)
++SEMILLA_OOF = 800011
++TENDENCIA = ("_delta1", "_delta2", "_ratiolag1", "_ratioavg3", "_ratiomax3", "_tend3", "_min3", "_max3", "_avg3")
++_OOF = {}
++
++
++def _clave(train):
++    return (tuple(sorted(train.foto_mes.unique())), len(train), int(train.numero_de_cliente.sum()))
++
++
++def fuera_de_muestra(train: pd.DataFrame, objetivo="multiclase") -> pd.Series:
++    """Probabilidad de cada fila de entrenamiento según el general entrenado con los otros meses de la ventana."""
++    clave = _clave(train) + (objetivo,)
++    if clave not in _OOF:
++        p = pd.Series(np.nan, index=train.index)
++        for m in sorted(train.foto_mes.unique()):
++            f = (train.foto_mes == m).to_numpy()
++            p[f] = base(train[~f], train[f].drop(columns=["clase_ternaria"]), SEMILLA_OOF, objetivo=objetivo)
++        _OOF[clave] = p
++    return _OOF[clave]
++
++
++def en_franja(p, n_mes):
++    k = CORTE["f"] * n_mes
++    r = puesto(np.asarray(p))
++    return (r >= FRANJA_REL[0] * k) & (r < FRANJA_REL[1] * k)
++
++
++def franja_train(train: pd.DataFrame, poof: pd.Series, sin_baja1=True):
++    """Filas de la franja de cada mes de entrenamiento (según el puntaje fuera de muestra) y su clase BAJA+2."""
++    k = np.zeros(len(train), bool)
++    for m in train.foto_mes.unique():
++        f = (train.foto_mes == m).to_numpy()
++        k[f] = en_franja(poof[f].to_numpy(), f.sum())
++    if sin_baja1:
++        k &= (train.clase_ternaria != "BAJA+1").to_numpy()
++    t = train[k]
++    return t, (t.clase_ternaria == "BAJA+2").to_numpy().astype(float), poof[k].to_numpy()
++
++
++def reordenar(p, idx, s_nuevo):
++    """Los mismos valores de p en la franja, repartidos por la suma de puestos del puntaje nuevo y de p."""
++    s = pd.Series(np.asarray(s_nuevo)).rank().to_numpy() + pd.Series(p[idx]).rank().to_numpy()
++    out = p.copy()
++    nuevo = np.empty(len(idx))
++    nuevo[np.argsort(-s, kind="stable")] = np.sort(p[idx])[::-1]
++    out[idx] = nuevo
++    return out
++
++
++def _cols(train):
++    return [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)]
++
++
++def _lgb(X, y, params, rondas, seed, init=None, grupo=None):
++    d = lgb.Dataset(X, label=y, init_score=init, group=grupo)
++    return lgb.train({**params, "seed": seed, "verbosity": -1, "num_threads": 16}, d, num_boost_round=rondas)
++
++
++def puntaje_franja(enfoque, train, score, seed, p, idx, intermedio=None):
++    """El puntaje nuevo de las filas idx del mes que se puntúa, según el enfoque."""
++    cols = _cols(train)
++    poof = fuera_de_muestra(train)
++    if enfoque in (1, 2):  # segunda etapa con cross-fitting; 2: variables elegidas con canaritos
++        t, y, l = franja_train(train, poof)
++        if enfoque == 2:
++            cols = le_ganan_al_ruido(t, cols, y.astype(int))
++        c = calibracion(logit(l), y)
++        m = _lgb(t[cols], y, PARAMS_2, RONDAS_2, seed, init=c[0] + c[1] * logit(l))
++        return m.predict(score.iloc[idx][cols], raw_score=True) + c[0] + c[1] * logit(p[idx])
++    if enfoque == 3:  # cascada: el 15% de arriba, con un modelo más grande
++        k = np.zeros(len(train), bool)
++        for mm in train.foto_mes.unique():
++            f = (train.foto_mes == mm).to_numpy()
++            k[f] = puesto(poof[f].to_numpy()) < 0.15 * f.sum()
++        k &= (train.clase_ternaria != "BAJA+1").to_numpy()
++        t = train[k]
++        m = _lgb(t[cols], (t.clase_ternaria == "BAJA+2").astype(float), dict(objective="binary", learning_rate=0.03, num_leaves=63,
++                 min_data_in_leaf=100, feature_fraction=0.5, max_bin=255), 300, seed)
++        return m.predict(score.iloc[idx][cols])
++    if enfoque == 4:  # lambdarank: optimiza el orden dentro de la franja, una consulta por mes
++        t, y, _ = franja_train(train, poof)
++        t = t.sort_values("foto_mes", kind="stable")
++        y = (t.clase_ternaria == "BAJA+2").astype(int).to_numpy()
++        grupos = t.groupby("foto_mes", sort=True).size().to_numpy()
++        m = _lgb(t[cols], y, dict(objective="lambdarank", learning_rate=0.05, num_leaves=15, min_data_in_leaf=50,
++                 feature_fraction=0.5, max_bin=255, lambdarank_truncation_level=10_000), 200, seed, grupo=grupos)
++        return m.predict(score.iloc[idx][cols])
++    if enfoque in (6, 10):  # sólo variables de tendencia: 6 con un árbol, 10 con una logística
++        tc = [c for c in cols if c.endswith(TENDENCIA)]
++        t, y, _ = franja_train(train, poof)
++        if enfoque == 6:
++            m = _lgb(t[tc], y, dict(objective="binary", learning_rate=0.03, num_leaves=15, min_data_in_leaf=100,
++                     feature_fraction=0.5, max_bin=255), 200, seed)
++            return m.predict(score.iloc[idx][tc])
++        from sklearn.linear_model import LogisticRegression
++        X = t[tc].to_numpy(np.float64)
++        med, esc = np.nanmedian(X, axis=0), np.nanpercentile(X, 90, axis=0) - np.nanpercentile(X, 10, axis=0)
++        esc = np.where(esc > 0, esc, 1.0)
++        norm = lambda Z: np.clip(np.nan_to_num((Z - med) / esc), -5, 5)
++        lr = LogisticRegression(C=0.05, max_iter=500).fit(norm(X), y)
++        return lr.decision_function(norm(score.iloc[idx][tc].to_numpy(np.float64)))
++    if enfoque == 7:  # baja inminente: un modelo de BAJA+1 con las BAJA+1 ya conocidas de m - 1
++        partes = [train.assign(_y=(train.clase_ternaria == "BAJA+1").astype(float))]
++        if intermedio is not None and len(intermedio):
++            partes.append(intermedio.assign(_y=intermedio.baja1.astype(float)))
++        t = pd.concat([x[cols + ["_y"]] for x in partes], ignore_index=True)
++        keep = (t._y == 1).to_numpy() | (np.random.default_rng(seed).random(len(t)) < UNDERSAMPLING)
++        t = t[keep]
++        m = _lgb(t[cols], t._y, dict(objective="binary", learning_rate=0.05, num_leaves=31, min_data_in_leaf=200,
++                 feature_fraction=0.5, max_bin=255), 300, seed)
++        return m.predict(score.iloc[idx][cols])
++    if enfoque == 8:  # meta-modelo: la multiclase y la binaria fuera de muestra más algunas variables
++        pbin = fuera_de_muestra(train, "binaria")
++        t, y, l = franja_train(train, poof)
++        extra = ["internet", "ctrx_quarter", "mcuentas_saldo", "cliente_antiguedad", "cproductos", "mpayroll"]
++        X = np.column_stack([logit(l), logit(pbin[t.index].to_numpy()), t[extra].to_numpy(np.float64)])
++        m = _lgb(X, y, dict(PARAMS_2), RONDAS_2, seed)
++        pb = base(train, score.iloc[idx], seed, objetivo="binaria")
++        Xs = np.column_stack([logit(p[idx]), logit(pb), score.iloc[idx][extra].to_numpy(np.float64)])
++        return m.predict(Xs)
++    raise ValueError(enfoque)
++
++
++def corte(prob, train, score):
++    """Enfoque 9: el 60% de arriba de los envíos va siempre; en la franja, quien tenga P(BAJA+2) calibrada (isotónica sobre
++    la franja fuera de muestra) mayor que 2,5%. Los demás enfoques usan el 3,3% fijo."""
++    n = int(round(CORTE["f"] * len(prob)))
++    if ENFOQUE != 9:
++        return n
++    from sklearn.isotonic import IsotonicRegression
++    t, y, l = franja_train(train, fuera_de_muestra(train), sin_baja1=False)
++    iso = IsotonicRegression(out_of_bounds="clip", y_min=0, y_max=1).fit(l, y)
++    r = puesto(np.asarray(prob))
++    seguros = int((r < FRANJA_REL[0] * n).sum())
++    f = en_franja(prob, len(prob))
++    return seguros + int((iso.predict(np.asarray(prob)[f]) >= 27_500 / 1_100_000).sum())
++
++
+ # ---------------------------------------------------------------- el modelo
+ 
+ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:
+-    return base(train, score, seed)  # B5: sin segunda etapa
++    if ENFOQUE == 5:  # el doble de peso a las filas de entrenamiento que caen en la franja (fuera de muestra)
++        poof = fuera_de_muestra(train)
++        k = np.zeros(len(train), bool)
++        for m in train.foto_mes.unique():
++            f = (train.foto_mes == m).to_numpy()
++            k[f] = en_franja(poof[f].to_numpy(), f.sum())
++        return base(train, score, seed, peso_fila=pd.Series(np.where(k, 2.0, 1.0), index=train.index))
++    p = base(train, score, seed)  # B5: sin segunda etapa
++    if ENFOQUE in (0, 9):
++        return p
++    idx = np.flatnonzero(en_franja(p, len(p)))
++    return reordenar(p, idx, puntaje_franja(ENFOQUE, train, score, seed, p, idx, intermedio))

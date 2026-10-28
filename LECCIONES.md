@@ -54,3 +54,8 @@ hasta 201912: nada de 2020 entra acá.
 - E035 (franja, enfoque 2): como el 1 pero con las variables elegidas por canaritos en la franja: 759,3 M (+4,4 M), pareado +0,4 ± 0,5 M: no mejora al 1; elegir variables con ~6.000 filas de franja por mes mete ruido.
 - E036 (franja, enfoque 3): cascada, un modelo de 63 hojas entrenado con el 15% de arriba (fuera de muestra) reordena la franja: 758,2 M (+3,3 M), pareado +1,0 ± 0,6 M: chico, en la línea del enfoque 1.
 - E038 (franja, enfoque 5): el doble de peso a las filas de entrenamiento que caen en la franja (fuera de muestra): 757,1 M (+2,2 M), pareado −0,3 ± 1,7 M: empate. Concentrar el peso cerca del corte no cambia el orden.
+- E039 (franja, enfoque 6): especialista con sólo variables de tendencia (deltas, razones, ventanas) reordena la franja: 751,6 M (−3,3 M), pareado −4,7 ± 1,0 M: pierde. Las tendencias solas ordenan peor que el general completo, y la suma de puestos arrastra para abajo.
+
+## v3 (protocolo de la cátedra, desde 2026-10-28)
+
+- Error del arnés viejo: `prepare.cargar` pasaba el número de cliente (double) a float32 antes que a entero; float32 no distingue enteros de más de 2^24 y los ids llegan a 78 millones. Quedaban 214 ids con dos clientes distintos (3.228 filas "duplicadas", clase y lags mezclados, 1 a 3 BAJA+2 por mes tapadas). Todo lo de arriba (E000-E040) corrió con ese error: las cifras están levemente corridas. La herramienta del aula no lo tiene. Se encontró controlando los lags del arnés nuevo: siempre controlar que (cliente, mes) sea único.
