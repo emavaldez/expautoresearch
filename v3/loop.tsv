@@ -1,0 +1,2 @@
+paso	id	variante	pred_auc	auc_val	d_auc	pareado_auc	se_auc	d_meseta	pareado_meseta	se_meseta	decision	vigente	corrida	segundos	fecha
+1	H2		0.0020	0.91099	-9e-05	-0.00026	0.00034	-2375218	-2465769	2633846	se descarta	B0	H2	166	2026-10-28 18:25
