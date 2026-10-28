@@ -1,0 +1,46 @@
+16:10:51 E037: franja: lambdarank, optimiza el orden dentro de la franja
+16:10:51 idea: E23 | hipótesis: Predicción: incierto. Optimiza el orden en lugar de la probabilidad, que es lo que paga la lista | vigente: E019
+16:10:51 meses de test [201908, 201909, 201910] (ventana de 6 meses) | semillas [800011, 800029, 800053, 800057, 800077]
+16:11:03 [201908] entrena con [201903, 201904, 201905, 201906] (506,871 filas) | puntúa 131,775 clientes, 542 BAJA+2 | 1648 columnas | features 11 s
+16:14:19 [201908] semilla 800011: lista 200.5M con 4,349 | meseta 202.8M en 3,281 | AUC 0.9071 (196 s)
+16:15:08 [201908] semilla 800029: lista 209.3M con 4,349 | meseta 210.9M en 4,471 | AUC 0.9077 (50 s)
+16:15:58 [201908] semilla 800053: lista 208.2M con 4,349 | meseta 209.8M en 3,107 | AUC 0.9051 (50 s)
+16:16:47 [201908] semilla 800057: lista 196.1M con 4,349 | meseta 202.5M en 3,617 | AUC 0.9057 (49 s)
+16:17:36 [201908] semilla 800077: lista 200.5M con 4,349 | meseta 205.3M en 3,522 | AUC 0.9094 (49 s)
+16:17:36 [201908] ENSAMBLE de 5: lista 210.4M (300 de 542 BAJA+2 con 4,349 envíos) | meseta 210.7M en 4,549 | AUC 0.9086
+16:17:46 [201909] entrena con [201904, 201905, 201906, 201907] (511,102 filas) | puntúa 133,419 clientes, 612 BAJA+2 | 1648 columnas | features 10 s
+16:20:53 ERROR: Traceback (most recent call last):
+  File "/Users/emmanuelvaldez/experimento-autoresearch/run.py", line 126, in main
+    folds = prepare.evaluar(mod, meses, semillas, log=log, guardar=C.CACHE / "probs" / id_)
+  File "/Users/emmanuelvaldez/experimento-autoresearch/prepare.py", line 307, in evaluar
+    p = _llamar(mod, train, score, s, params, intermedio)
+  File "/Users/emmanuelvaldez/experimento-autoresearch/prepare.py", line 287, in _llamar
+    return np.asarray(mod.train_and_predict(train, score, s, **kw), dtype=np.float64)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py", line 656, in train_and_predict
+    return reordenar(p, idx, puntaje_franja(ENFOQUE, train, score, seed, p, idx, intermedio))
+                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py", line 588, in puntaje_franja
+    m = _lgb(t[cols], y, dict(objective="lambdarank", learning_rate=0.05, num_leaves=15, min_data_in_leaf=50,
+             feature_fraction=0.5, max_bin=255, lambdarank_truncation_level=10_000), 200, seed, grupo=grupos)
+  File "/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py", line 559, in _lgb
+    return lgb.train({**params, "seed": seed, "verbosity": -1, "num_threads": 16}, d, num_boost_round=rondas)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/engine.py", line 296, in train
+    booster = Booster(params=params, train_set=train_set)
+  File "/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/basic.py", line 3762, in __init__
+    _safe_call(
+    ~~~~~~~~~~^
+        _LIB.LGBM_BoosterCreate(
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        )
+        ^
+    )
+    ^
+  File "/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/basic.py", line 297, in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+lightgbm.basic.LightGBMError: Number of rows 10011 exceeds upper limit of 10000 for a query
+
+16:20:53 RESUMEN E037 | error
+16:20:53 para volver al vigente: python run.py --restaurar

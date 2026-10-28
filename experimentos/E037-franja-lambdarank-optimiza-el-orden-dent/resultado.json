@@ -1,0 +1,25 @@
+{
+  "id": "E037",
+  "carpeta": "E037-franja-lambdarank-optimiza-el-orden-dent",
+  "fecha": "2026-10-28 16:20",
+  "descripcion": "franja: lambdarank, optimiza el orden dentro de la franja",
+  "idea": "E23",
+  "hipotesis": "Predicción: incierto. Optimiza el orden en lugar de la probabilidad, que es lo que paga la lista",
+  "vigente_al_correr": "E019",
+  "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+  ],
+  "meses_test": [
+    201908,
+    201909,
+    201910
+  ],
+  "folds": {},
+  "segundos": 601.5,
+  "error": "Traceback (most recent call last):\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/run.py\", line 126, in main\n    folds = prepare.evaluar(mod, meses, semillas, log=log, guardar=C.CACHE / \"probs\" / id_)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/prepare.py\", line 307, in evaluar\n    p = _llamar(mod, train, score, s, params, intermedio)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/prepare.py\", line 287, in _llamar\n    return np.asarray(mod.train_and_predict(train, score, s, **kw), dtype=np.float64)\n                      ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py\", line 656, in train_and_predict\n    return reordenar(p, idx, puntaje_franja(ENFOQUE, train, score, seed, p, idx, intermedio))\n                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py\", line 588, in puntaje_franja\n    m = _lgb(t[cols], y, dict(objective=\"lambdarank\", learning_rate=0.05, num_leaves=15, min_data_in_leaf=50,\n             feature_fraction=0.5, max_bin=255, lambdarank_truncation_level=10_000), 200, seed, grupo=grupos)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py\", line 559, in _lgb\n    return lgb.train({**params, \"seed\": seed, \"verbosity\": -1, \"num_threads\": 16}, d, num_boost_round=rondas)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/engine.py\", line 296, in train\n    booster = Booster(params=params, train_set=train_set)\n  File \"/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/basic.py\", line 3762, in __init__\n    _safe_call(\n    ~~~~~~~~~~^\n        _LIB.LGBM_BoosterCreate(\n        ^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n        )\n        ^\n    )\n    ^\n  File \"/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/basic.py\", line 297, in _safe_call\n    raise LightGBMError(_LIB.LGBM_GetLastError().decode(\"utf-8\"))\nlightgbm.basic.LightGBMError: Number of rows 10011 exceeds upper limit of 10000 for a query\n",
+  "estado": "error"
+}

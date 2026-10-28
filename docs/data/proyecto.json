@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-28 16:10",
+ "generado": "2026-10-28 16:20",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -3802,6 +3802,38 @@
     "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E036-franja-cascada-un-modelo-mas-grande-sobr/cambios.diff",
     "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E036-franja-cascada-un-modelo-mas-grande-sobr/log.txt"
    }
+  },
+  {
+   "id": "E037",
+   "fecha": "2026-10-28 16:20",
+   "descripcion": "franja: lambdarank, optimiza el orden dentro de la franja",
+   "idea": "E23",
+   "hipotesis": "Predicción: incierto. Optimiza el orden en lugar de la probabilidad, que es lo que paga la lista",
+   "estado": "error",
+   "vigente_al_correr": "E019",
+   "segundos": 601.5,
+   "error": "~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py\", line 588, in puntaje_franja\n    m = _lgb(t[cols], y, dict(objective=\"lambdarank\", learning_rate=0.05, num_leaves=15, min_data_in_leaf=50,\n             feature_fraction=0.5, max_bin=255, lambdarank_truncation_level=10_000), 200, seed, grupo=grupos)\n  File \"/Users/emmanuelvaldez/experimento-autoresearch/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py\", line 559, in _lgb\n    return lgb.train({**params, \"seed\": seed, \"verbosity\": -1, \"num_threads\": 16}, d, num_boost_round=rondas)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/engine.py\", line 296, in train\n    booster = Booster(params=params, train_set=train_set)\n  File \"/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/basic.py\", line 3762, in __init__\n    _safe_call(\n    ~~~~~~~~~~^\n        _LIB.LGBM_BoosterCreate(\n        ^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n        )\n        ^\n    )\n    ^\n  File \"/Users/emmanuelvaldez/.venvs/dmeyf/lib/python3.14/site-packages/lightgbm/basic.py\", line 297, in _safe_call\n    raise LightGBMError(_LIB.LGBM_GetLastError().decode(\"utf-8\"))\nlightgbm.basic.LightGBMError: Number of rows 10011 exceeds upper limit of 10000 for a query\n",
+   "total": null,
+   "media": null,
+   "meseta": null,
+   "auc": null,
+   "semillas": [
+    800011,
+    800029,
+    800053,
+    800057,
+    800077
+   ],
+   "meses": {},
+   "modificado": null,
+   "comparacion": null,
+   "produccion": null,
+   "confirmacion": null,
+   "archivos": {
+    "codigo": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/train.py",
+    "diff": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/cambios.diff",
+    "log": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos/E037-franja-lambdarank-optimiza-el-orden-dent/log.txt"
+   }
   }
  ],
  "ideas": [
@@ -4613,7 +4645,8 @@
   "E032 (E7): corte del 3,3% corregido por la tasa de BAJA+2 del último mes contra la ventana: 758,3 M (+3,4 M en el ensamble), pero pareado −1,7 ± 0,5 M por semilla: no llega. En 2019 la tasa casi no se mueve y el 3,3% fijo sigue.",
   "E033 (E1b): el modelo nace con todos los meses con clase e historia (sin la ventana de 6): 762,6 M (+7,7 M), por semilla +2,9 ± 0,8 M por mes (más de 3 errores estándar), pero la media por mes da +2,6 M y no pasa el screening. 201908 igual (mismos 4 meses), 201909 con 5 meses −4,4 M en la lista pero +1,9 en la meseta, 201910 con 6 meses +12,1 M. Más meses ayudan. Por decisión de Emmanuel, el modelo de 201912 nace así (201903-201910); en 2020 la ventana de 6 vuelve a dejar 4 meses, y eso cuesta plata.",
   "E034 (franja, enfoque 1): segunda etapa con cross-fitting por mes (4 meses fuera de muestra, franja de 0,6 a 3 veces los envíos, todas las variables): 760,4 M (+5,5 M), pareado +1,0 ± 0,4 M por mes: chico pero consistente; no pasa el umbral. Candidato para la mezcla. 18 minutos.",
-  "E035 (franja, enfoque 2): como el 1 pero con las variables elegidas por canaritos en la franja: 759,3 M (+4,4 M), pareado +0,4 ± 0,5 M: no mejora al 1; elegir variables con ~6.000 filas de franja por mes mete ruido."
+  "E035 (franja, enfoque 2): como el 1 pero con las variables elegidas por canaritos en la franja: 759,3 M (+4,4 M), pareado +0,4 ± 0,5 M: no mejora al 1; elegir variables con ~6.000 filas de franja por mes mete ruido.",
+  "E036 (franja, enfoque 3): cascada, un modelo de 63 hojas entrenado con el 15% de arriba (fuera de muestra) reordena la franja: 758,2 M (+3,3 M), pareado +1,0 ± 0,6 M: chico, en la línea del enfoque 1."
  ],
  "aula": {
   "modelo": "E019",
