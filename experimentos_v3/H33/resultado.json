@@ -1,0 +1,13 @@
+{
+ "id": "H33",
+ "hipotesis": "H33",
+ "pasos": 34,
+ "spearman": 0.5398713638410467,
+ "p": 0.0009828294387363625,
+ "acierto_de_signo": 0.20588235294117646,
+ "predijo_suba": 26,
+ "subio": 3,
+ "media_predicha": 0.0003323529411764706,
+ "media_observada": -0.0013391176470588235,
+ "decision": "correlación positiva"
+}

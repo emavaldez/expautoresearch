@@ -1,0 +1,55 @@
+[21:18:31] === H11: H11 --busqueda --semillas 10
+[21:18:37] features: 762 columnas, 1,286,487 filas (5 s)
+[21:19:40] trial 0: AUC 0.9086 meseta 195.4M rondas 939 (63 s) {'num_leaves': 8, 'learning_rate': 0.01125279982145136, 'min_data_in_leaf': 1117, 'feature_fraction': 0.2938555963942238, 'bagging_fraction': 0.5852514393290797}
+[21:20:14] trial 1: AUC 0.9091 meseta 209.7M rondas 64 (33 s) {'num_leaves': 308, 'learning_rate': 0.03855300808713331, 'min_data_in_leaf': 681, 'feature_fraction': 0.32373273962900784, 'bagging_fraction': 0.3077719606924789}
+[21:20:26] trial 2: AUC 0.9052 meseta 183.6M rondas 141 (12 s) {'num_leaves': 9, 'learning_rate': 0.15508660668642746, 'min_data_in_leaf': 3551, 'feature_fraction': 0.18928104198875884, 'bagging_fraction': 0.9128294627863336}
+[21:20:58] trial 3: AUC 0.9085 meseta 202.8M rondas 197 (32 s) {'num_leaves': 360, 'learning_rate': 0.06182231701846447, 'min_data_in_leaf': 4068, 'feature_fraction': 0.49352695702054794, 'bagging_fraction': 0.46262861325809984}
+[21:21:32] trial 4: AUC 0.9107 meseta 202.2M rondas 223 (34 s) {'num_leaves': 41, 'learning_rate': 0.0251111401336142, 'min_data_in_leaf': 2097, 'feature_fraction': 0.5738694345914512, 'bagging_fraction': 0.5641965009183967}
+[21:22:27] trial 5: AUC 0.9128 meseta 204.8M rondas 522 (56 s) {'num_leaves': 28, 'learning_rate': 0.011453579281493265, 'min_data_in_leaf': 1360, 'feature_fraction': 0.44167951274913636, 'bagging_fraction': 0.7014396283040688}
+[21:22:54] trial 6: AUC 0.9124 meseta 204.8M rondas 650 (27 s) {'num_leaves': 15, 'learning_rate': 0.014152515266129194, 'min_data_in_leaf': 2355, 'feature_fraction': 0.9605415659207613, 'bagging_fraction': 0.555988578486902}
+[21:23:28] trial 7: AUC 0.9047 meseta 194.5M rondas 21 (33 s) {'num_leaves': 259, 'learning_rate': 0.09904264869008628, 'min_data_in_leaf': 800, 'feature_fraction': 0.585463004181043, 'bagging_fraction': 0.5088852518209332}
+[21:23:49] trial 8: AUC 0.9031 meseta 189.1M rondas 228 (21 s) {'num_leaves': 9, 'learning_rate': 0.060359017885652295, 'min_data_in_leaf': 149, 'feature_fraction': 0.33071291614143966, 'bagging_fraction': 0.4968166712331031}
+[21:23:57] trial 9: AUC 0.9105 meseta 192.7M rondas 52 (8 s) {'num_leaves': 23, 'learning_rate': 0.10840514892352289, 'min_data_in_leaf': 939, 'feature_fraction': 0.9903315732906601, 'bagging_fraction': 0.9903315229803573}
+[21:24:41] trial 10: AUC 0.9109 meseta 199.9M rondas 285 (44 s) {'num_leaves': 93, 'learning_rate': 0.022182696236514206, 'min_data_in_leaf': 20, 'feature_fraction': 0.7888525166611532, 'bagging_fraction': 0.7989559115784096}
+[21:25:15] trial 11: AUC 0.9112 meseta 204.4M rondas 589 (35 s) {'num_leaves': 29, 'learning_rate': 0.011102431721387378, 'min_data_in_leaf': 255, 'feature_fraction': 0.9239035318038263, 'bagging_fraction': 0.7103738976978717}
+[21:25:36] trial 12: AUC 0.9104 meseta 200.8M rondas 429 (21 s) {'num_leaves': 19, 'learning_rate': 0.018498550817910547, 'min_data_in_leaf': 332, 'feature_fraction': 0.7642691135523354, 'bagging_fraction': 0.6955967477162577}
+[21:26:27] trial 13: AUC 0.9124 meseta 209.3M rondas 328 (51 s) {'num_leaves': 63, 'learning_rate': 0.015690870761130727, 'min_data_in_leaf': 1934, 'feature_fraction': 0.7765855022362034, 'bagging_fraction': 0.7424013805562343}
+[21:27:04] trial 14: AUC 0.9094 meseta 204.0M rondas 369 (37 s) {'num_leaves': 65, 'learning_rate': 0.017425843577361586, 'min_data_in_leaf': 80, 'feature_fraction': 0.7283868822937251, 'bagging_fraction': 0.7950503353600366}
+[21:27:48] trial 15: AUC 0.9110 meseta 211.4M rondas 139 (44 s) {'num_leaves': 138, 'learning_rate': 0.02992532507064397, 'min_data_in_leaf': 1522, 'feature_fraction': 0.4320231664906627, 'bagging_fraction': 0.6907265277482219}
+[21:28:54] trial 16: AUC 0.9099 meseta 201.4M rondas 765 (66 s) {'num_leaves': 51, 'learning_rate': 0.011011686992176082, 'min_data_in_leaf': 411, 'feature_fraction': 0.13050562022232315, 'bagging_fraction': 0.8223779020256872}
+[21:29:25] trial 17: AUC 0.9121 meseta 204.2M rondas 212 (31 s) {'num_leaves': 141, 'learning_rate': 0.04108228401981851, 'min_data_in_leaf': 4639, 'feature_fraction': 0.6116773132606199, 'bagging_fraction': 0.6652575311107211}
+[21:30:02] trial 18: AUC 0.9135 meseta 206.0M rondas 410 (37 s) {'num_leaves': 38, 'learning_rate': 0.015820478381367745, 'min_data_in_leaf': 2110, 'feature_fraction': 0.8614327881356649, 'bagging_fraction': 0.8744481031627124}
+[21:30:19] trial 19: AUC 0.9118 meseta 202.8M rondas 162 (17 s) {'num_leaves': 34, 'learning_rate': 0.03046810404024032, 'min_data_in_leaf': 542, 'feature_fraction': 0.8749623382891717, 'bagging_fraction': 0.9154395492819516}
+[21:31:00] trial 20: AUC 0.9105 meseta 201.3M rondas 450 (41 s) {'num_leaves': 14, 'learning_rate': 0.014763563792487, 'min_data_in_leaf': 171, 'feature_fraction': 0.42739190688764594, 'bagging_fraction': 0.8865596440402297}
+[21:31:38] trial 21: AUC 0.9137 meseta 205.1M rondas 426 (38 s) {'num_leaves': 66, 'learning_rate': 0.01569346088516133, 'min_data_in_leaf': 1882, 'feature_fraction': 0.6730557744484129, 'bagging_fraction': 0.7514831900815155}
+[21:32:43] trial 22: AUC 0.9144 meseta 212.4M rondas 521 (65 s) {'num_leaves': 139, 'learning_rate': 0.010120954290177765, 'min_data_in_leaf': 1413, 'feature_fraction': 0.6732301009184584, 'bagging_fraction': 0.8560717028428844}
+[21:33:35] trial 23: AUC 0.9137 meseta 209.0M rondas 229 (52 s) {'num_leaves': 109, 'learning_rate': 0.020672911624773697, 'min_data_in_leaf': 2839, 'feature_fraction': 0.6957102775442667, 'bagging_fraction': 0.9865144192038615}
+[21:34:35] trial 24: AUC 0.9150 meseta 212.1M rondas 282 (60 s) {'num_leaves': 154, 'learning_rate': 0.020037016462645652, 'min_data_in_leaf': 3131, 'feature_fraction': 0.6790090745505124, 'bagging_fraction': 0.9730155435639029}
+[21:35:40] trial 25: AUC 0.9155 meseta 205.7M rondas 235 (65 s) {'num_leaves': 190, 'learning_rate': 0.02173411229651914, 'min_data_in_leaf': 2840, 'feature_fraction': 0.6717398286529942, 'bagging_fraction': 0.9867006354066086}
+[21:36:29] trial 26: AUC 0.9155 meseta 205.1M rondas 224 (49 s) {'num_leaves': 232, 'learning_rate': 0.028894873227985306, 'min_data_in_leaf': 3307, 'feature_fraction': 0.6472016970161214, 'bagging_fraction': 0.9526585696095625}
+[21:37:14] trial 27: AUC 0.9132 meseta 204.0M rondas 145 (45 s) {'num_leaves': 200, 'learning_rate': 0.0434613471579259, 'min_data_in_leaf': 3272, 'feature_fraction': 0.5243528352937842, 'bagging_fraction': 0.9476548526431645}
+[21:37:52] trial 28: AUC 0.9137 meseta 207.0M rondas 221 (38 s) {'num_leaves': 213, 'learning_rate': 0.02686891908781966, 'min_data_in_leaf': 4744, 'feature_fraction': 0.8318851621576087, 'bagging_fraction': 0.9533120124404271}
+[21:38:32] trial 29: AUC 0.9153 meseta 207.4M rondas 142 (39 s) {'num_leaves': 216, 'learning_rate': 0.03504316232313385, 'min_data_in_leaf': 2963, 'feature_fraction': 0.6475705585338722, 'bagging_fraction': 0.9383268520342282}
+[21:39:33] trial 30: AUC 0.9101 meseta 212.1M rondas 76 (61 s) {'num_leaves': 428, 'learning_rate': 0.05330165675146948, 'min_data_in_leaf': 1079, 'feature_fraction': 0.6111385630519012, 'bagging_fraction': 0.9261812464678485}
+[21:40:16] trial 31: AUC 0.9147 meseta 203.8M rondas 162 (43 s) {'num_leaves': 194, 'learning_rate': 0.03453837245809315, 'min_data_in_leaf': 2918, 'feature_fraction': 0.6481414744307883, 'bagging_fraction': 0.9926540476232804}
+[21:41:10] trial 32: AUC 0.9130 meseta 203.1M rondas 295 (54 s) {'num_leaves': 289, 'learning_rate': 0.022595339647590976, 'min_data_in_leaf': 4916, 'feature_fraction': 0.5174819455467556, 'bagging_fraction': 0.8370165426488896}
+[21:41:46] trial 33: AUC 0.9138 meseta 206.9M rondas 106 (36 s) {'num_leaves': 168, 'learning_rate': 0.04709332144195442, 'min_data_in_leaf': 3148, 'feature_fraction': 0.7057353904960891, 'bagging_fraction': 0.8959622872964181}
+[21:42:35] trial 34: AUC 0.9132 meseta 209.8M rondas 144 (49 s) {'num_leaves': 492, 'learning_rate': 0.03491307568770111, 'min_data_in_leaf': 2710, 'feature_fraction': 0.552311505205494, 'bagging_fraction': 0.9608621386282833}
+[21:43:03] trial 35: AUC 0.9116 meseta 201.3M rondas 154 (28 s) {'num_leaves': 350, 'learning_rate': 0.02661830472852012, 'min_data_in_leaf': 1571, 'feature_fraction': 0.7416649477037537, 'bagging_fraction': 0.3706410423260023}
+[21:44:05] trial 36: AUC 0.9145 meseta 207.5M rondas 376 (62 s) {'num_leaves': 92, 'learning_rate': 0.01974871156825933, 'min_data_in_leaf': 3725, 'feature_fraction': 0.6343939041597542, 'bagging_fraction': 0.9306686435390593}
+[21:44:46] trial 37: AUC 0.9095 meseta 198.7M rondas 67 (42 s) {'num_leaves': 237, 'learning_rate': 0.07000019450740634, 'min_data_in_leaf': 1151, 'feature_fraction': 0.4623916068083647, 'bagging_fraction': 0.876687644328461}
+[21:45:50] trial 38: AUC 0.9128 meseta 206.8M rondas 100 (64 s) {'num_leaves': 310, 'learning_rate': 0.03306650530154969, 'min_data_in_leaf': 603, 'feature_fraction': 0.37576121174379806, 'bagging_fraction': 0.9981716114912684}
+[21:47:13] trial 39: AUC 0.9138 meseta 209.0M rondas 371 (83 s) {'num_leaves': 170, 'learning_rate': 0.012892004839130009, 'min_data_in_leaf': 2203, 'feature_fraction': 0.809962856904735, 'bagging_fraction': 0.9472716497232777}
+[21:47:13] mejor trial 26: auc 0.91554 {'num_leaves': 232, 'learning_rate': 0.028894873227985306, 'min_data_in_leaf': 3307, 'feature_fraction': 0.6472016970161214, 'bagging_fraction': 0.9526585696095625}
+[21:47:17] features: 762 columnas, 1,286,487 filas (4 s)
+[21:48:05] semilla 800011: val AUC 0.9155 meseta 205.1M | test AUC 0.9226 meseta 285.0M | {'rondas': 224, 'variables': 760, 'segundos': 47.4}
+[21:48:51] semilla 800029: val AUC 0.9145 meseta 206.2M | test AUC 0.9215 meseta 285.7M | {'rondas': 228, 'variables': 760, 'segundos': 45.4}
+[21:49:37] semilla 800053: val AUC 0.9134 meseta 209.3M | test AUC 0.9223 meseta 286.4M | {'rondas': 226, 'variables': 760, 'segundos': 46.5}
+[21:50:22] semilla 800057: val AUC 0.9158 meseta 205.0M | test AUC 0.9235 meseta 284.1M | {'rondas': 193, 'variables': 760, 'segundos': 44.7}
+[21:51:06] semilla 800077: val AUC 0.9156 meseta 210.8M | test AUC 0.9238 meseta 284.6M | {'rondas': 181, 'variables': 760, 'segundos': 43.8}
+[21:51:52] semilla 800083: val AUC 0.9149 meseta 206.5M | test AUC 0.9235 meseta 277.0M | {'rondas': 192, 'variables': 760, 'segundos': 46.3}
+[21:52:40] semilla 800089: val AUC 0.9137 meseta 208.0M | test AUC 0.9227 meseta 279.8M | {'rondas': 199, 'variables': 760, 'segundos': 47.1}
+[21:53:26] semilla 800113: val AUC 0.9137 meseta 208.8M | test AUC 0.9245 meseta 287.8M | {'rondas': 195, 'variables': 760, 'segundos': 45.9}
+[21:54:19] semilla 800117: val AUC 0.9143 meseta 205.7M | test AUC 0.9233 meseta 285.6M | {'rondas': 236, 'variables': 760, 'segundos': 52.9}
+[21:55:11] semilla 800119: val AUC 0.9152 meseta 207.2M | test AUC 0.9221 meseta 281.7M | {'rondas': 239, 'variables': 760, 'segundos': 52.0}
+[21:56:35] RESUMEN H11: val AUC 0.9158 meseta 210.5M | test AUC 0.9239 meseta 285.1M lista 279.5M | vs B0: ΔAUC +0.0017 no mejora (2201 s)

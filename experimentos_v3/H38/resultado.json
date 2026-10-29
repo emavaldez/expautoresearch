@@ -1,0 +1,24 @@
+{
+ "id": "H38",
+ "hipotesis": "H38",
+ "base": "H11, lista al 3,3%",
+ "corte": {
+  "fraccion_internet0": 0.09999999999999999,
+  "fraccion_resto": 0.012499999999999999,
+  "envios_val": 2751,
+  "envios_test": 2802
+ },
+ "val": {
+  "ganancia_lista": 202647500.0,
+  "envios_lista": 2751
+ },
+ "test": {
+  "ganancia_lista": 266145000.0,
+  "envios_lista": 2802
+ },
+ "vs_lista": {
+  "val": -55000.0,
+  "test": -13365000.0
+ },
+ "decision": "no mejora"
+}

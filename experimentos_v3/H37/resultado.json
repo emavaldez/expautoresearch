@@ -1,0 +1,24 @@
+{
+ "id": "H37",
+ "hipotesis": "H37",
+ "base": "H11, lista al 3,3%",
+ "corte": {
+  "envios_val": 3893,
+  "envios_test": 3599,
+  "fraccion_val": 0.029544569327298504,
+  "fraccion_test": 0.026533388424770998
+ },
+ "val": {
+  "ganancia_lista": 204242500.0,
+  "envios_lista": 3893
+ },
+ "test": {
+  "ganancia_lista": 278327500.0,
+  "envios_lista": 3599
+ },
+ "vs_lista": {
+  "val": 1540000.0,
+  "test": -1182500.0
+ },
+ "decision": "no mejora"
+}

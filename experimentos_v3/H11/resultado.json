@@ -1,0 +1,517 @@
+{
+ "semillas": [
+  800011,
+  800029,
+  800053,
+  800057,
+  800077,
+  800083,
+  800089,
+  800113,
+  800117,
+  800119
+ ],
+ "params": {
+  "num_leaves": 232,
+  "learning_rate": 0.028894873227985306,
+  "min_data_in_leaf": 3307,
+  "feature_fraction": 0.6472016970161214,
+  "bagging_fraction": 0.9526585696095625
+ },
+ "info": [
+  {
+   "rondas": 224,
+   "variables": 760,
+   "segundos": 47.4
+  },
+  {
+   "rondas": 228,
+   "variables": 760,
+   "segundos": 45.4
+  },
+  {
+   "rondas": 226,
+   "variables": 760,
+   "segundos": 46.5
+  },
+  {
+   "rondas": 193,
+   "variables": 760,
+   "segundos": 44.7
+  },
+  {
+   "rondas": 181,
+   "variables": 760,
+   "segundos": 43.8
+  },
+  {
+   "rondas": 192,
+   "variables": 760,
+   "segundos": 46.3
+  },
+  {
+   "rondas": 199,
+   "variables": 760,
+   "segundos": 47.1
+  },
+  {
+   "rondas": 195,
+   "variables": 760,
+   "segundos": 45.9
+  },
+  {
+   "rondas": 236,
+   "variables": 760,
+   "segundos": 52.9
+  },
+  {
+   "rondas": 239,
+   "variables": 760,
+   "segundos": 52.0
+  }
+ ],
+ "val": {
+  "auc": 0.9157715653954949,
+  "ganancia_meseta": 210519563.59102243,
+  "envios_meseta": 3082,
+  "ganancia_lista": 202702500.0,
+  "envios_lista": 4349,
+  "ganancia_maxima": 212740000.0,
+  "envios_maxima": 3064,
+  "auc_parcial": 0.4632847937640867,
+  "top1": 172,
+  "baja2": 543,
+  "clientes": 131775
+ },
+ "por_semilla": {
+  "val": [
+   {
+    "auc": 0.9155363809886912,
+    "ganancia_meseta": 205148079.80049875,
+    "envios_meseta": 2888,
+    "ganancia_lista": 199402500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 207570000.0,
+    "envios_maxima": 2732,
+    "auc_parcial": 0.46116233834176906,
+    "top1": 171,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.914512720474681,
+    "ganancia_meseta": 206228672.06982544,
+    "envios_meseta": 3171,
+    "ganancia_lista": 202702500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 208340000.0,
+    "envios_maxima": 3224,
+    "auc_parcial": 0.4613112599316611,
+    "top1": 171,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9134017586780927,
+    "ganancia_meseta": 209335211.9700748,
+    "envios_meseta": 3072,
+    "ganancia_lista": 202702500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 211640000.0,
+    "envios_maxima": 3024,
+    "auc_parcial": 0.4634613329273775,
+    "top1": 170,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9157551393946497,
+    "ganancia_meseta": 204980268.0798005,
+    "envios_meseta": 4135,
+    "ganancia_lista": 202702500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 206772500.0,
+    "envios_maxima": 4001,
+    "auc_parcial": 0.4622183737245958,
+    "top1": 172,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9156081473862324,
+    "ganancia_meseta": 210763840.3990025,
+    "envios_meseta": 4160,
+    "ganancia_lista": 210402500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 212630000.0,
+    "envios_maxima": 4148,
+    "auc_parcial": 0.46260827548237576,
+    "top1": 173,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9149279383414098,
+    "ganancia_meseta": 206502506.23441395,
+    "envios_meseta": 3498,
+    "ganancia_lista": 198302500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 207982500.0,
+    "envios_maxima": 3317,
+    "auc_parcial": 0.45769773621220716,
+    "top1": 173,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9136654096741441,
+    "ganancia_meseta": 207981814.21446383,
+    "envios_meseta": 3287,
+    "ganancia_lista": 202702500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 210292500.0,
+    "envios_maxima": 3313,
+    "auc_parcial": 0.4605360032117217,
+    "top1": 174,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9137041486534974,
+    "ganancia_meseta": 208762443.89027432,
+    "envios_meseta": 3384,
+    "ganancia_lista": 203802500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 210760000.0,
+    "envios_maxima": 3216,
+    "auc_parcial": 0.45999302600138403,
+    "top1": 170,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9142509288935053,
+    "ganancia_meseta": 205694993.76558605,
+    "envios_meseta": 3193,
+    "ganancia_lista": 203802500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 207432500.0,
+    "envios_maxima": 3297,
+    "auc_parcial": 0.4590989912625183,
+    "top1": 171,
+    "baja2": 543,
+    "clientes": 131775
+   },
+   {
+    "auc": 0.9152058542070546,
+    "ganancia_meseta": 207167169.57605985,
+    "envios_meseta": 3606,
+    "ganancia_lista": 200502500.0,
+    "envios_lista": 4349,
+    "ganancia_maxima": 209110000.0,
+    "envios_maxima": 3676,
+    "auc_parcial": 0.4602653846723815,
+    "top1": 169,
+    "baja2": 543,
+    "clientes": 131775
+   }
+  ],
+  "test": [
+   {
+    "auc": 0.9226112506995963,
+    "ganancia_meseta": 284982088.5286783,
+    "envios_meseta": 4123,
+    "ganancia_lista": 281710000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 287182500.0,
+    "envios_maxima": 3997,
+    "auc_parcial": 0.5140940470295625,
+    "top1": 247,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9215122902512021,
+    "ganancia_meseta": 285667462.59351623,
+    "envios_meseta": 3929,
+    "ganancia_lista": 282810000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 287760000.0,
+    "envios_maxima": 3736,
+    "auc_parcial": 0.5137798791738908,
+    "top1": 247,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9222819868469797,
+    "ganancia_meseta": 286353042.39401495,
+    "envios_meseta": 6452,
+    "ganancia_lista": 277310000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 288310000.0,
+    "envios_maxima": 6316,
+    "auc_parcial": 0.5158516758291243,
+    "top1": 252,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9235457843303364,
+    "ganancia_meseta": 284144950.12468827,
+    "envios_meseta": 4730,
+    "ganancia_lista": 282810000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 285945000.0,
+    "envios_maxima": 4682,
+    "auc_parcial": 0.5126340484679017,
+    "top1": 246,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9237840854249649,
+    "ganancia_meseta": 284632612.21945137,
+    "envios_meseta": 5379,
+    "ganancia_lista": 277310000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 287457500.0,
+    "envios_maxima": 5347,
+    "auc_parcial": 0.5124547835041823,
+    "top1": 249,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9234537432868524,
+    "ganancia_meseta": 276992138.40399003,
+    "envios_meseta": 5071,
+    "ganancia_lista": 274010000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 278327500.0,
+    "envios_maxima": 5399,
+    "auc_parcial": 0.5072245714260532,
+    "top1": 247,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9227432117474236,
+    "ganancia_meseta": 279765729.4264339,
+    "envios_meseta": 4147,
+    "ganancia_lista": 278410000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 282315000.0,
+    "envios_maxima": 4254,
+    "auc_parcial": 0.5110857828619928,
+    "top1": 248,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9244812438801437,
+    "ganancia_meseta": 287755130.92269325,
+    "envios_meseta": 5207,
+    "ganancia_lista": 280610000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 289437500.0,
+    "envios_maxima": 5195,
+    "auc_parcial": 0.5149801281359473,
+    "top1": 252,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9233082333473573,
+    "ganancia_meseta": 285618154.6134663,
+    "envios_meseta": 4808,
+    "ganancia_lista": 281710000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 288640000.0,
+    "envios_maxima": 4664,
+    "auc_parcial": 0.5134690399386633,
+    "top1": 250,
+    "baja2": 632,
+    "clientes": 135633
+   },
+   {
+    "auc": 0.9220890792276363,
+    "ganancia_meseta": 281720423.9401496,
+    "envios_meseta": 5604,
+    "ganancia_lista": 279510000.0,
+    "envios_lista": 4476,
+    "ganancia_maxima": 283552500.0,
+    "envios_maxima": 5569,
+    "auc_parcial": 0.5097874216402898,
+    "top1": 252,
+    "baja2": 632,
+    "clientes": 135633
+   }
+  ]
+ },
+ "test": {
+  "auc": 0.9238683557805807,
+  "ganancia_meseta": 285118628.42892766,
+  "envios_meseta": 5732,
+  "ganancia_lista": 279510000.0,
+  "envios_lista": 4476,
+  "ganancia_maxima": 287017500.0,
+  "envios_maxima": 5803,
+  "auc_parcial": 0.5146973829260899,
+  "top1": 249,
+  "baja2": 632,
+  "clientes": 135633
+ },
+ "id": "H11",
+ "hipotesis": "H11",
+ "fecha": "2026-10-28 21:55",
+ "segundos": 2201,
+ "base": "B0",
+ "vs_base": {
+  "auc": {
+   "delta": 0.0017280697123762678,
+   "pareado": {
+    "media": 0.0017896966585995045,
+    "se": 0.00017302671320503044,
+    "ganadas": 10,
+    "n": 10,
+    "p_wilcoxon": 0.0009765625
+   },
+   "ic": [
+    -0.0008178209810136006,
+    0.0043338865614223334
+   ],
+   "p": 0.106,
+   "p_holm": 0.636
+  },
+  "ganancia_meseta": {
+   "delta": 5943771.820448875,
+   "pareado": {
+    "media": 4711353.491271818,
+    "se": 1094625.3752961291,
+    "ganadas": 9,
+    "n": 10,
+    "p_wilcoxon": 0.001953125
+   },
+   "ic": [
+    -5831309.850374058,
+    18837758.884039912
+   ],
+   "p": 0.155,
+   "p_holm": null
+  },
+  "ganancia_lista": {
+   "delta": 1100000.0,
+   "pareado": {
+    "media": 1650000.0,
+    "se": 1090794.8172471912,
+    "ganadas": 6,
+    "n": 10,
+    "p_wilcoxon": 0.103515625
+   }
+  },
+  "auc_parcial": {
+   "delta": 0.0088139290857574,
+   "pareado": {
+    "media": 0.009690486118293174,
+    "se": 0.0012151090540350378,
+    "ganadas": 10,
+    "n": 10,
+    "p_wilcoxon": 0.0009765625
+   }
+  },
+  "top1": {
+   "delta": 12,
+   "pareado": {
+    "media": 15.1,
+    "se": 1.5162087220725546,
+    "ganadas": 10,
+    "n": 10,
+    "p_wilcoxon": 0.0009765625
+   }
+  },
+  "ganancia_maxima": {
+   "delta": 6352500.0,
+   "pareado": {
+    "media": 5010500.0,
+    "se": 1196899.9192358009,
+    "ganadas": 8,
+    "n": 10,
+    "p_wilcoxon": 0.0048828125
+   }
+  }
+ },
+ "vs_base_val": {
+  "auc": {
+   "delta": 0.0044607994366913095,
+   "pareado": {
+    "media": 0.004408403230492674,
+    "se": 0.00027693671487342324,
+    "ganadas": 10,
+    "n": 10,
+    "p_wilcoxon": 0.0009765625
+   },
+   "ic": [
+    0.000909506494092735,
+    0.00792480509684253
+   ],
+   "p": 0.009
+  },
+  "ganancia_meseta": {
+   "delta": 1316091.0224438906,
+   "pareado": {
+    "media": 1004826.6832917661,
+    "se": 1532743.0137518866,
+    "ganadas": 6,
+    "n": 10,
+    "p_wilcoxon": 0.4228515625
+   },
+   "ic": [
+    -9465078.24189525,
+    12437907.107231906
+   ],
+   "p": 0.411
+  },
+  "ganancia_lista": {
+   "delta": 0.0,
+   "pareado": {
+    "media": 110000.0,
+    "se": 1559519.1566633608,
+    "ganadas": 4,
+    "n": 10,
+    "p_wilcoxon": 0.5888671875
+   }
+  },
+  "auc_parcial": {
+   "delta": 0.0012936475539587766,
+   "pareado": {
+    "media": 0.00043113165140067354,
+    "se": 0.0012659284887156497,
+    "ganadas": 7,
+    "n": 10,
+    "p_wilcoxon": 0.2783203125
+   }
+  },
+  "top1": {
+   "delta": -6,
+   "pareado": {
+    "media": -3.7,
+    "se": 0.9893881386437219,
+    "ganadas": 1,
+    "n": 10,
+    "p_wilcoxon": 0.998046875
+   }
+  },
+  "ganancia_maxima": {
+   "delta": 330000.0,
+   "pareado": {
+    "media": 852500.0,
+    "se": 1535584.9410277216,
+    "ganadas": 6,
+    "n": 10,
+    "p_wilcoxon": 0.4228515625
+   }
+  }
+ },
+ "decision": "no mejora"
+}

@@ -428,6 +428,7 @@ const ESTADO_H = {
   preregistrada: ["esperando", "preregistrada"], corriendo: ["pendiente", "corriendo"],
   mejora: ["adoptado", "mejora"], "no mejora": ["descartado", "no mejora"], empeora: ["fallido", "empeora"], base: ["adoptado", "referencia"],
   "quedó": ["adoptado", "quedó"], descartada: ["descartado", "descartada"], "necesita instalar": ["pendiente", "espera instalación"], "espera licencia": ["pendiente", "espera licencia"],
+  "correlación positiva": ["adoptado", "correlación positiva"], "ahorra sin perder": ["adoptado", "ahorra sin perder"], "en curso": ["pendiente", "en curso"],
   error: ["fallido", "error"],
 };
 // Cómo se agrupan en la página y contra qué se comparan.
@@ -466,7 +467,7 @@ function bosque(metrica) {
     s += `<text class="rotulo-h" x="${L - 12}" y="${y + 4}" text-anchor="end"><tspan class="hid">${esc(h.id)}</tspan> ${esc(recortar(h.titulo, 30))}</text>`;
     s += `<line class="guia" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/>`;
     const v = h.resultado && h.resultado.vs_base && h.resultado.vs_base[metrica];
-    if (!v) { s += `<text class="pend" x="${X(0) + 8}" y="${y + 4}">${h.estado === "corriendo" ? "corriendo" : "pendiente"}</text>`; return; }
+    if (!v) { s += `<text class="pend" x="${X(0) + 8}" y="${y + 4}">${h.estado && h.estado !== "preregistrada" ? esc(h.estado) : "pendiente"}</text>`; return; }
     const [a, b] = v.ic || [v.delta, v.delta];
     const cl = a > 0 ? "sube" : b < 0 ? "baja" : "neutro";
     s += `<line class="ic ${cl}" x1="${X(a)}" x2="${X(b)}" y1="${y}" y2="${y}"/><circle class="est ${cl}" cx="${X(v.delta)}" cy="${y}" r="5" data-h="${esc(h.id)}" tabindex="0"><title>${esc(h.id)}: ${fmt(v.delta)} (${fmt(a)} a ${fmt(b)})</title></circle>`;

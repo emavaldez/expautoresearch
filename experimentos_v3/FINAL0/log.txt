@@ -1,0 +1,13 @@
+[21:09:27] === FINAL0: FINAL0 --hipotesis H25 --semillas 10
+[21:09:32] features: 762 columnas, 1,286,487 filas (4 s)
+[21:10:17] semilla 800011: val AUC 0.9126 meseta 203.1M | test AUC 0.9242 meseta 293.9M | {'rondas': 409, 'variables': 760, 'segundos': 43.9}
+[21:11:05] semilla 800029: val AUC 0.9125 meseta 208.7M | test AUC 0.9237 meseta 293.5M | {'rondas': 403, 'variables': 760, 'segundos': 48.4}
+[21:12:02] semilla 800053: val AUC 0.9145 meseta 204.0M | test AUC 0.9236 meseta 281.9M | {'rondas': 466, 'variables': 760, 'segundos': 56.9}
+[21:12:52] semilla 800057: val AUC 0.9161 meseta 208.0M | test AUC 0.9206 meseta 287.0M | {'rondas': 485, 'variables': 760, 'segundos': 50.4}
+[21:13:30] semilla 800077: val AUC 0.9127 meseta 205.9M | test AUC 0.9230 meseta 285.1M | {'rondas': 309, 'variables': 760, 'segundos': 37.2}
+[21:14:17] semilla 800083: val AUC 0.9127 meseta 204.3M | test AUC 0.9229 meseta 289.5M | {'rondas': 439, 'variables': 760, 'segundos': 47.3}
+[21:14:50] semilla 800089: val AUC 0.9113 meseta 204.9M | test AUC 0.9243 meseta 288.0M | {'rondas': 292, 'variables': 760, 'segundos': 33.1}
+[21:15:32] semilla 800113: val AUC 0.9137 meseta 205.7M | test AUC 0.9232 meseta 298.1M | {'rondas': 353, 'variables': 760, 'segundos': 41.8}
+[21:16:22] semilla 800117: val AUC 0.9135 meseta 208.8M | test AUC 0.9224 meseta 280.7M | {'rondas': 515, 'variables': 760, 'segundos': 49.3}
+[21:17:04] semilla 800119: val AUC 0.9124 meseta 205.2M | test AUC 0.9229 meseta 291.4M | {'rondas': 409, 'variables': 760, 'segundos': 41.8}
+[21:18:30] RESUMEN FINAL0: val AUC 0.9144 meseta 207.1M | test AUC 0.9242 meseta 292.9M lista 281.7M | vs B0: ΔAUC +0.0020 no mejora (458 s)

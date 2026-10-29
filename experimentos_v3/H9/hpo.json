@@ -1,0 +1,41 @@
+{
+ "objetivo": "meseta",
+ "arranque": null,
+ "trials": 40,
+ "mejor_trial": 38,
+ "valor": 213846789.276808,
+ "params": {
+  "num_leaves": 491,
+  "learning_rate": 0.010623093815020558,
+  "min_data_in_leaf": 2739,
+  "feature_fraction": 0.3919303683483097,
+  "bagging_fraction": 0.929516463066923
+ },
+ "espacio": {
+  "num_leaves": [
+   "intlog",
+   8,
+   512
+  ],
+  "learning_rate": [
+   "log",
+   0.01,
+   0.2
+  ],
+  "min_data_in_leaf": [
+   "intlog",
+   20,
+   5000
+  ],
+  "feature_fraction": [
+   "float",
+   0.1,
+   1.0
+  ],
+  "bagging_fraction": [
+   "float",
+   0.3,
+   1.0
+  ]
+ }
+}

@@ -1,0 +1,13 @@
+[22:37:54] === ABL-H1b: ABL-H1b --hipotesis ablacion --train v3/base_b0.py --params experimentos_v3/H11/hpo.json --semillas 10 --base H11
+[22:37:58] features: 762 columnas, 1,286,487 filas (4 s)
+[22:38:42] semilla 800011: val AUC 0.9093 meseta 206.4M | test AUC 0.9213 meseta 276.2M | {'rondas': 147, 'variables': 760, 'segundos': 43.0}
+[22:39:28] semilla 800029: val AUC 0.9104 meseta 211.5M | test AUC 0.9208 meseta 279.7M | {'rondas': 154, 'variables': 760, 'segundos': 45.2}
+[22:40:11] semilla 800053: val AUC 0.9101 meseta 212.1M | test AUC 0.9205 meseta 278.6M | {'rondas': 145, 'variables': 760, 'segundos': 43.1}
+[22:40:55] semilla 800057: val AUC 0.9100 meseta 209.3M | test AUC 0.9189 meseta 280.1M | {'rondas': 157, 'variables': 760, 'segundos': 44.5}
+[22:41:39] semilla 800077: val AUC 0.9103 meseta 213.4M | test AUC 0.9212 meseta 281.3M | {'rondas': 135, 'variables': 760, 'segundos': 43.4}
+[22:42:20] semilla 800083: val AUC 0.9092 meseta 208.9M | test AUC 0.9187 meseta 281.2M | {'rondas': 136, 'variables': 760, 'segundos': 40.9}
+[22:42:54] semilla 800089: val AUC 0.9109 meseta 204.5M | test AUC 0.9206 meseta 276.3M | {'rondas': 109, 'variables': 760, 'segundos': 34.4}
+[22:43:32] semilla 800113: val AUC 0.9089 meseta 209.7M | test AUC 0.9217 meseta 286.7M | {'rondas': 151, 'variables': 760, 'segundos': 37.7}
+[22:44:21] semilla 800117: val AUC 0.9101 meseta 213.4M | test AUC 0.9200 meseta 282.6M | {'rondas': 173, 'variables': 760, 'segundos': 48.8}
+[22:45:07] semilla 800119: val AUC 0.9098 meseta 207.2M | test AUC 0.9197 meseta 284.5M | {'rondas': 158, 'variables': 760, 'segundos': 46.0}
+[22:46:41] RESUMEN ABL-H1b: val AUC 0.9113 meseta 210.1M | test AUC 0.9215 meseta 281.1M lista 278.4M | vs H11: ΔAUC -0.0024 no mejora (435 s)

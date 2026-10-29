@@ -1,0 +1,84 @@
+{
+ "objetivo": "auc",
+ "arranque": null,
+ "trials": 40,
+ "mejor_trial": 13,
+ "valor": 0.9120974738677131,
+ "params": {
+  "num_leaves": 43,
+  "learning_rate": 0.01695779021098366,
+  "min_data_in_leaf": 4574,
+  "feature_fraction": 0.9826243253660389,
+  "bagging_fraction": 0.9947767549971337,
+  "lambda_l1": 0.004517886555944297,
+  "lambda_l2": 0.02203804225242597,
+  "min_gain_to_split": 0.9057132882569511,
+  "max_depth": 8,
+  "path_smooth": 0.15926530633165348,
+  "extra_trees": true
+ },
+ "espacio": {
+  "num_leaves": [
+   "intlog",
+   8,
+   2048
+  ],
+  "learning_rate": [
+   "log",
+   0.01,
+   0.2
+  ],
+  "min_data_in_leaf": [
+   "intlog",
+   20,
+   5000
+  ],
+  "feature_fraction": [
+   "float",
+   0.1,
+   1.0
+  ],
+  "bagging_fraction": [
+   "float",
+   0.3,
+   1.0
+  ],
+  "lambda_l1": [
+   "log",
+   0.001,
+   100.0
+  ],
+  "lambda_l2": [
+   "log",
+   0.001,
+   100.0
+  ],
+  "min_gain_to_split": [
+   "float",
+   0.0,
+   1.0
+  ],
+  "max_depth": [
+   "cat",
+   [
+    -1,
+    6,
+    8,
+    12,
+    16
+   ]
+  ],
+  "path_smooth": [
+   "log",
+   0.001,
+   100.0
+  ],
+  "extra_trees": [
+   "cat",
+   [
+    false,
+    true
+   ]
+  ]
+ }
+}
