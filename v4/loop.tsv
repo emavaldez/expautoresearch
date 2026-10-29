@@ -17,3 +17,13 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 16	V16	franja=10	agrega	-0.3	screening	-2960879	-2674102	1186755	1/5	1	-3300000	-0.00045	se descarta	V14	2215	2026-10-29 09:00
 17	V17	franja=6	agrega	-0.5	screening	-1364302	-1429273	638000	1/5	2	-1100000	-0.0003	se descarta	V14	2560	2026-10-29 09:43
 18	V18	puntaje_baja1=0.0	agrega	-1.0	screening	-6168847	-5493407	782006	0/5	0	-6233333	-0.00072	se descarta	V14	1473	2026-10-29 10:07
+19	V19	franja=11	agrega	+1.0	screening	241785	-86962	743141	3/5	2	366667	-4e-05	se descarta	V14	2470	2026-10-29 10:59
+20	V20	binaria_ensamble=True	agrega	+1.0	screening	-1748319	272321	443576	3/5	1	-2200000	0.00041	se descarta	V14	825	2026-10-29 11:12
+21	V21	agente='c'	agrega	+0.3	screening	-1301804	-424949	948440	3/5	2	-1833333	-0.00048	se descarta	V14	568	2026-10-29 11:22
+22	V22	agente='d'	agrega	+0.5	screening	567145	862444	1038237	4/5	2	-1100000	-0.00027	se descarta	V14	487	2026-10-29 11:30
+23	V23	agente='f'	agrega	+0.3	screening	-1425314	-1166581	508397	1/5	1	-4766667	-0.00034	se descarta	V14	514	2026-10-29 11:38
+24	V24	agente='a'	agrega	+0.2	screening	-1983658	-1379718	849670	1/5	1	-3300000	0.00011	se descarta	V14	537	2026-10-29 11:47
+25	V25	agente='b'	agrega	+0.0	screening	-1134106	467454	1373744	4/5	1	-1833333	-0.0007	se descarta	V14	530	2026-10-29 11:56
+26	V26	agente='e'	agrega	+0.0	screening	-966752	582410	1306850	3/5	0	-1833333	1e-05	se descarta	V14	492	2026-10-29 12:04
+27	V27	miembros=[{'meses': 2}]	agrega	+0.3	screening	-5612126	-2774739	992144	0/5	0	-5866667	-0.00108	se descarta	V14	862	2026-10-29 12:19
+28	V28	miembros=[{'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}]	agrega	+1.0	confirmacion	4332907	4225888	511902	10/10	2	1833333	0.00195	queda	V14	7352	2026-10-29 14:21

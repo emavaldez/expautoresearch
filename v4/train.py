@@ -309,7 +309,7 @@ CAMBIOS = {
     "params": None,                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
     "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
     "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
-    "miembros": [{'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}],                 # el general con otras constantes (ver con()), cada uno un miembro más del ensamble
+    "miembros": [{'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
 
@@ -904,7 +904,7 @@ _CANDADO = threading.Lock()
 
 
 def miembro(cambios: dict, train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
-    """El general con otras constantes ("meses" va a TRAIN_MONTHS_BACK, lo demás a aplicar()). Corre en una copia
+    """El general con otras constantes sobre las de E019 ("meses" va a TRAIN_MONTHS_BACK, lo demás a aplicar()). Corre en una copia
     aparte de este módulo: cambiar las constantes de éste pisaría las del general, que puede estar entrenando otra
     semilla en otro hilo."""
     clave = repr(sorted(cambios.items()))
@@ -913,8 +913,10 @@ def miembro(cambios: dict, train: pd.DataFrame, score: pd.DataFrame, seed: int) 
             spec = importlib.util.spec_from_file_location(f"{__name__}_miembro{len(_COPIAS)}", __file__)
             m = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(m)
-            m.PARAMS = dict(PARAMS)  # las de ahora, por si alguien las cambió después de importar
-            m.NUM_ROUNDS, m.UNDERSAMPLING, m.PESO_BAJA1, m.PESO_BAJA2 = NUM_ROUNDS, UNDERSAMPLING, PESO_BAJA1, PESO_BAJA2
+            # Parte de E019 (no de params= del general, que pisaría las claves que el miembro no fija); los hilos
+            # son los del general, que pone el arnés.
+            m.PARAMS = {**m._DEL_ARCHIVO[0], "num_threads": PARAMS["num_threads"]}
+            m.NUM_ROUNDS, m.UNDERSAMPLING, m.PESO_BAJA1, m.PESO_BAJA2 = m._DEL_ARCHIVO[1:]
             c = dict(cambios)
             m.TRAIN_MONTHS_BACK = int(c.pop("meses", TRAIN_MONTHS_BACK))
             m.aplicar(c)
@@ -922,5 +924,6 @@ def miembro(cambios: dict, train: pd.DataFrame, score: pd.DataFrame, seed: int) 
     return _COPIAS[clave].base(train, score, seed)
 
 
+_DEL_ARCHIVO = (dict(PARAMS), NUM_ROUNDS, UNDERSAMPLING, PESO_BAJA1, PESO_BAJA2)  # E019, antes de params=
 if CAMBIOS["params"]:
     aplicar(CAMBIOS["params"])
