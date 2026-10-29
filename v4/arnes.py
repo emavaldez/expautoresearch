@@ -29,6 +29,11 @@ N_CONFIRMACION = 10
 RESULTADOS = RAIZ / "experimentos_v4"
 PROBS = C.CACHE / "v4"
 METRICAS = ("meseta", "ganancia", "auc")  # ganancia = la lista al 3,3%
+# Ejecución (no cambia la métrica): 5 semillas a la vez con 3 hilos cada una rinden más que una tras otra con 16 en
+# el M5 Max (núcleos de dos tipos: con 16 hilos el más lento frena a todos). El modo va en el nombre del archivo de
+# cada evaluación, así nunca se comparan corridas hechas en modos distintos (los hilos mueven apenas los árboles).
+PARALELO, HILOS = 5, 3
+MODO = "" if PARALELO == 1 else f"_p{PARALELO}h{HILOS}"
 
 
 def cargar_modulo(ruta: Path, nombre: str = "train_v4"):
@@ -46,12 +51,14 @@ def evaluar(nombre: str, bloque: str = "screening", meses: list[int] | None = No
     """Evalúa experimentos_v4/<nombre>/train.py con las semillas del bloque y lo guarda (eval_<bloque>.json); si ya
     está guardado, lo devuelve sin volver a correr."""
     meses = meses or (TEST if bloque == "test" else SELECCION)
-    ruta = RESULTADOS / nombre / f"eval_{bloque}.json"
+    ruta = RESULTADOS / nombre / f"eval_{bloque}{MODO}.json"
     if ruta.exists():
         return json.loads(ruta.read_text(encoding="utf-8"))
     mod = cargar_modulo(RESULTADOS / nombre / "train.py")
+    if PARALELO > 1:
+        mod.PARAMS["num_threads"] = HILOS
     sem = semillas("screening" if bloque == "test" else bloque)
-    res = prepare.evaluar(mod, meses, sem, log=log, guardar=PROBS / nombre / bloque)
+    res = prepare.evaluar(mod, meses, sem, log=log, guardar=PROBS / nombre / f"{bloque}{MODO}", paralelo=PARALELO)
     ruta.write_text(json.dumps(res, indent=1) + "\n", encoding="utf-8")
     return res
 

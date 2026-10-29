@@ -19,6 +19,7 @@ Opcional en train.py: CORTE (dict) o corte(prob, train, score) -> int, cuántos 
 from __future__ import annotations
 
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -291,10 +292,11 @@ def _llamar(mod, train, score, s, params, intermedio):
 
 
 def evaluar(mod, meses: list[int], semillas_: list[int], df: pd.DataFrame | None = None, log=print,
-            guardar: Path | None = None, params: dict | None = None) -> dict:
+            guardar: Path | None = None, params: dict | None = None, paralelo: int = 1) -> dict:
     """Para cada mes de test: entrena con lo que se sabía, puntúa con cada semilla y arma la lista con el ensamble
     (promedio de probabilidades), que es lo que se entrega. La ganancia que decide es la de esa lista, con la clase
-    verdadera del mes. También se guardan la meseta de la curva (lo mejor que se podía con ese orden) y la AUC."""
+    verdadera del mes. También se guardan la meseta de la curva (lo mejor que se podía con ese orden) y la AUC.
+    Con paralelo > 1 entrena varias semillas a la vez en hilos (lo usa v4); el resultado no depende de eso."""
     df = cargar() if df is None else df
     salida = {}
     for mes in meses:
@@ -305,18 +307,28 @@ def evaluar(mod, meses: list[int], semillas_: list[int], df: pd.DataFrame | None
         if "aviso" in info:
             log(f"[{mes}] AVISO: {info['aviso']}")
         probs, por_semilla = [], {}
-        for s in semillas_:
-            t1 = time.time()
-            p = _llamar(mod, train, score, s, params, intermedio)
-            if p.shape != (len(score),):
-                raise ValueError(f"train_and_predict devolvió {p.shape}, se esperaban {len(score)} probabilidades")
-            k = envios(mod, p, train, score)
-            gm, nm = ganancia_suavizada(p, y)
-            por_semilla[str(s)] = {"ganancia": ganancia_en(p, y, k), "envios": k, "meseta": gm, "envios_meseta": nm,
-                                   "auc": auc(p, y)}
-            probs.append(p)
-            log(f"[{mes}] semilla {s}: lista {ganancia_en(p, y, k) / 1e6:,.1f}M con {k:,} | meseta {gm / 1e6:,.1f}M en "
-                f"{nm:,} | AUC {auc(p, y):.4f} ({time.time() - t1:.0f} s)")
+        hilos = ThreadPoolExecutor(max_workers=paralelo) if paralelo > 1 else None
+        if hilos:
+            futuros = [hilos.submit(_llamar, mod, train, score, s, params, intermedio) for s in semillas_]
+            resultados = (f.result() for f in futuros)
+        else:
+            resultados = (_llamar(mod, train, score, s, params, intermedio) for s in semillas_)
+        t1 = time.time()
+        try:
+            for s, p in zip(semillas_, resultados):
+                if p.shape != (len(score),):
+                    raise ValueError(f"train_and_predict devolvió {p.shape}, se esperaban {len(score)} probabilidades")
+                k = envios(mod, p, train, score)
+                gm, nm = ganancia_suavizada(p, y)
+                por_semilla[str(s)] = {"ganancia": ganancia_en(p, y, k), "envios": k, "meseta": gm, "envios_meseta": nm,
+                                       "auc": auc(p, y)}
+                probs.append(p)
+                log(f"[{mes}] semilla {s}: lista {ganancia_en(p, y, k) / 1e6:,.1f}M con {k:,} | meseta {gm / 1e6:,.1f}M en "
+                    f"{nm:,} | AUC {auc(p, y):.4f} ({time.time() - t1:.0f} s)")
+                t1 = time.time()
+        finally:
+            if hilos:  # si una semilla falla, las que no arrancaron no corren
+                hilos.shutdown(cancel_futures=True)
         ens = np.mean(probs, axis=0)
         k = envios(mod, ens, train, score)
         g = ganancia_en(ens, y, k)

@@ -15,6 +15,7 @@ import csv
 import json
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -73,6 +74,7 @@ def main() -> int:
     ap.add_argument("nombre")
     ap.add_argument("--trials", type=int, default=60)
     ap.add_argument("--semillas", type=int, default=2)
+    ap.add_argument("--hilos", type=int, default=9, help="hilos de LightGBM por semilla (las semillas van en paralelo)")
     a = ap.parse_args()
     carpeta = arnes.RESULTADOS / a.nombre
     carpeta.mkdir(parents=True, exist_ok=True)
@@ -86,7 +88,11 @@ def main() -> int:
 
     vigente = loop.estado()["vigente"]
     mod = arnes.cargar_modulo(arnes.RESULTADOS / vigente / "train.py")
+    # Dos semillas a la vez con la mitad de los hilos rinden más que una tras otra con todos. Sólo la búsqueda: el
+    # loop vuelve a medir el mejor con los hilos de train.py.
+    mod.PARAMS["num_threads"] = a.hilos
     original = (dict(mod.PARAMS), mod.NUM_ROUNDS, mod.UNDERSAMPLING, mod.PESO_BAJA1, mod.PESO_BAJA2)
+    hilos = ThreadPoolExecutor(max_workers=a.semillas)
     semillas = prepare.semillas("busqueda", a.semillas)
     df = prepare.cargar()
     datos = {m: prepare.datos_fold(df, mod, m) for m in arnes.SELECCION}
@@ -112,7 +118,7 @@ def main() -> int:
         mod.aplicar(params)
         mesetas = []
         for k, (m, (train, score, y, info, intermedio)) in enumerate(datos.items()):
-            probs = [prepare._llamar(mod, train, score, s, None, intermedio) for s in semillas]
+            probs = list(hilos.map(lambda s: prepare._llamar(mod, train, score, s, None, intermedio), semillas))
             mesetas.append(prepare.ganancia_suavizada(np.mean(probs, axis=0), y)[0])
             trial.report(float(np.mean(mesetas)), k)
             if trial.should_prune():
@@ -145,7 +151,8 @@ def main() -> int:
                                                   "espacio": {k: list(v) for k, v in ESPACIO.items()}},
                                                  indent=1) + "\n", encoding="utf-8")
     # A la cola, como el próximo paso; la predicción es la mitad de lo que ganó en la búsqueda (ganó en esos mismos meses).
-    filas = loop.leer_tsv(loop.COLA)
+    # Si se retoma con más trials, la fila pendiente de antes se reemplaza.
+    filas = [f for f in loop.leer_tsv(loop.COLA) if f["id"] != a.nombre or f["estado"]]
     pendientes = [float(f["orden"]) for f in filas if not f["estado"]]
     orden = (min(pendientes) if pendientes else max(float(f["orden"]) for f in filas) + 1) - 0.5
     pred = (mejor.value - inicial.value) / 2e6

@@ -30,6 +30,9 @@ Qué cambió para estos datos (2019 en lugar de 2021), sin tocar la lógica:
     de m - 5 a m - 2 (regla del escenario); el general
     usa los tres últimos y la segunda etapa los dos últimos, puntuados por una base entrenada con los anteriores.
 """
+import importlib.util
+import threading
+
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
@@ -520,7 +523,7 @@ def modelo_catedra(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.nd
     crudas = [c for c in tr.columns if f"{c}_lag1" in tr.columns and c not in ("numero_de_cliente", "foto_mes")]
     cols = crudas + [f"{c}_{s}" for c in crudas for s in ("lag1", "lag2", "delta1", "delta2")]
     d = lgb.Dataset(tr[cols].to_numpy(np.float32), label=(tr.clase_ternaria != "CONTINUA").to_numpy().astype(int))
-    m = lgb.train({**PARAMS_CATEDRA, "seed": int(seed)}, d, num_boost_round=RONDAS_CATEDRA)
+    m = lgb.train({**PARAMS_CATEDRA, "seed": int(seed), "num_threads": PARAMS["num_threads"]}, d, num_boost_round=RONDAS_CATEDRA)
     return m.predict(score[cols].to_numpy(np.float32))
 
 
@@ -729,7 +732,7 @@ def _cols(train):
 
 def _lgb(X, y, params, rondas, seed, init=None, grupo=None):
     d = lgb.Dataset(X, label=y, init_score=init, group=grupo)
-    return lgb.train({**params, "seed": seed, "verbosity": -1, "num_threads": 16}, d, num_boost_round=rondas)
+    return lgb.train({**params, "seed": seed, "verbosity": -1, "num_threads": PARAMS["num_threads"]}, d, num_boost_round=rondas)
 
 
 def puntaje_franja(enfoque, train, score, seed, p, idx, intermedio=None):
@@ -873,7 +876,7 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
     enfoque = CAMBIOS["franja"]
     p = base(train, score, seed, peso_fila=peso_franja(train) if enfoque == 5 else None)
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
-    otros += [con(c, lambda: base(train, score, seed)) for c in CAMBIOS["miembros"]]
+    otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
         p = mezcla(p, *otros)
     if enfoque in (0, 5, 9):
@@ -896,20 +899,27 @@ def aplicar(params: dict) -> None:
     PARAMS.update(p)
 
 
-def con(cambios: dict, f):
-    """Corre f con otras constantes y deja las de antes: "meses" va a TRAIN_MONTHS_BACK, lo demás a aplicar()."""
-    g = globals()
-    nombres = ("NUM_ROUNDS", "UNDERSAMPLING", "PESO_BAJA1", "PESO_BAJA2", "TRAIN_MONTHS_BACK")
-    antes, params = {k: g[k] for k in nombres}, dict(PARAMS)
-    c = dict(cambios)
-    g["TRAIN_MONTHS_BACK"] = int(c.pop("meses", TRAIN_MONTHS_BACK))
-    aplicar(c)
-    try:
-        return f()
-    finally:
-        g.update(antes)
-        PARAMS.clear()
-        PARAMS.update(params)
+_COPIAS = {}
+_CANDADO = threading.Lock()
+
+
+def miembro(cambios: dict, train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
+    """El general con otras constantes ("meses" va a TRAIN_MONTHS_BACK, lo demás a aplicar()). Corre en una copia
+    aparte de este módulo: cambiar las constantes de éste pisaría las del general, que puede estar entrenando otra
+    semilla en otro hilo."""
+    clave = repr(sorted(cambios.items()))
+    with _CANDADO:
+        if clave not in _COPIAS:
+            spec = importlib.util.spec_from_file_location(f"{__name__}_miembro{len(_COPIAS)}", __file__)
+            m = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m)
+            m.PARAMS = dict(PARAMS)  # las de ahora, por si alguien las cambió después de importar
+            m.NUM_ROUNDS, m.UNDERSAMPLING, m.PESO_BAJA1, m.PESO_BAJA2 = NUM_ROUNDS, UNDERSAMPLING, PESO_BAJA1, PESO_BAJA2
+            c = dict(cambios)
+            m.TRAIN_MONTHS_BACK = int(c.pop("meses", TRAIN_MONTHS_BACK))
+            m.aplicar(c)
+            _COPIAS[clave] = m
+    return _COPIAS[clave].base(train, score, seed)
 
 
 if CAMBIOS["params"]:
