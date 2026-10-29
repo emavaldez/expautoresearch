@@ -309,7 +309,7 @@ CAMBIOS = {
     "params": None,                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
     "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
     "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
-    "miembros": [],                 # el general con otras constantes (ver con()), cada uno un miembro más del ensamble
+    "miembros": [{'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}],                 # el general con otras constantes (ver con()), cada uno un miembro más del ensamble
 }
 
 
