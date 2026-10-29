@@ -313,6 +313,7 @@ CAMBIOS = {
     "xgboost": False,               # ensamble con un XGBoost con los mismos datos
     "catedra": False,               # ensamble con un modelo al estilo B0 + H1b (binaria, sin submuestreo)
     "params": {'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132},                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
+    "franja_params": None,          # parámetros de la franja de una búsqueda (v4/hpo_franja.py): ver aplicar_franja()
     "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
     "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
     "percentil_montos": False,      # todos los montos a percentil dentro del mes (E019: sólo 14)
@@ -752,9 +753,12 @@ def franja_train(train: pd.DataFrame, poof: pd.Series, sin_baja1=True):
     return t, (t.clase_ternaria == "BAJA+2").to_numpy().astype(float), poof[k].to_numpy()
 
 
+PESO_BASE_FRANJA = 1.0  # peso del puesto de p en la suma de puestos (lo mueve la búsqueda de la franja)
+
+
 def reordenar(p, idx, s_nuevo):
     """Los mismos valores de p en la franja, repartidos por la suma de puestos del puntaje nuevo y de p."""
-    s = pd.Series(np.asarray(s_nuevo)).rank().to_numpy() + pd.Series(p[idx]).rank().to_numpy()
+    s = pd.Series(np.asarray(s_nuevo)).rank().to_numpy() + PESO_BASE_FRANJA * pd.Series(p[idx]).rank().to_numpy()
     out = p.copy()
     nuevo = np.empty(len(idx))
     nuevo[np.argsort(-s, kind="stable")] = np.sort(p[idx])[::-1]
@@ -935,6 +939,17 @@ def aplicar(params: dict) -> None:
     PARAMS.update(p)
 
 
+def aplicar_franja(fp: dict) -> None:
+    """Pone los parámetros de la franja de una búsqueda (v4/hpo_franja.py): franja_desde y franja_hasta van a
+    FRANJA_REL, rondas a RONDAS_2, peso_base a PESO_BASE_FRANJA y el resto a PARAMS_2."""
+    global FRANJA_REL, RONDAS_2, PESO_BASE_FRANJA
+    p = dict(fp)
+    FRANJA_REL = (float(p.pop("franja_desde", FRANJA_REL[0])), float(p.pop("franja_hasta", FRANJA_REL[1])))
+    RONDAS_2 = int(p.pop("rondas", RONDAS_2))
+    PESO_BASE_FRANJA = float(p.pop("peso_base", PESO_BASE_FRANJA))
+    PARAMS_2.update(p)
+
+
 _COPIAS = {}
 _CANDADO = threading.Lock()
 
@@ -963,3 +978,5 @@ def miembro(cambios: dict, train: pd.DataFrame, score: pd.DataFrame, seed: int) 
 _DEL_ARCHIVO = (dict(PARAMS), NUM_ROUNDS, UNDERSAMPLING, PESO_BAJA1, PESO_BAJA2)  # E019, antes de params=
 if CAMBIOS["params"]:
     aplicar(CAMBIOS["params"])
+if CAMBIOS["franja_params"]:
+    aplicar_franja(CAMBIOS["franja_params"])
