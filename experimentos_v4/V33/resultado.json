@@ -1,0 +1,74 @@
+{
+ "id": "V33",
+ "titulo": "Historia del resumen de tarjetas (otra vez, sobre V28)",
+ "cambio": "historia_resumen=True",
+ "tipo": "agrega",
+ "paso": 34,
+ "vigente": "V29",
+ "pred_meseta": "-0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1474,
+ "fecha": "2026-10-29 19:14",
+ "seleccion": {
+  "vigente": {
+   "meseta": 265669887.7805486,
+   "ganancia": 264760833.33333334,
+   "auc": 0.9140514268928079
+  },
+  "cambio": {
+   "meseta": 263026093.10058188,
+   "ganancia": 261460833.33333334,
+   "auc": 0.9139441413873137
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -2643794.679966718,
+    "por_mes": {
+     "201907": -3239925.187032342,
+     "201908": -3839370.324189514,
+     "201909": -852088.528678298
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -1552504.1562759716,
+     "se": 978138.0155213185,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -3300000.0,
+    "por_mes": {
+     "201907": -6600000.0,
+     "201908": 1100000.0,
+     "201909": -4400000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -880000.0,
+     "se": 824796.2711414794,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00010728550549417755,
+    "por_mes": {
+     "201907": -0.0010916869813294428,
+     "201908": 0.001000000336799589,
+     "201909": -0.00023016987195267902
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -0.00016652134515121229,
+     "se": 0.00020191488644675802,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}

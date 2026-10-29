@@ -1,0 +1,72 @@
+{
+ "vigente": "V29",
+ "trials": 60,
+ "semillas": [
+  800311,
+  800329,
+  800333,
+  800351
+ ],
+ "mejor_trial": 22,
+ "valor": 269588900.6650042,
+ "valor_franja1": 266070066.50041565,
+ "valor_sin_franja": 264771554.4472153,
+ "params": {
+  "franja_desde": 0.5600014111274607,
+  "franja_hasta": 3.5553427460608167,
+  "learning_rate": 0.07447262553981542,
+  "num_leaves": 7,
+  "min_data_in_leaf": 599,
+  "feature_fraction": 0.2705345015055787,
+  "lambda_l2": 89.53643923682695,
+  "rondas": 176,
+  "peso_base": 1.0477883025328396
+ },
+ "espacio": {
+  "franja_desde": [
+   "float",
+   0.3,
+   1.0
+  ],
+  "franja_hasta": [
+   "float",
+   1.5,
+   5.0
+  ],
+  "learning_rate": [
+   "log",
+   0.01,
+   0.1
+  ],
+  "num_leaves": [
+   "intlog",
+   2,
+   31
+  ],
+  "min_data_in_leaf": [
+   "intlog",
+   50,
+   1000
+  ],
+  "feature_fraction": [
+   "float",
+   0.1,
+   0.8
+  ],
+  "lambda_l2": [
+   "log",
+   0.1,
+   100.0
+  ],
+  "rondas": [
+   "intlog",
+   30,
+   500
+  ],
+  "peso_base": [
+   "float",
+   0.0,
+   3.0
+  ]
+ }
+}

@@ -1,0 +1,74 @@
+{
+ "id": "V30",
+ "titulo": "Segundo miembro: el trial 13 de B1",
+ "cambio": "miembros=[{'num_leaves': 197, 'learning_rate': 0.0239, 'num_rounds': 508, 'min_data_in_leaf': 63, 'feature_fraction': 0.961, 'bagging_fraction': 0.941, 'bagging_freq': 1, 'lambda_l2': 0.0161, 'min_gain_to_split': 0.0519, 'submuestreo': 0.132, 'peso_baja1': 0.473, 'peso_baja2': 7.02}]",
+ "tipo": "agrega",
+ "paso": 30,
+ "vigente": "V29",
+ "pred_meseta": "+0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2317,
+ "fecha": "2026-10-29 16:12",
+ "seleccion": {
+  "vigente": {
+   "meseta": 265669887.7805486,
+   "ganancia": 264760833.33333334,
+   "auc": 0.9140514268928079
+  },
+  "cambio": {
+   "meseta": 266167333.74896088,
+   "ganancia": 265860833.33333334,
+   "auc": 0.9138991608348846
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 497445.96841229993,
+    "por_mes": {
+     "201907": -144700.74812966585,
+     "201908": -724669.5760598481,
+     "201909": 2361708.229426414
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 370132.1695760569,
+     "se": 434056.22814815096,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 1100000.0,
+    "por_mes": {
+     "201907": -4400000.0,
+     "201908": 5500000.0,
+     "201909": 2200000.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 2640000.0,
+     "se": 1026666.6666666666,
+     "ganadas": 5,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.0001522660579233263,
+    "por_mes": {
+     "201907": -0.00044502727636386297,
+     "201908": -0.00022321398500035894,
+     "201909": 0.00021144308759424302
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -9.859564101420599e-05,
+     "se": 5.3336005733162384e-05,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}
