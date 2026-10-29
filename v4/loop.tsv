@@ -27,3 +27,4 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 26	V26	agente='e'	agrega	+0.0	screening	-966752	582410	1306850	3/5	0	-1833333	1e-05	se descarta	V14	492	2026-10-29 12:04
 27	V27	miembros=[{'meses': 2}]	agrega	+0.3	screening	-5612126	-2774739	992144	0/5	0	-5866667	-0.00108	se descarta	V14	862	2026-10-29 12:19
 28	V28	miembros=[{'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}]	agrega	+1.0	confirmacion	4332907	4225888	511902	10/10	2	1833333	0.00195	queda	V14	7352	2026-10-29 14:21
+29	V29	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}; miembros=[]	simplifica	+0.0	confirmacion	3478373	-322909	525027	5/10	2	2200000	0.00028	queda	V28	4183	2026-10-29 15:32

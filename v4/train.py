@@ -118,12 +118,18 @@ def percentil_cero_fijo(x: pd.Series, mes: pd.Series) -> pd.Series:
     return (100 * (pos.fillna(0) - neg.fillna(0))).where(x.notna())
 
 
+def montos_sin_percentil(df: pd.DataFrame) -> list:
+    """v4: los montos (m*, Visa_m*, Master_m*) que E019 deja en pesos."""
+    return [c for c in df.columns if es_magnitud(c) and c not in PERCENTIL_CERO_FIJO
+            and (c.split("_", 1)[1] if c.startswith(("Visa_", "Master_")) else c)[0] == "m"]
+
+
 def lags_y_deltas(df: pd.DataFrame) -> pd.DataFrame:
     order = df.sort_values(["numero_de_cliente", "foto_mes"]).index
     df = df.loc[order]
     for c, meses in ROTAS.items():
         df[c] = df[c].where(~df.foto_mes.isin(meses))
-    for c in PERCENTIL_CERO_FIJO:
+    for c in PERCENTIL_CERO_FIJO + (montos_sin_percentil(df) if CAMBIOS["percentil_montos"] else []):
         df[c] = percentil_cero_fijo(df[c], df.foto_mes)
     for c in RESTAR_MODA:
         df[c] = df[c] - df.groupby("foto_mes")[c].transform(lambda v: v.mode().iloc[0])
@@ -309,6 +315,9 @@ CAMBIOS = {
     "params": {'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132},                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
     "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
     "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
+    "percentil_montos": False,      # todos los montos a percentil dentro del mes (E019: sólo 14)
+    "peso_mes": 1.0,                # cada mes de entrenamiento pesa r^(meses antes del último)
+    "peso_miembros": 1.0,           # peso de cada miembro en el promedio de puestos (el general pesa 1)
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -425,6 +434,9 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None):
         w = np.select([train.clase_ternaria == "BAJA+1", train.clase_ternaria == "BAJA+2"], [PESO_BAJA1, PESO_BAJA2], 1.0)
     if peso_fila is not None:  # enfoque 5
         w = w * peso_fila.reindex(train.index).fillna(1.0).to_numpy()
+    if CAMBIOS["peso_mes"] != 1.0:  # v4: r^(meses antes del último mes de entrenamiento)
+        atras = len(months) - 1 - np.searchsorted(np.asarray(months), train.foto_mes.to_numpy())
+        w = w * CAMBIOS["peso_mes"] ** atras
     # internet cambió de régimen: a igual actividad, tener internet >= 2 dos meses seguidos no subía la baja en 202104-05
     # (1-3% contra 2-6% del resto) y en 202106 la duplica (6-7% contra 2-4%). El promedio de los tres meses borra lo que
     # vale hoy, así que su efecto se aprende SÓLO del último mes con clase: en los meses anteriores de entrenamiento va
@@ -489,9 +501,9 @@ def general_canaritos(train: pd.DataFrame, cols: list, canaritos: int = 50, repe
 
 # ---------------------------------------------------------------- v4: modelos del ensamble
 
-def mezcla(*ps) -> np.ndarray:
-    """Promedio de los puestos relativos (0 a 1) de cada modelo: escalas distintas, mismo peso."""
-    return np.mean([pd.Series(p).rank(pct=True).to_numpy() for p in ps], axis=0)
+def mezcla(*ps, pesos=None) -> np.ndarray:
+    """Promedio de los puestos relativos (0 a 1) de cada modelo: escalas distintas, mismo peso salvo que se pida."""
+    return np.average([pd.Series(p).rank(pct=True).to_numpy() for p in ps], axis=0, weights=pesos)
 
 
 def xgb_general(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
@@ -878,7 +890,7 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
     otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
-        p = mezcla(p, *otros)
+        p = mezcla(p, *otros, pesos=[1.0] + [CAMBIOS["peso_miembros"]] * len(otros))
     if enfoque in (0, 5, 9):
         return p
     idx = np.flatnonzero(en_franja(p, len(p)))
