@@ -155,3 +155,45 @@ Dos ideas necesitan instalar algo que no está en la Mac y esperan el OK: H29 (`
     red) y volvió a su lugar en la cola. El vigente y H8 dan exactamente lo mismo que antes del cambio.
   - El código de H29 y H30 se agregó a `v3/train.py` entre los pasos 7 y 8; se comprobó que el vigente da exactamente
     las mismas probabilidades que antes.
+
+# v4: mejorar el modelo de la primera competencia (preregistro, 2026-10-29)
+
+**Pregunta.** ¿Se puede mejorar en plata el modelo de la primera competencia (E019: multiclase, CONTINUA al 20%,
+BAJA+1 a medio peso, puntaje P(BAJA+1) + P(BAJA+2), cuatro meses de entrenamiento) con datos de 2019? Lo pidió
+Emmanuel después de v3, que partía de la base de la cátedra y decidía por AUC. En 201908, el único mes que v3 y la
+primera competencia entrenan con los mismos meses, E019 tiene menos AUC que B0 (0,9083 contra 0,9113) pero más plata
+en la lista (210,4 contra 202,7 M).
+
+**Datos y métrica.**
+- **Decide:** la meseta del ensamble de semillas, en promedio sobre 201907, 201908 y 201909 (origen móvil: cada mes
+  se entrena con su ventana, m - 5 a m - 2, como en el aula; 201907 tiene tres meses con historia completa en lugar de
+  cuatro). Tres meses para decidir en lugar del único de v3, que no alcanzó para confirmar nada.
+- **Test:** 201910, sólo al final, para comparar con E019 y con v3. Ningún paso lo puntúa. 201911 y 201912 no se usan.
+- Se informan la lista al 3,3% y la AUC. La meseta mide cómo ordena el modelo en la zona del corte sin depender de
+  dónde se corta; por eso las reglas de corte no entran en v4.
+
+**Diseño.** El mismo loop que v3: `v4/arnes.py` fijo, un solo archivo editable (`v4/train.py`, que con sus valores
+por defecto es exactamente E019) y un interruptor por idea (`CAMBIOS`). La cola (`v4/cola.tsv`) tiene la predicción de
+cada idea escrita antes de correrla y va en ese orden. Cada paso: el vigente más un cambio, las 5 semillas de
+screening en los tres meses, comparado contra el vigente pareado por semilla.
+
+**Regla (fijada antes de correr).**
+- Agrega algo: pasa el screening si la meseta sube más de 1 M por mes, la diferencia por semilla supera 2 errores
+  estándar y gana en al menos 2 de los 3 meses. Lo que pasa se confirma con 10 semillas nuevas (bloque de
+  confirmación): queda si sube y la diferencia por semilla supera 2 errores estándar.
+- Saca algo: queda si no baja más de 1 M por mes y la diferencia por semilla no queda por debajo de −2 errores
+  estándar, en el screening y en la confirmación.
+- Lo que queda se commitea y pasa a ser el vigente.
+
+**Búsqueda de hiperparámetros** (`v4/hpo.py`): Optuna (TPE) sobre los parámetros del general, las rondas, el
+submuestreo y los pesos de BAJA+1 y BAJA+2, ordenada por la meseta media de los tres meses con las semillas del bloque
+de búsqueda (no se mezclan con las del loop). Lo que encuentra entra a la cola como un paso más y pasa por la misma
+regla con las semillas de screening.
+
+**Después de la cola:** se vuelven a probar sobre el vigente nuevo las ideas que quedaron cerca, y se suman ideas
+nuevas (cada una con su predicción antes de correr). Final: el vigente contra E019 en 201910, con las semillas del
+bloque final, y la ablación de lo que quedó.
+
+**Limitaciones.** Los tres meses de decisión se usan muchas veces: con muchos pasos, algo puede quedar por suerte del
+mes; la confirmación con semillas nuevas protege de la suerte de las semillas, no de la del mes. Por eso el test
+201910 queda sin mirar hasta el final. 201908 y 201909 ya se habían usado para elegir E019.

@@ -1,0 +1,19 @@
+id	orden	titulo	cambio	tipo	pred_meseta	fuente	porque	estado	actualizado
+V1	1	Ensamble con XGBoost	xgboost=True	agrega	+2.0	v3 H27 (+4,0 M de meseta en 201908); Chen y Guestrin 2016	otro algoritmo con los mismos datos se equivoca en otros clientes; el promedio de puestos ordena mejor la zona del corte		
+V2	2	Ensamble con el modelo de la cátedra (B0 + H1b)	catedra=True	agrega	+2.0	v3: FINAL0 empata la lista de E019 en 201910 entrenando con meses más viejos	dos modelos buenos y distintos (binaria sin submuestreo contra multiclase submuestreada): el ensamble junta lo mejor		
+V3	3	Franja: segunda etapa con cross-fitting	franja=1	agrega	+1.5	E034 (+1,8 M); la segunda etapa de la primera competencia	un modelo chico que sólo mira los clientes dudosos, aprendido fuera de muestra		
+V4	4	Franja: segunda etapa con canaritos	franja=2	agrega	+1.0	E035 (+1,5 M)	lo mismo, con sólo las variables que les ganan al ruido dentro de la franja		
+V5	5	Franja: meta-modelo de la multiclase y la binaria	franja=8	agrega	+1.0	propuesta del agente (nunca corrió)	en la franja, cómo combinar los dos puntajes lo aprende un modelo		
+V6	6	Franja: lambdarank	franja=4	agrega	+1.0	E037 (se cayó: más de 10.000 filas por consulta); Burges 2010	optimiza el orden dentro de la franja en lugar de la probabilidad		
+V7	7	Canaritos en el general	canaritos_general=True	agrega	+1.0	v3 H13 (+5,4 M de meseta, AUC −0,005); la primera competencia	sacar variables que no le ganan al ruido baja el sobreajuste donde se decide		
+V8	8	Franja: cascada sobre el 15% de arriba	franja=3	agrega	+0.8	E036 (+1,1 M)	un modelo más grande que sólo aprende de los de arriba		
+V9	9	Historia del resumen de tarjetas	historia_resumen=True	agrega	+0.5	v3 H17 (sacarla bajó la AUC 0,0019)	en v3 la historia del resumen sumaba; E019 la saca		
+V10	10	Franja: baja inminente	franja=7	agrega	+0.5	E040 (nunca corrió)	un modelo de BAJA+1 del mes siguiente, que usa las BAJA+1 ya conocidas de m - 1, reordena la franja		
+V11	11	Puntaje P(BAJA+2) + ½ P(BAJA+1)	puntaje_baja1=0.5	agrega	+0.5	propuesta del agente	sólo la BAJA+2 paga: la BAJA+1 debería pesar menos al ordenar		
+V12	12	Franja: el doble de peso a los difíciles	franja=5	agrega	+0.3	E038 (+0,7 M)	el general aprende más de los casos que caen cerca del corte		
+V13	13	Binaria BAJA+1 o BAJA+2	binaria=True	agrega	+0.0	E015, E020, E021 (empates); v3 H1b	en v3 lo único que quedó fue BAJA+1 como positivo; acá E019 ya la usa en la multiclase		
+V14	14	Sin la tendencia y el promedio de la cátedra	sin_fe_catedra=True	simplifica	+0.0	v3 H21 (empate)	si no suma, el modelo más simple		
+V15	15	Sin enmascarar internet en los meses viejos	sin_enmascarar_internet=True	simplifica	-0.5	la primera competencia (internet cambió de régimen en 2021)	en 2019 internet no cambia de régimen: quizás sobra		
+V16	16	Franja: logística de tendencia	franja=10	agrega	-0.3	propuesta del agente (nunca corrió)	un modelo lineal no se sobreajusta con pocas filas		
+V17	17	Franja: especialista de tendencia	franja=6	agrega	-0.5	E039 (−1,1 M)	ya perdió una vez		
+V18	18	Puntaje sólo P(BAJA+2)	puntaje_baja1=0.0	agrega	-1.0	propuesta del agente	ordenar sólo por la clase que paga; probablemente pierde señal		

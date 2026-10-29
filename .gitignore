@@ -8,3 +8,4 @@ datos/
 *.csv.gz
 .venv/
 v3/loop.log
+v4/loop.log
