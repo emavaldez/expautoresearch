@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-28 22:53",
+ "generado": "2026-10-29 00:45",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4236,7 +4236,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-10-28 22:53",
+   "actualizado": "2026-10-29 00:45",
    "experimentos": [
     "E033"
    ],
@@ -5367,7 +5367,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/B0/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H11",
@@ -5910,7 +5910,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H11/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H2",
@@ -6132,7 +6132,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H2/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H1b",
@@ -6354,7 +6354,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H1b/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H6",
@@ -6576,7 +6576,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H6/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H20",
@@ -6798,7 +6798,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H20/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H21",
@@ -7020,7 +7020,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H21/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H12",
@@ -7242,7 +7242,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H12/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H1",
@@ -7464,7 +7464,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H1/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H3",
@@ -7686,7 +7686,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H3/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H22",
@@ -7908,7 +7908,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H22/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H27",
@@ -8130,7 +8130,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H27/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H4",
@@ -8352,7 +8352,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H4/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H7",
@@ -8574,7 +8574,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H7/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H24",
@@ -8796,7 +8796,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H24-tarjeta/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H8",
@@ -9018,7 +9018,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H8/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H16",
@@ -9240,7 +9240,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H16/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H17",
@@ -9462,7 +9462,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H17/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H14",
@@ -9684,7 +9684,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H14/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H30",
@@ -9906,7 +9906,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H30/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H19",
@@ -10128,7 +10128,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H19/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H32",
@@ -10350,7 +10350,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H32/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H13",
@@ -10572,7 +10572,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H13/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H31",
@@ -10794,7 +10794,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H31/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H5",
@@ -11016,7 +11016,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H5/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H23",
@@ -11238,7 +11238,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H23/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H26",
@@ -11460,7 +11460,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H26/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H29",
@@ -11783,7 +11783,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H29/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28",
@@ -11804,7 +11804,7 @@
    "siguiente": "",
    "actualizado": "2026-10-28 21:09",
    "resultado": null,
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28c",
@@ -12026,7 +12026,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H28c/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28a",
@@ -12248,7 +12248,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H28a/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28b",
@@ -12470,7 +12470,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H28b/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28d",
@@ -12692,7 +12692,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H28d/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28f",
@@ -12914,7 +12914,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H28f/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H28e",
@@ -13136,7 +13136,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H28e/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H9",
@@ -13679,7 +13679,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H9/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H10",
@@ -14228,7 +14228,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H10/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H15",
@@ -14771,7 +14771,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H15/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H35",
@@ -15314,7 +15314,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H35/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H25",
@@ -15507,7 +15507,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H25/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H33",
@@ -15546,7 +15546,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H33/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H34",
@@ -15581,7 +15581,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H34/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H18",
@@ -15684,7 +15684,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H18/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H36",
@@ -15733,7 +15733,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H36/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H37",
@@ -15783,7 +15783,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H37/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   },
   {
    "id": "H38",
@@ -15833,7 +15833,7 @@
      "busqueda": "https://github.com/emavaldez/expautoresearch/blob/main/experimentos_v3/H38/busqueda.tsv"
     }
    },
-   "comentarios": 0
+   "comentarios": 1
   }
  ],
  "loop": [
