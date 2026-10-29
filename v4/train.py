@@ -306,10 +306,10 @@ CAMBIOS = {
     "canaritos_general": False,     # el general usa sólo las variables que les ganan a los canaritos
     "xgboost": False,               # ensamble con un XGBoost con los mismos datos
     "catedra": False,               # ensamble con un modelo al estilo B0 + H1b (binaria, sin submuestreo)
-    "params": None,                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
+    "params": {'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132},                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
     "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
     "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
-    "miembros": [{'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
+    "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
 
