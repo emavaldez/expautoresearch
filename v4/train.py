@@ -372,6 +372,11 @@ def le_ganan_al_ruido(tr: pd.DataFrame, cols: list, y: np.ndarray) -> list:
     """Variables de cols cuya ganancia media supera a la del mejor canarito, ordenadas de mayor a menor ganancia."""
     mes = int(tr.foto_mes.iloc[0])
     clave = (mes, len(tr), int(tr.numero_de_cliente.sum()), int(y.sum()), tuple(cols))  # el train exacto y sus columnas
+    with _CANDADO_CACHE:
+        return _le_ganan_al_ruido(tr, cols, y, mes, clave)
+
+
+def _le_ganan_al_ruido(tr, cols, y, mes, clave):
     if clave not in _ELEGIDAS:
         X = tr[cols].reset_index(drop=True)
         ruido = [f"canarito_{i}" for i in range(CANARITOS)]
@@ -473,12 +478,21 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, ob
 # ---------------------------------------------------------------- v4: canaritos en el general
 
 _GENERAL_ELEGIDAS = {}
+# Las cachés de abajo (canaritos, bases fuera de muestra) son de todas las semillas: con las semillas en hilos, la primera
+# que llega la calcula y las demás esperan. Sin esto las cinco la calculaban a la vez y LightGBM se cayó (segfault en
+# V31). Reentrante: fuera_de_muestra llama a base, que puede llamar a general_canaritos.
+_CANDADO_CACHE = threading.RLock()
 
 
 def general_canaritos(train: pd.DataFrame, cols: list, canaritos: int = 50, repeticiones: int = 3) -> list:
     """Variables del general cuya ganancia media (importancia "gain") supera a la del mejor de 50 canaritos (columnas al
     azar). Una vez por ventana de entrenamiento, con una semilla fija: no cambia con la semilla del modelo."""
     clave = (tuple(sorted(train.foto_mes.unique())), len(train), int(train.numero_de_cliente.sum()), len(cols))
+    with _CANDADO_CACHE:
+        return _general_canaritos(train, cols, clave, canaritos, repeticiones)
+
+
+def _general_canaritos(train, cols, clave, canaritos, repeticiones):
     if clave not in _GENERAL_ELEGIDAS:
         rng = np.random.default_rng(SEMILLA_OOF)
         t = train[(rng.random(len(train)) < UNDERSAMPLING) | (train.clase_ternaria != "CONTINUA").to_numpy()]
@@ -629,6 +643,11 @@ def base_fuera_de_muestra(train: pd.DataFrame) -> dict:
     """
     meses = meses_de_entrenamiento(train)
     clave = (tuple(meses), len(train), int(train.numero_de_cliente.sum()))
+    with _CANDADO_CACHE:
+        return _base_fuera_de_muestra(train, meses, clave)
+
+
+def _base_fuera_de_muestra(train, meses, clave):
     if clave not in _FUERA:
         out = {}
         if meses:
@@ -701,6 +720,11 @@ def _clave(train):
 def fuera_de_muestra(train: pd.DataFrame, objetivo="multiclase") -> pd.Series:
     """Probabilidad de cada fila de entrenamiento según el general entrenado con los otros meses de la ventana."""
     clave = _clave(train) + (objetivo,)
+    with _CANDADO_CACHE:
+        return _fuera_de_muestra(train, objetivo, clave)
+
+
+def _fuera_de_muestra(train, objetivo, clave):
     if clave not in _OOF:
         p = pd.Series(np.nan, index=train.index)
         for m in sorted(train.foto_mes.unique()):
