@@ -225,7 +225,7 @@ CAMBIOS = {
     "puntaje_baja1": 1.0,           # puntaje = P(BAJA+2) + a · P(BAJA+1)
     "binaria": False,               # BAJA+1 o BAJA+2 contra CONTINUA, en lugar de multiclase
     "historia_resumen": False,      # la historia (lags, deltas, razones) del resumen de tarjetas entra
-    "sin_fe_catedra": False,        # sin tendencia y promedio de 3 meses de la cátedra
+    "sin_fe_catedra": True,        # sin tendencia y promedio de 3 meses de la cátedra
     "sin_enmascarar_internet": False,
     "canaritos_general": False,     # el general usa sólo las variables que les ganan a los canaritos
     "xgboost": False,               # ensamble con un XGBoost con los mismos datos
