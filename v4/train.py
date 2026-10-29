@@ -156,7 +156,11 @@ def historia(x, l1, l2):
 def make_features(df: pd.DataFrame) -> pd.DataFrame:
     """Recibe todas las filas de meses <= mes a puntuar (sin clase). Una fila de salida por fila de entrada."""
     magnitudes = [c for c in df.columns if es_magnitud(c)]
+    agregar_combinadas(df)
     df = lags_y_deltas(df)
+    resumenes = apagadas_y_bajas(df, magnitudes)
+    if resumenes:
+        df = pd.concat([df, pd.DataFrame(resumenes, index=df.index)], axis=1)
     # Se calcula fila a fila a partir de los lags: sólo mira hacia atrás. Las columnas nuevas no llevan lag ni delta.
     # float32: son 768 columnas más sobre ~980.000 filas y al árbol le sobran 7 dígitos.
     hist = {}
@@ -165,6 +169,75 @@ def make_features(df: pd.DataFrame) -> pd.DataFrame:
             hist[f"{c}_{k}"] = a.astype("float32")
     df = pd.concat([df, pd.DataFrame(hist, index=df.index)], axis=1)
     return df if CAMBIOS["sin_fe_catedra"] else fe_historico_catedra(df)
+
+
+# ---------------------------------------------------------------- v4: variables propuestas por el agente en v3 (H28)
+
+def _suma(df, cols):
+    return df[list(cols)].sum(axis=1, min_count=1).to_numpy(np.float32)
+
+
+def agregar_combinadas(df: pd.DataFrame) -> None:
+    """a, b, e, f: columnas nuevas del mes, antes de la historia (así llevan lags y deltas como las crudas). Ninguna
+    empieza con m o c, así que no llevan razones ni ventana."""
+    letras = CAMBIOS["agente"]
+    if not set(letras) & set("abef"):
+        return
+    nuevas = {}
+    if "e" in letras:  # antes de sumar columnas, para contar sólo las crudas
+        nuevas["n_faltantes"] = df[[c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]].isna().sum(
+            axis=1).to_numpy(np.float32)
+    tot = {
+        "tc_consumo": _suma(df, ["mtarjeta_visa_consumo", "mtarjeta_master_consumo"]),
+        "tc_transacciones": _suma(df, ["ctarjeta_visa_transacciones", "ctarjeta_master_transacciones"]),
+        "tc_limite": _suma(df, ["Visa_mlimitecompra", "Master_mlimitecompra"]),
+        "tc_saldo": _suma(df, ["Visa_msaldototal", "Master_msaldototal"]),
+        "tc_pagado": _suma(df, ["Visa_mpagado", "Master_mpagado"]),
+        "tc_minimo": _suma(df, ["Visa_mpagominimo", "Master_mpagominimo"]),
+        "prestamos_total": _suma(df, ["mprestamos_personales", "mprestamos_prendarios", "mprestamos_hipotecarios"]),
+        "inversiones_total": _suma(df, ["mplazo_fijo_dolares", "mplazo_fijo_pesos", "minversion1_pesos",
+                                        "minversion1_dolares", "minversion2"]),
+        "transacciones_total": _suma(df, ["ctarjeta_debito_transacciones", "ctarjeta_visa_transacciones",
+                                          "ctarjeta_master_transacciones", "chomebanking_transacciones",
+                                          "ccajas_transacciones", "catm_trx", "catm_trx_other", "cmobile_app_trx"]),
+    }
+    if "a" in letras:
+        nuevas.update(tot)
+    if "b" in letras:
+        prod = df["cproductos"].to_numpy(np.float32)
+        edad = df["cliente_edad"].to_numpy(np.float32)
+        nuevas.update({
+            "tc_uso_limite": razon(tot["tc_saldo"], tot["tc_limite"]),
+            "tc_pago_sobre_saldo": razon(tot["tc_pagado"], tot["tc_saldo"]),
+            "saldo_por_producto": razon(df["mcuentas_saldo"].to_numpy(np.float32), prod),
+            "rentabilidad_por_producto": razon(df["mrentabilidad"].to_numpy(np.float32), prod),
+            "antiguedad_sobre_edad": razon(df["cliente_antiguedad"].to_numpy(np.float32), edad * 12),
+        })
+    if "f" in letras:
+        digital = _suma(df, ["chomebanking_transacciones", "cmobile_app_trx"])
+        nuevas["parte_digital"] = razon(digital, tot["transacciones_total"])
+    for c, v in nuevas.items():
+        df[c] = v
+
+
+def apagadas_y_bajas(X: pd.DataFrame, magnitudes: list[str]) -> dict:
+    """c y d: resúmenes por cliente sobre todos los montos y conteos (el árbol no puede contar columnas)."""
+    letras = CAMBIOS["agente"]
+    if not set(letras) & set("cd"):
+        return {}
+    M = X[magnitudes].to_numpy(np.float32)
+    L1 = X[[f"{c}_lag1" for c in magnitudes]].to_numpy(np.float32)
+    L2 = X[[f"{c}_lag2" for c in magnitudes]].to_numpy(np.float32)
+    out = {}
+    if "c" in letras:
+        out["n_apagadas1"] = ((L1 > 0) & (M == 0)).sum(axis=1).astype(np.float32)
+        out["n_apagadas2"] = ((L2 > 0) & (M == 0)).sum(axis=1).astype(np.float32)
+        out["n_en_cero"] = (M == 0).sum(axis=1).astype(np.float32)
+    if "d" in letras:
+        for k, L in ((1, L1), (2, L2)):
+            ok = ~np.isnan(M) & ~np.isnan(L)
+            out[f"frac_bajaron{k}"] = razon(((M < L) & ok).sum(axis=1).astype(np.float32), ok.sum(axis=1).astype(np.float32))
+    return out
 
 
 # ---------------------------------------------------------------- FE histórico de la cátedra: tendencia y promedio de 3 meses
@@ -231,6 +304,9 @@ CAMBIOS = {
     "xgboost": False,               # ensamble con un XGBoost con los mismos datos
     "catedra": False,               # ensamble con un modelo al estilo B0 + H1b (binaria, sin submuestreo)
     "params": None,                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
+    "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
+    "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
+    "miembros": [],                 # el general con otras constantes (ver con()), cada uno un miembro más del ensamble
 }
 
 
@@ -448,7 +524,12 @@ def modelo_catedra(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.nd
     return m.predict(score[cols].to_numpy(np.float32))
 
 
-ENSAMBLE = {"xgboost": xgb_general, "catedra": modelo_catedra}
+def binaria_general(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
+    """El general como binaria (BAJA+1 o BAJA+2 contra CONTINUA), con todo lo demás igual (E027)."""
+    return base(train, score, seed, objetivo="binaria")
+
+
+ENSAMBLE = {"xgboost": xgb_general, "catedra": modelo_catedra, "binaria_ensamble": binaria_general}
 
 
 def logit(p: np.ndarray) -> np.ndarray:
@@ -717,7 +798,48 @@ def puntaje_franja(enfoque, train, score, seed, p, idx, intermedio=None):
         pb = base(train, score.iloc[idx], seed, objetivo="binaria")
         Xs = np.column_stack([logit(p[idx]), logit(pb), score.iloc[idx][extra].to_numpy(np.float64)])
         return m.predict(Xs)
+    if enfoque == 11:  # TabPFN (v3 H30): aprende la franja con VARIABLES_2 y el logit de la base, en un proceso aparte
+        t, y, l = franja_train(train, poof)
+        return tabpfn_puntaje(t[VARIABLES_2].to_numpy(np.float32), logit(l), y.astype(int),
+                              score.iloc[idx][VARIABLES_2].to_numpy(np.float32), logit(p[idx]), seed)
     raise ValueError(enfoque)
+
+
+# TabPFN usa torch, que choca con LightGBM en el mismo proceso en macOS (cada uno trae su OpenMP): corre aparte y los
+# datos van y vuelven por archivos .npy.
+TABPFN_HIJO = r"""
+import sys
+import numpy as np
+import torch
+from tabpfn import TabPFNClassifier
+d, seed = sys.argv[1], int(sys.argv[2])
+m = TabPFNClassifier(device="mps" if torch.backends.mps.is_available() else "cpu", random_state=seed)
+m.fit(np.load(f"{d}/X.npy"), np.load(f"{d}/y.npy"))
+np.save(f"{d}/p.npy", m.predict_proba(np.load(f"{d}/Z.npy"))[:, 1])
+"""
+
+
+def tabpfn_puntaje(M, l, y, Z, lz, seed, max_filas=10_000):
+    """Entrena TabPFN con hasta 10.000 filas de la franja (todas las BAJA+2 y CONTINUA al azar) y puntúa Z."""
+    import shutil
+    import subprocess
+    import sys
+    import tempfile
+    from pathlib import Path
+    import config
+    rng = np.random.default_rng(int(seed))
+    pos, neg = np.flatnonzero(y == 1), np.flatnonzero(y == 0)
+    filas = np.concatenate([pos, rng.choice(neg, min(len(neg), max_filas - len(pos)), replace=False)])
+    (config.CACHE / "v4").mkdir(parents=True, exist_ok=True)
+    d = Path(tempfile.mkdtemp(prefix="tabpfn_", dir=config.CACHE / "v4"))
+    try:
+        np.save(d / "X.npy", np.column_stack([M[filas], l[filas]]).astype(np.float32))
+        np.save(d / "y.npy", y[filas])
+        np.save(d / "Z.npy", np.column_stack([Z, lz]).astype(np.float32))
+        subprocess.run([sys.executable, "-c", TABPFN_HIJO, str(d), str(int(seed))], check=True)
+        return np.load(d / "p.npy")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
 
 
 def corte(prob, train, score):
@@ -751,6 +873,7 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
     enfoque = CAMBIOS["franja"]
     p = base(train, score, seed, peso_fila=peso_franja(train) if enfoque == 5 else None)
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
+    otros += [con(c, lambda: base(train, score, seed)) for c in CAMBIOS["miembros"]]
     if otros:
         p = mezcla(p, *otros)
     if enfoque in (0, 5, 9):
@@ -771,6 +894,22 @@ def aplicar(params: dict) -> None:
     PESO_BAJA1 = float(p.pop("peso_baja1", PESO_BAJA1))
     PESO_BAJA2 = float(p.pop("peso_baja2", PESO_BAJA2))
     PARAMS.update(p)
+
+
+def con(cambios: dict, f):
+    """Corre f con otras constantes y deja las de antes: "meses" va a TRAIN_MONTHS_BACK, lo demás a aplicar()."""
+    g = globals()
+    nombres = ("NUM_ROUNDS", "UNDERSAMPLING", "PESO_BAJA1", "PESO_BAJA2", "TRAIN_MONTHS_BACK")
+    antes, params = {k: g[k] for k in nombres}, dict(PARAMS)
+    c = dict(cambios)
+    g["TRAIN_MONTHS_BACK"] = int(c.pop("meses", TRAIN_MONTHS_BACK))
+    aplicar(c)
+    try:
+        return f()
+    finally:
+        g.update(antes)
+        PARAMS.clear()
+        PARAMS.update(params)
 
 
 if CAMBIOS["params"]:

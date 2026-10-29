@@ -1,0 +1,19 @@
+paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	meses_ganados	d_lista	d_auc	decision	vigente	segundos	fecha
+1	V1	xgboost=True	agrega	+2.0	screening	-2924098	-39213	928973	2/5	0	-366667	0.0006	se descarta	V0	1500	2026-10-29 01:41
+2	V2	catedra=True	agrega	+2.0	screening	-2473948	-1413678	677887	1/5	1	-1833333	0.00214	se descarta	V0	898	2026-10-29 01:56
+3	V3	franja=1	agrega	+1.5	screening	633140	257759	485600	3/5	2	-733333	8e-05	se descarta	V0	985	2026-10-29 02:13
+4	V4	franja=2	agrega	+1.0	screening	163651	296776	520654	2/5	2	-366667	5e-05	se descarta	V0	1014	2026-10-29 02:29
+5	V5	franja=8	agrega	+1.0	screening	-1381332	-472186	383336	1/5	0	-1100000	6e-05	se descarta	V0	1311	2026-10-29 02:51
+6	V6	franja=4	agrega	+1.0	screening	-2102984	-3366402	1033110	0/5	1	366667	-0.00036	se descarta	V0	1035	2026-10-29 03:09
+7	V7	canaritos_general=True	agrega	+1.0	screening	-2906908	-3565125	1730701	1/5	0	-2933333	-0.0032	se descarta	V0	456	2026-10-29 03:16
+8	V8	franja=3	agrega	+0.8	screening	-758250	-517571	507639	3/5	1	366667	0.00012	se descarta	V0	1114	2026-10-29 03:35
+9	V9	historia_resumen=True	agrega	+0.5	screening	-2249857	-2820586	1094397	0/5	0	-366667	0.00064	se descarta	V0	3434	2026-10-29 04:32
+10	V10	franja=7	agrega	+0.5	screening	-4048603	-2249331	980077	1/5	0	-1466667	-0.00019	se descarta	V0	2296	2026-10-29 05:10
+11	V11	puntaje_baja1=0.5	agrega	+0.5	screening	-561910	-418018	455298	2/5	1	1833333	0.00018	se descarta	V0	1268	2026-10-29 05:31
+12	V12	franja=5	agrega	+0.3	screening	-1550835	-705138	891093	2/5	1	1466667	-6e-05	se descarta	V0	2035	2026-10-29 06:05
+13	V13	binaria=True	agrega	+0.0	screening	-4022246	-1835816	888436	0/5	0	-1466667	0.00063	se descarta	V0	465	2026-10-29 06:13
+14	V14	sin_fe_catedra=True	simplifica	+0.0	confirmacion	513585	-595452	543934	3/10	2	-1466667	3e-05	queda	V0	6505	2026-10-29 08:01
+15	V15	sin_enmascarar_internet=True	simplifica	-0.5	screening	-1312159	-748750	620585	2/5	0	-2566667	-0.00015	se descarta	V14	1304	2026-10-29 08:23
+16	V16	franja=10	agrega	-0.3	screening	-2960879	-2674102	1186755	1/5	1	-3300000	-0.00045	se descarta	V14	2215	2026-10-29 09:00
+17	V17	franja=6	agrega	-0.5	screening	-1364302	-1429273	638000	1/5	2	-1100000	-0.0003	se descarta	V14	2560	2026-10-29 09:43
+18	V18	puntaje_baja1=0.0	agrega	-1.0	screening	-6168847	-5493407	782006	0/5	0	-6233333	-0.00072	se descarta	V14	1473	2026-10-29 10:07

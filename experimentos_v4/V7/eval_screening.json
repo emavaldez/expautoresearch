@@ -1,0 +1,176 @@
+{
+ "201907": {
+  "train_meses": [
+   201903,
+   201904,
+   201905
+  ],
+  "filas_train": 378501,
+  "clientes": 129853,
+  "baja2": 656,
+  "columnas": 1648,
+  "aviso": "pidi\u00f3 4 meses de entrenamiento y hay 3 con historia completa en la ventana",
+  "semillas": {
+   "800011": {
+    "ganancia": 294662500.0,
+    "envios": 4285,
+    "meseta": 301112930.1745636,
+    "envios_meseta": 5786,
+    "auc": 0.9044714601562334
+   },
+   "800029": {
+    "ganancia": 292462500.0,
+    "envios": 4285,
+    "meseta": 297220548.62842894,
+    "envios_meseta": 4704,
+    "auc": 0.90442402833676
+   },
+   "800053": {
+    "ganancia": 280362500.0,
+    "envios": 4285,
+    "meseta": 287449339.15211964,
+    "envios_meseta": 3266,
+    "auc": 0.9032608278584585
+   },
+   "800057": {
+    "ganancia": 295762500.0,
+    "envios": 4285,
+    "meseta": 295624588.5286783,
+    "envios_meseta": 5016,
+    "auc": 0.9046148470184594
+   },
+   "800077": {
+    "ganancia": 288062500.0,
+    "envios": 4285,
+    "meseta": 294997780.54862845,
+    "envios_meseta": 6036,
+    "auc": 0.9039823224676553
+   }
+  },
+  "ensamble": {
+   "ganancia": 290262500.0,
+   "envios": 4285,
+   "aciertos": 371,
+   "meseta": 301335673.3167082,
+   "envios_meseta": 3338,
+   "auc": 0.905245707915894
+  },
+  "segundos": 139.5
+ },
+ "201908": {
+  "train_meses": [
+   201903,
+   201904,
+   201905,
+   201906
+  ],
+  "filas_train": 506871,
+  "clientes": 131775,
+  "baja2": 543,
+  "columnas": 1648,
+  "semillas": {
+   "800011": {
+    "ganancia": 204902500.0,
+    "envios": 4349,
+    "meseta": 206592549.8753117,
+    "envios_meseta": 3985,
+    "auc": 0.9063365224333283
+   },
+   "800029": {
+    "ganancia": 207102500.0,
+    "envios": 4349,
+    "meseta": 212262967.5810474,
+    "envios_meseta": 3860,
+    "auc": 0.9097377430739392
+   },
+   "800053": {
+    "ganancia": 199402500.0,
+    "envios": 4349,
+    "meseta": 207500049.8753117,
+    "envios_meseta": 3472,
+    "auc": 0.9052035844579075
+   },
+   "800057": {
+    "ganancia": 207102500.0,
+    "envios": 4349,
+    "meseta": 212995180.79800498,
+    "envios_meseta": 3623,
+    "auc": 0.9070783868687644
+   },
+   "800077": {
+    "ganancia": 206002500.0,
+    "envios": 4349,
+    "meseta": 207063341.6458853,
+    "envios_meseta": 3680,
+    "auc": 0.9076771184587328
+   }
+  },
+  "ensamble": {
+   "ganancia": 210402500.0,
+   "envios": 4349,
+   "aciertos": 300,
+   "meseta": 211203428.9276808,
+   "envios_meseta": 4390,
+   "auc": 0.9084976466684
+  },
+  "segundos": 158.3
+ },
+ "201909": {
+  "train_meses": [
+   201904,
+   201905,
+   201906,
+   201907
+  ],
+  "filas_train": 511102,
+  "clientes": 133419,
+  "baja2": 615,
+  "columnas": 1648,
+  "semillas": {
+   "800011": {
+    "ganancia": 256217500.0,
+    "envios": 4403,
+    "meseta": 264293036.15960097,
+    "envios_meseta": 3207,
+    "auc": 0.9074034832920842
+   },
+   "800029": {
+    "ganancia": 255117500.0,
+    "envios": 4403,
+    "meseta": 264682905.23690772,
+    "envios_meseta": 2682,
+    "auc": 0.9091715206932498
+   },
+   "800053": {
+    "ganancia": 261717500.0,
+    "envios": 4403,
+    "meseta": 264330274.31421447,
+    "envios_meseta": 3944,
+    "auc": 0.907270963285218
+   },
+   "800057": {
+    "ganancia": 251817500.0,
+    "envios": 4403,
+    "meseta": 260556053.6159601,
+    "envios_meseta": 3059,
+    "auc": 0.9084984890013353
+   },
+   "800077": {
+    "ganancia": 265017500.0,
+    "envios": 4403,
+    "meseta": 267949781.7955112,
+    "envios_meseta": 3445,
+    "auc": 0.9070252377548624
+   }
+  },
+  "ensamble": {
+   "ganancia": 261717500.0,
+   "envios": 4403,
+   "aciertos": 348,
+   "meseta": 267238073.5660848,
+   "envios_meseta": 2703,
+   "auc": 0.908982006125293
+  },
+  "segundos": 157.6
+ }
+}

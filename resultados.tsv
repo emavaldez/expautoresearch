@@ -39,3 +39,4 @@ E036	2026-10-28 16:10	E23	franja: cascada, un modelo más grande sobre el 15% de
 E037	2026-10-28 16:20	E23	franja: lambdarank, optimiza el orden dentro de la franja							601.5	error	E019
 E038	2026-10-28 16:39	E23	franja: el doble de peso a los casos difíciles (los de la franja)	252376667	257081841	0.9158	733333	1/3		1101.8	descartado	E019
 E039	2026-10-28 16:58	E23	franja: especialista con sólo variables de tendencia	250543333	253732488	0.9151	-1100000	2/3		1130.7	descartado	E019
+E041	2026-10-29 01:03		E019 medido de nuevo con los ids corregidos	253110000	257829942	0.9155	1466667	2/3		650.8	descartado	E019
