@@ -319,6 +319,7 @@ CAMBIOS = {
     "percentil_montos": False,      # todos los montos a percentil dentro del mes (E019: sólo 14)
     "peso_mes": 1.0,                # cada mes de entrenamiento pesa r^(meses antes del último)
     "peso_miembros": 1.0,           # peso de cada miembro en el promedio de puestos (el general pesa 1)
+    "sacar": (),                    # sufijos de las familias de variables que no ve ningún modelo
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -425,7 +426,7 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None):
     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
     train = train[train.foto_mes.isin(months)]
     # Columnas: todas menos la historia del resumen de tarjetas (ver historia_de_resumen); el FE de la cátedra lo ve sólo el general.
-    cols = [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)]  # P3: sin foto_mes
+    cols = _cols(train)  # P3: sin foto_mes
     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
     # igual sólo mira el último mes con clase, que el enmascarado no toca.
     elegidas = general_canaritos(train, cols) if CAMBIOS["canaritos_general"] else None
@@ -450,7 +451,7 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None):
     # Va junto con la quita de la historia del resumen porque no se pisan: aquel filtro sólo mira Visa_*/Master_* y acá
     # quedan las 5 columnas de internet (cruda, 2 lags, 2 deltas). El assert es para que un cambio de nombres no deje
     # el enmascarado vacío sin avisar (el modelo entrenaría igual, con internet promediado en los tres meses).
-    internet = [c for c in cols if c.startswith("internet")]
+    internet = [c for c in train.columns if c.startswith("internet")]
     assert len(internet) == 5, f"se esperaban 5 columnas de internet y hay {internet}"
     # En 2019 el valor mayoritario es 1 (no 0, como en 2021): la variable y sus lags van a 1 y los deltas a 0.
     if not CAMBIOS["sin_enmascarar_internet"]:
@@ -769,7 +770,8 @@ def reordenar(p, idx, s_nuevo):
 
 
 def _cols(train):
-    return [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)]
+    return [c for c in train.columns if c not in ("clase_ternaria", "numero_de_cliente", "foto_mes") and not historia_de_resumen(c)
+            and not c.endswith(CAMBIOS["sacar"])]
 
 
 def _lgb(X, y, params, rondas, seed, init=None, grupo=None):

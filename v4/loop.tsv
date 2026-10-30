@@ -41,3 +41,5 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 40	V38	puntaje_baja1=0.0	agrega	+0.0	screening	-5091592	-3153804	620111	0/5	0	-6600000	-0.00083	se descarta	B2	6754	2026-10-30 01:18
 41	V39	xgboost=True	agrega	+0.3	screening	-4180800	-2406508	419677	0/5	0	-4766667	-0.00048	se descarta	B2	8232	2026-10-30 03:35
 42	V40	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'extra_trees': True}	agrega	+0.3	screening	-3138223	-537052	714980	2/5	0	-2200000	-0.00139	se descarta	B2	3773	2026-10-30 04:38
+43	V41	franja=2	agrega	+0.0	screening	-2332128	-245260	527218	2/5	1	-2933333	1e-05	se descarta	B2	14893	2026-10-30 08:49
+44	V42	puntaje_baja1=1.5	agrega	+0.3	screening	-2013901	-332917	639361	2/5	0	-733333	-0.00025	se descarta	B2	4951	2026-10-30 10:11

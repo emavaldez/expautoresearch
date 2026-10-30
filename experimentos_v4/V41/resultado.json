@@ -1,0 +1,74 @@
+{
+ "id": "V41",
+ "titulo": "Franja: segunda etapa con canaritos (otra vez, con la franja de B2)",
+ "cambio": "franja=2",
+ "tipo": "agrega",
+ "paso": 43,
+ "vigente": "B2",
+ "pred_meseta": "+0.0",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 14893,
+ "fecha": "2026-10-30 08:49",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 268537728.5951787,
+   "ganancia": 265127500.0,
+   "auc": 0.9141358886570644
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -2332128.013300071,
+    "por_mes": {
+     "201907": -5858734.413965106,
+     "201908": 1277412.7182044983,
+     "201909": -2415062.3441396058
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -245259.76724853908,
+     "se": 527218.2494577024,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -2933333.3333333335,
+    "por_mes": {
+     "201907": -4400000.0,
+     "201908": 0.0,
+     "201909": -4400000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -880000.0,
+     "se": 974257.5520763376,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 7.763603372179517e-06,
+    "por_mes": {
+     "201907": -0.0003004487191708982,
+     "201908": 0.00023448274081283582,
+     "201909": 8.925678847460095e-05
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 7.947032152713826e-05,
+     "se": 9.953857943509421e-06,
+     "ganadas": 5,
+     "n": 5
+    }
+   }
+  }
+ }
+}
