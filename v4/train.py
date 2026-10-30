@@ -32,6 +32,7 @@ Qué cambió para estos datos (2019 en lugar de 2021), sin tocar la lógica:
 """
 import importlib.util
 import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import lightgbm as lgb
 import numpy as np
@@ -713,6 +714,8 @@ FRANJA_REL = (0.6, 3.0)
 SEMILLA_OOF = 800011
 TENDENCIA = ("_delta1", "_delta2", "_ratiolag1", "_ratioavg3", "_ratiomax3", "_tend3", "_min3", "_max3", "_avg3")
 _OOF = {}
+# Aparte de _CANDADO_CACHE: los meses se entrenan en hilos que pueden necesitar aquél (canaritos del general).
+_CANDADO_OOF = threading.RLock()
 
 
 def _clave(train):
@@ -722,16 +725,22 @@ def _clave(train):
 def fuera_de_muestra(train: pd.DataFrame, objetivo="multiclase") -> pd.Series:
     """Probabilidad de cada fila de entrenamiento según el general entrenado con los otros meses de la ventana."""
     clave = _clave(train) + (objetivo,)
-    with _CANDADO_CACHE:
+    with _CANDADO_OOF:
         return _fuera_de_muestra(train, objetivo, clave)
 
 
 def _fuera_de_muestra(train, objetivo, clave):
     if clave not in _OOF:
-        p = pd.Series(np.nan, index=train.index)
-        for m in sorted(train.foto_mes.unique()):
+        def uno(m):
             f = (train.foto_mes == m).to_numpy()
-            p[f] = base(train[~f], train[f].drop(columns=["clase_ternaria"]), SEMILLA_OOF, objetivo=objetivo)
+            return f, base(train[~f], train[f].drop(columns=["clase_ternaria"]), SEMILLA_OOF, objetivo=objetivo)
+
+        meses = sorted(train.foto_mes.unique())
+        p = pd.Series(np.nan, index=train.index)
+        # En paralelo: la calcula la primera semilla que llega y las demás esperan sin hacer nada.
+        with ThreadPoolExecutor(max_workers=len(meses)) as hilos:
+            for f, v in hilos.map(uno, meses):
+                p[f] = v
         _OOF[clave] = p
     return _OOF[clave]
 
