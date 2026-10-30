@@ -303,7 +303,7 @@ PESO_BAJA2 = 1.0  # v4: peso de las BAJA+2 (lo mueve la búsqueda)
 
 # v4: un interruptor por idea (v4/cola.tsv). Los valores de acá son E019; el loop cambia uno por paso.
 CAMBIOS = {
-    "franja": 0,                    # V1-V10: enfoque para reordenar la franja dudosa (0 = no se toca)
+    "franja": 1,                    # V1-V10: enfoque para reordenar la franja dudosa (0 = no se toca)
     "puntaje_baja1": 1.0,           # puntaje = P(BAJA+2) + a · P(BAJA+1)
     "binaria": False,               # BAJA+1 o BAJA+2 contra CONTINUA, en lugar de multiclase
     "historia_resumen": False,      # la historia (lags, deltas, razones) del resumen de tarjetas entra
@@ -313,7 +313,7 @@ CAMBIOS = {
     "xgboost": False,               # ensamble con un XGBoost con los mismos datos
     "catedra": False,               # ensamble con un modelo al estilo B0 + H1b (binaria, sin submuestreo)
     "params": {'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132},                 # hiperparámetros de una búsqueda (v4/hpo.py): ver aplicar()
-    "franja_params": None,          # parámetros de la franja de una búsqueda (v4/hpo_franja.py): ver aplicar_franja()
+    "franja_params": {'franja_desde': 0.5600014111274607, 'franja_hasta': 3.5553427460608167, 'learning_rate': 0.07447262553981542, 'num_leaves': 7, 'min_data_in_leaf': 599, 'feature_fraction': 0.2705345015055787, 'lambda_l2': 89.53643923682695, 'rondas': 176, 'peso_base': 1.0477883025328396},          # parámetros de la franja de una búsqueda (v4/hpo_franja.py): ver aplicar_franja()
     "agente": "",                   # variables del agente de v3 (H28): letras de "abcdef"
     "binaria_ensamble": False,      # ensamble con la binaria BAJA+1 o BAJA+2 (E027)
     "percentil_montos": False,      # todos los montos a percentil dentro del mes (E019: sólo 14)
