@@ -152,7 +152,8 @@ def historia(x, l1, l2):
     # los montos traen centavos: se redondea para que lo que da 0 sea 0 exacto y no un resto de punto flotante
     prom = razon(np.nansum(v, axis=0).round(2), (~np.isnan(v)).sum(axis=0))
     maxi = np.fmax.reduce(v)  # fmax y fmin saltean los NaN
-    return {
+    orden2 = {"ratiolag2": razon(x, l2), "ratio12": razon(l1, l2)} if CAMBIOS["razones2"] else {}
+    return {**orden2,
         # razones sin escala: un árbol no las arma solo y no se corren con la inflación
         "ratiolag1": razon(x, l1),
         "ratioavg3": razon(x, prom),
@@ -321,11 +322,14 @@ CAMBIOS = {
     "peso_mes": 1.0,                # cada mes de entrenamiento pesa r^(meses antes del último)
     "peso_miembros": 1.0,           # peso de cada miembro en el promedio de puestos (el general pesa 1)
     "sacar": (),                    # sufijos de las familias de variables que no ve ningún modelo
+    "razones2": False,              # razones de orden 2: x / lag2 y lag1 / lag2
+    "semillas_oof": 1,              # semillas que promedia la base fuera de muestra de la franja
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
 
-HISTORIA = tuple(f"_{s}" for s in ("lag1", "delta1", "lag2", "delta2", "ratiolag1", "ratioavg3", "avg3", "min3", "max3", "ratiomax3"))
+HISTORIA = tuple(f"_{s}" for s in ("lag1", "delta1", "lag2", "delta2", "ratiolag1", "ratioavg3", "avg3", "min3", "max3", "ratiomax3",
+                                    "ratiolag2", "ratio12"))
 
 
 def historia_de_resumen(c: str) -> bool:
@@ -731,16 +735,18 @@ def fuera_de_muestra(train: pd.DataFrame, objetivo="multiclase") -> pd.Series:
 
 def _fuera_de_muestra(train, objetivo, clave):
     if clave not in _OOF:
-        def uno(m):
+        def uno(ms):
+            m, s = ms
             f = (train.foto_mes == m).to_numpy()
-            return f, base(train[~f], train[f].drop(columns=["clase_ternaria"]), SEMILLA_OOF, objetivo=objetivo)
+            return f, base(train[~f], train[f].drop(columns=["clase_ternaria"]), s, objetivo=objetivo)
 
-        meses = sorted(train.foto_mes.unique())
-        p = pd.Series(np.nan, index=train.index)
+        semillas = [SEMILLA_OOF + k for k in range(CAMBIOS["semillas_oof"])]
+        tareas = [(m, s) for m in sorted(train.foto_mes.unique()) for s in semillas]
+        p = pd.Series(0.0, index=train.index)  # todo mes es de algún pliegue: no queda ninguna fila en cero
         # En paralelo: la calcula la primera semilla que llega y las demás esperan sin hacer nada.
-        with ThreadPoolExecutor(max_workers=len(meses)) as hilos:
-            for f, v in hilos.map(uno, meses):
-                p[f] = v
+        with ThreadPoolExecutor(max_workers=min(len(tareas), 12)) as hilos:
+            for f, v in hilos.map(uno, tareas):
+                p[f] += v / len(semillas)
         _OOF[clave] = p
     return _OOF[clave]
 
