@@ -43,3 +43,8 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 42	V40	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'extra_trees': True}	agrega	+0.3	screening	-3138223	-537052	714980	2/5	0	-2200000	-0.00139	se descarta	B2	3773	2026-10-30 04:38
 43	V41	franja=2	agrega	+0.0	screening	-2332128	-245260	527218	2/5	1	-2933333	1e-05	se descarta	B2	14893	2026-10-30 08:49
 44	V42	puntaje_baja1=1.5	agrega	+0.3	screening	-2013901	-332917	639361	2/5	0	-733333	-0.00025	se descarta	B2	4951	2026-10-30 10:11
+45	B3	franja_params={'franja_desde': 0.4439775502637413, 'franja_hasta': 3.6704581693426626, 'learning_rate': 0.06296393343471367, 'num_leaves': 4, 'min_data_in_leaf': 742, 'feature_fraction': 0.2782757110492038, 'lambda_l2': 0.5006752178558876, 'rondas': 59, 'peso_base': 0.1725214280280426, 'baja1': 'negativa', 'init': True}	agrega	+0.3	screening	844339	805414	747348	4/5	2	-733333	0.00017	se descarta	B2	4028	2026-10-30 11:25
+46	V43	sacar=('_lag1', '_lag2')	agrega	+0.3	screening	-1132666	411170	588651	3/5	1	-733333	-0.00021	se descarta	B2	3413	2026-10-30 12:21
+47	V44	sacar=('_lag2', '_delta2')	agrega	+0.0	screening	-4576178	-1131052	340398	0/5	0	-2933333	-0.00039	se descarta	B2	3660	2026-10-30 13:22
+48	V45	sacar=('_min3', '_max3', '_ratiomax3')	agrega	+0.0	screening	1840763	621047	836972	3/5	3	1100000	-0.00038	se descarta	B2	3633	2026-10-30 14:23
+49	V46	sacar=('_ratiolag1', '_ratioavg3', '_ratiomax3')	agrega	-0.5	screening	-6618470	-4482742	869013	0/5	1	-4400000	-0.00136	se descarta	B2	3544	2026-10-30 15:22
