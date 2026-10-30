@@ -754,6 +754,8 @@ def franja_train(train: pd.DataFrame, poof: pd.Series, sin_baja1=True):
 
 
 PESO_BASE_FRANJA = 1.0  # peso del puesto de p en la suma de puestos (lo mueve la búsqueda de la franja)
+FRANJA_BAJA1 = "fuera"  # las BAJA+1 de la franja de entrenamiento: "fuera", "negativa" o "positiva" (enfoques 1 y 2)
+FRANJA_INIT = True      # la segunda etapa parte del puntaje fuera de muestra del general (enfoques 1 y 2)
 
 
 def reordenar(p, idx, s_nuevo):
@@ -780,9 +782,13 @@ def puntaje_franja(enfoque, train, score, seed, p, idx, intermedio=None):
     cols = _cols(train)
     poof = fuera_de_muestra(train)
     if enfoque in (1, 2):  # segunda etapa con cross-fitting; 2: variables elegidas con canaritos
-        t, y, l = franja_train(train, poof)
+        t, y, l = franja_train(train, poof, sin_baja1=FRANJA_BAJA1 == "fuera")
+        if FRANJA_BAJA1 == "positiva":
+            y = np.maximum(y, (t.clase_ternaria == "BAJA+1").to_numpy())
         if enfoque == 2:
             cols = le_ganan_al_ruido(t, cols, y.astype(int))
+        if not FRANJA_INIT:
+            return _lgb(t[cols], y, PARAMS_2, RONDAS_2, seed).predict(score.iloc[idx][cols], raw_score=True)
         c = calibracion(logit(l), y)
         m = _lgb(t[cols], y, PARAMS_2, RONDAS_2, seed, init=c[0] + c[1] * logit(l))
         return m.predict(score.iloc[idx][cols], raw_score=True) + c[0] + c[1] * logit(p[idx])
@@ -941,9 +947,12 @@ def aplicar(params: dict) -> None:
 
 def aplicar_franja(fp: dict) -> None:
     """Pone los parámetros de la franja de una búsqueda (v4/hpo_franja.py): franja_desde y franja_hasta van a
-    FRANJA_REL, rondas a RONDAS_2, peso_base a PESO_BASE_FRANJA y el resto a PARAMS_2."""
-    global FRANJA_REL, RONDAS_2, PESO_BASE_FRANJA
+    FRANJA_REL, rondas a RONDAS_2, peso_base a PESO_BASE_FRANJA, baja1 a FRANJA_BAJA1, init a FRANJA_INIT y el resto a
+    PARAMS_2."""
+    global FRANJA_REL, RONDAS_2, PESO_BASE_FRANJA, FRANJA_BAJA1, FRANJA_INIT
     p = dict(fp)
+    FRANJA_BAJA1 = str(p.pop("baja1", FRANJA_BAJA1))
+    FRANJA_INIT = bool(p.pop("init", FRANJA_INIT))
     FRANJA_REL = (float(p.pop("franja_desde", FRANJA_REL[0])), float(p.pop("franja_hasta", FRANJA_REL[1])))
     RONDAS_2 = int(p.pop("rondas", RONDAS_2))
     PESO_BASE_FRANJA = float(p.pop("peso_base", PESO_BASE_FRANJA))

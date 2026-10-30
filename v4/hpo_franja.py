@@ -41,22 +41,26 @@ ESPACIO = {
     "lambda_l2": ("log", 0.1, 100.0),
     "rondas": ("intlog", 30, 500),
     "peso_base": ("float", 0.0, 3.0),
+    "baja1": ("cat", ["fuera", "negativa", "positiva"]),
+    "init": ("cat", [True, False]),
 }
 
 
 def sugerir(trial: optuna.Trial) -> dict:
     p = {}
-    for k, (t, a, b) in ESPACIO.items():
-        if t == "intlog":
-            p[k] = trial.suggest_int(k, a, b, log=True)
+    for k, (t, *r) in ESPACIO.items():
+        if t == "cat":
+            p[k] = trial.suggest_categorical(k, r[0])
+        elif t == "intlog":
+            p[k] = trial.suggest_int(k, *r, log=True)
         else:
-            p[k] = trial.suggest_float(k, a, b, log=t == "log")
+            p[k] = trial.suggest_float(k, *r, log=t == "log")
     return p
 
 
 def actuales(mod) -> dict:
     v = {**mod.PARAMS_2, "franja_desde": mod.FRANJA_REL[0], "franja_hasta": mod.FRANJA_REL[1], "rondas": mod.RONDAS_2,
-         "peso_base": mod.PESO_BASE_FRANJA}
+         "peso_base": mod.PESO_BASE_FRANJA, "baja1": mod.FRANJA_BAJA1, "init": mod.FRANJA_INIT}
     return {k: v[k] for k in ESPACIO}
 
 
@@ -80,7 +84,9 @@ def main() -> int:
     vigente = loop.estado()["vigente"]
     mod = arnes.cargar_modulo(loop.VIGENTE)
     mod.PARAMS["num_threads"] = a.hilos
-    original = (dict(mod.PARAMS_2), mod.FRANJA_REL, mod.RONDAS_2, mod.PESO_BASE_FRANJA)
+    original = (dict(mod.PARAMS_2), mod.FRANJA_REL, mod.RONDAS_2, mod.PESO_BASE_FRANJA, mod.FRANJA_BAJA1, mod.FRANJA_INIT)
+    # Si el vigente ya tiene la franja, el ganador se compara con ella (el trial inicial); si no, con el vigente sin franja.
+    ya_tenia = mod.CAMBIOS["franja"] == 1
     hilos = ThreadPoolExecutor(max_workers=a.semillas)
     semillas = prepare.semillas("busqueda", a.semillas)
     log(f"búsqueda de la franja {a.nombre} sobre {vigente}: {a.trials} trials, semillas {semillas}")
@@ -118,7 +124,7 @@ def main() -> int:
         params = sugerir(trial)
         mod.PARAMS_2.clear()
         mod.PARAMS_2.update(original[0])
-        mod.FRANJA_REL, mod.RONDAS_2, mod.PESO_BASE_FRANJA = original[1:]
+        mod.FRANJA_REL, mod.RONDAS_2, mod.PESO_BASE_FRANJA, mod.FRANJA_BAJA1, mod.FRANJA_INIT = original[1:]
         mod.aplicar_franja(params)
         mesetas = []
         for m, (train, score, y, ps) in datos.items():
@@ -147,17 +153,19 @@ def main() -> int:
                                                   "params": params,
                                                   "espacio": {k: list(v) for k, v in ESPACIO.items()}},
                                                  indent=1) + "\n", encoding="utf-8")
-    # A la cola como el próximo paso; la predicción es la mitad de lo que ganó contra el vigente sin franja (en esos
-    # mismos meses y con las semillas de la búsqueda).
+    # A la cola como el próximo paso; la predicción es la mitad de lo que ganó contra el vigente (en esos mismos meses y
+    # con las semillas de la búsqueda).
     filas = [f for f in loop.leer_tsv(loop.COLA) if f["id"] != a.nombre or f["estado"]]
     pendientes = [float(f["orden"]) for f in filas if not f["estado"]]
     orden = (min(pendientes) if pendientes else max(float(f["orden"]) for f in filas) + 1) - 0.5
-    pred = (mejor.value - np.mean(sin_franja)) / 2e6
+    referencia = inicial.value if ya_tenia else np.mean(sin_franja)
+    pred = (mejor.value - referencia) / 2e6
+    contra = (f"su franja actual ({(inicial.value - np.mean(sin_franja)) / 1e6:+.1f} M sobre el general solo)" if ya_tenia
+              else f"el vigente sin franja (franja=1 con sus parámetros: {(inicial.value - np.mean(sin_franja)) / 1e6:+.1f} M)")
     filas.append({"id": a.nombre, "orden": orden, "titulo": f"Parámetros de la franja de la búsqueda {a.nombre}",
-                  "cambio": f"franja=1; franja_params={params!r}", "tipo": "agrega", "pred_meseta": f"{pred:+.1f}",
-                  "fuente": f"v4/hpo_franja.py, trial {mejor.number} de {len(estudio.trials)}",
-                  "porque": f"la búsqueda ganó {2 * pred:+.1f} M por mes contra el vigente sin franja con sus semillas "
-                             f"(franja=1 con sus parámetros: {(inicial.value - np.mean(sin_franja)) / 1e6:+.1f} M)",
+                  "cambio": ("" if ya_tenia else "franja=1; ") + f"franja_params={params!r}", "tipo": "agrega",
+                  "pred_meseta": f"{pred:+.1f}", "fuente": f"v4/hpo_franja.py, trial {mejor.number} de {len(estudio.trials)}",
+                  "porque": f"la búsqueda ganó {2 * pred:+.1f} M por mes contra {contra} con sus semillas",
                   "estado": "", "actualizado": ""})
     loop.escribir_tsv(loop.COLA, filas, list(filas[0].keys()))
     log(f"mejor: trial {mejor.number}, {mejor.value / 1e6:.2f} M (franja=1 {inicial.value / 1e6:.2f} M, sin franja "

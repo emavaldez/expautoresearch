@@ -1,0 +1,74 @@
+{
+ "id": "V37",
+ "titulo": "Canaritos en el general (otra vez, sobre los árboles grandes)",
+ "cambio": "canaritos_general=True",
+ "tipo": "agrega",
+ "paso": 39,
+ "vigente": "B2",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 3579,
+ "fecha": "2026-10-29 23:25",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 257287988.36242723,
+   "ganancia": 257427500.0,
+   "auc": 0.9062593988077209
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -13581868.24605154,
+    "por_mes": {
+     "201907": -17883503.74064839,
+     "201908": -13945243.14214465,
+     "201909": -8916857.85536158
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -11638356.608478792,
+     "se": 845132.1869644469,
+     "ganadas": 0,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -10633333.333333334,
+    "por_mes": {
+     "201907": -15400000.0,
+     "201908": -14300000.0,
+     "201909": -2200000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -11073333.333333332,
+     "se": 972876.6051709172,
+     "ganadas": 0,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.007868726245971533,
+    "por_mes": {
+     "201907": -0.009569994923615432,
+     "201908": -0.006120141271746649,
+     "201909": -0.007916042542552515
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.007924046116170222,
+     "se": 4.935808481720183e-05,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}

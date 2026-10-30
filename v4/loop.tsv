@@ -35,3 +35,9 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 34	V33	historia_resumen=True	agrega	-0.5	screening	-2643795	-1552504	978138	1/5	0	-3300000	-0.00011	se descarta	V29	1474	2026-10-29 19:14
 35	V34	percentil_montos=True	agrega	+0.5	screening	-1188398	-1433859	938550	2/5	1	-4033333	-0.00082	se descarta	V29	1152	2026-10-29 19:33
 36	V35	peso_mes=0.7	agrega	+0.3	screening	1130700	109694	430813	2/5	2	-1833333	-7e-05	se descarta	V29	1064	2026-10-29 19:51
+37	B2	franja=1; franja_params={'franja_desde': 0.5600014111274607, 'franja_hasta': 3.5553427460608167, 'learning_rate': 0.07447262553981542, 'num_leaves': 7, 'min_data_in_leaf': 599, 'feature_fraction': 0.2705345015055787, 'lambda_l2': 89.53643923682695, 'rondas': 176, 'peso_base': 1.0477883025328396}	agrega	+2.4	confirmacion	1100114	2294174	567803	9/10	2	4766667	8e-05	queda	V29	6247	2026-10-29 21:36
+38	V36	binaria_ensamble=True	agrega	+0.5	screening	-4635727	-2407880	1120476	1/5	0	-4766667	-5e-05	se descarta	B2	2998	2026-10-29 22:26
+39	V37	canaritos_general=True	agrega	+0.3	screening	-13581868	-11638357	845132	0/5	0	-10633333	-0.00787	se descarta	B2	3579	2026-10-29 23:25
+40	V38	puntaje_baja1=0.0	agrega	+0.0	screening	-5091592	-3153804	620111	0/5	0	-6600000	-0.00083	se descarta	B2	6754	2026-10-30 01:18
+41	V39	xgboost=True	agrega	+0.3	screening	-4180800	-2406508	419677	0/5	0	-4766667	-0.00048	se descarta	B2	8232	2026-10-30 03:35
+42	V40	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'extra_trees': True}	agrega	+0.3	screening	-3138223	-537052	714980	2/5	0	-2200000	-0.00139	se descarta	B2	3773	2026-10-30 04:38
