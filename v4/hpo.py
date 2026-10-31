@@ -116,6 +116,8 @@ def main() -> int:
         mod.PARAMS.update(original[0])
         mod.NUM_ROUNDS, mod.UNDERSAMPLING, mod.PESO_BAJA1, mod.PESO_BAJA2 = original[1:]
         mod.aplicar(params)
+        # La base fuera de muestra de la franja es el general con estos parámetros: su caché no los tiene en la clave.
+        mod._OOF.clear()
         mesetas = []
         for k, (m, (train, score, y, info, intermedio)) in enumerate(datos.items()):
             probs = list(hilos.map(lambda s: prepare._llamar(mod, train, score, s, None, intermedio), semillas))

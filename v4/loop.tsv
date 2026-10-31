@@ -56,3 +56,5 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 55	V52	deflactar=True	agrega	+0.2	screening	-6325251	-4993744	1041628	0/5	1	-5866667	-0.00111	se descarta	B2	3740	2026-10-31 03:49
 56	V53	oof_clientes=True	agrega	+0.3	screening	-3425293	-869229	757119	2/5	1	-2566667	3e-05	se descarta	B2	3955	2026-10-31 04:55
 57	V54	razones2=True; sacar=('_min3', '_max3', '_ratiomax3')	agrega	+0.5	screening	-924439	1168190	1176933	3/5	1	1100000	0.00016	se descarta	B2	3667	2026-10-31 05:56
+58	V55	franja_bolsas=5	agrega	+0.4	screening	-230241	-104221	416118	2/5	1	366667	-2e-05	se descarta	B2	3813	2026-10-31 07:00
+59	V56	franja_extra={'franja_desde': 0.4439775502637413, 'franja_hasta': 3.6704581693426626, 'learning_rate': 0.06296393343471367, 'num_leaves': 4, 'min_data_in_leaf': 742, 'feature_fraction': 0.2782757110492038, 'lambda_l2': 0.5006752178558876, 'rondas': 59, 'baja1': 'negativa', 'init': True}	agrega	+0.4	screening	-9692	324532	265783	2/5	1	-1466667	0.0001	se descarta	B2	4101	2026-10-31 08:09
