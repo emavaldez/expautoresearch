@@ -105,6 +105,9 @@ PERCENTIL_CERO_FIJO = [
 # cierre del cliente (0, 7, ...), igual todos los meses. (El percentil no sirve acá: da 36,18 / 36,22 / 36,27... y esos
 # decimales le dejan al árbol separar los meses.)
 RESTAR_MODA = ["Visa_fultimo_cierre", "Master_fultimo_cierre"]
+# IPC nacional de INDEC, variación mensual en %, 2019 (v4: deflactar).
+IPC_2019 = (2.9, 3.8, 4.7, 3.4, 3.1, 2.7, 2.2, 4.0, 5.9, 3.3, 4.3, 3.7)
+IPC = dict(zip(range(201901, 201913), np.cumprod([1 + v / 100 for v in IPC_2019])))
 
 
 def percentil_cero_fijo(x: pd.Series, mes: pd.Series) -> pd.Series:
@@ -134,6 +137,10 @@ def lags_y_deltas(df: pd.DataFrame) -> pd.DataFrame:
         df[c] = percentil_cero_fijo(df[c], df.foto_mes)
     for c in RESTAR_MODA:
         df[c] = df[c] - df.groupby("foto_mes")[c].transform(lambda v: v.mode().iloc[0])
+    if CAMBIOS["deflactar"] and not CAMBIOS["percentil_montos"]:
+        indice = df.foto_mes.map(IPC).to_numpy()
+        for c in montos_sin_percentil(df):
+            df[c] = (df[c] / indice).round(2)
     base = [c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]
     g = df.groupby("numero_de_cliente")[base]
     new = {}
@@ -324,6 +331,8 @@ CAMBIOS = {
     "sacar": (),                    # sufijos de las familias de variables que no ve ningún modelo
     "razones2": False,              # razones de orden 2: x / lag2 y lag1 / lag2
     "semillas_oof": 1,              # semillas que promedia la base fuera de muestra de la franja
+    "deflactar": False,             # los montos en pesos, a pesos de 201812 con el IPC
+    "oof_clientes": False,          # la base fuera de muestra con 4 pliegues de clientes en lugar de un mes afuera
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -735,13 +744,20 @@ def fuera_de_muestra(train: pd.DataFrame, objetivo="multiclase") -> pd.Series:
 
 def _fuera_de_muestra(train, objetivo, clave):
     if clave not in _OOF:
+        if CAMBIOS["oof_clientes"]:
+            clientes = train.numero_de_cliente.unique()
+            pliegue = dict(zip(clientes, np.random.default_rng(SEMILLA_OOF).permutation(len(clientes)) % 4))
+            grupo = train.numero_de_cliente.map(pliegue).to_numpy()
+        else:
+            grupo = train.foto_mes.to_numpy()
+
         def uno(ms):
             m, s = ms
-            f = (train.foto_mes == m).to_numpy()
+            f = grupo == m
             return f, base(train[~f], train[f].drop(columns=["clase_ternaria"]), s, objetivo=objetivo)
 
         semillas = [SEMILLA_OOF + k for k in range(CAMBIOS["semillas_oof"])]
-        tareas = [(m, s) for m in sorted(train.foto_mes.unique()) for s in semillas]
+        tareas = [(m, s) for m in sorted(set(grupo)) for s in semillas]
         p = pd.Series(0.0, index=train.index)  # todo mes es de algún pliegue: no queda ninguna fila en cero
         # En paralelo: la calcula la primera semilla que llega y las demás esperan sin hacer nada.
         with ThreadPoolExecutor(max_workers=min(len(tareas), 12)) as hilos:
