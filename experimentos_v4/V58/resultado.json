@@ -1,0 +1,74 @@
+{
+ "id": "V58",
+ "titulo": "Las CONTINUA difíciles se quedan todas y pesan 1",
+ "cambio": "continua_dificiles=0.15; peso_dificiles=1.0",
+ "tipo": "agrega",
+ "paso": 61,
+ "vigente": "B2",
+ "pred_meseta": "+0.0",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 6779,
+ "fecha": "2026-10-31 18:29",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 252194750.62344137,
+   "ganancia": 247894166.66666666,
+   "auc": 0.9041559873968851
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -18675105.985037416,
+    "por_mes": {
+     "201907": -27285623.441396534,
+     "201908": -21264083.541147143,
+     "201909": -7475610.972568572
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -15339943.474646699,
+     "se": 2480464.07088782,
+     "ganadas": 0,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -20166666.666666668,
+    "por_mes": {
+     "201907": -26400000.0,
+     "201908": -26400000.0,
+     "201909": -7700000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -18700000.0,
+     "se": 3644600.267671492,
+     "ganadas": 0,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00997213765680712,
+    "por_mes": {
+     "201907": -0.010883832725104736,
+     "201908": -0.012176459004967999,
+     "201909": -0.006856121240348623
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.010403301826335412,
+     "se": 0.00028409004852126803,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}

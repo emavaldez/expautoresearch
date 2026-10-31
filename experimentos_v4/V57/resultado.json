@@ -1,0 +1,74 @@
+{
+ "id": "V57",
+ "titulo": "Las CONTINUA difíciles se quedan todas (con el peso del submuestreo)",
+ "cambio": "continua_dificiles=0.15",
+ "tipo": "agrega",
+ "paso": 60,
+ "vigente": "B2",
+ "pred_meseta": "+0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 6936,
+ "fecha": "2026-10-31 16:36",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 260555207.81379882,
+   "ganancia": 255227500.0,
+   "auc": 0.909950887288708
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -10314648.79467997,
+    "por_mes": {
+     "201907": -14551134.663341641,
+     "201908": -10037637.157107264,
+     "201909": -6355174.563591003
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -6399855.777223607,
+     "se": 1322798.8678524308,
+     "ganadas": 0,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -12833333.333333334,
+    "por_mes": {
+     "201907": -18700000.0,
+     "201908": -9900000.0,
+     "201909": -9900000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -7260000.0,
+     "se": 1256335.0579275328,
+     "ganadas": 0,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.004177237764984317,
+    "por_mes": {
+     "201907": -0.004640908561457491,
+     "201908": -0.004936613178387561,
+     "201909": -0.002954191555107899
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.004001924974352189,
+     "se": 0.0003067460821994832,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}
