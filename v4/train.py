@@ -333,6 +333,8 @@ CAMBIOS = {
     "semillas_oof": 1,              # semillas que promedia la base fuera de muestra de la franja
     "deflactar": False,             # los montos en pesos, a pesos de 201812 con el IPC
     "oof_clientes": False,          # la base fuera de muestra con 4 pliegues de clientes en lugar de un mes afuera
+    "franja_bolsas": 1,             # modelos de la segunda etapa que se promedian (con bagging 0,8 si son varios)
+    "franja_extra": {},             # parámetros de otra franja (como franja_params) cuyo puntaje se suma por puestos
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -823,8 +825,12 @@ def puntaje_franja(enfoque, train, score, seed, p, idx, intermedio=None):
         if not FRANJA_INIT:
             return _lgb(t[cols], y, PARAMS_2, RONDAS_2, seed).predict(score.iloc[idx][cols], raw_score=True)
         c = calibracion(logit(l), y)
-        m = _lgb(t[cols], y, PARAMS_2, RONDAS_2, seed, init=c[0] + c[1] * logit(l))
-        return m.predict(score.iloc[idx][cols], raw_score=True) + c[0] + c[1] * logit(p[idx])
+        bolsas = CAMBIOS["franja_bolsas"]
+        params = {**PARAMS_2, "bagging_fraction": 0.8, "bagging_freq": 1} if bolsas > 1 else PARAMS_2
+        Z = score.iloc[idx][cols]
+        s = np.mean([_lgb(t[cols], y, params, RONDAS_2, seed + 1000 * j, init=c[0] + c[1] * logit(l)).predict(Z, raw_score=True)
+                     for j in range(bolsas)], axis=0)
+        return s + c[0] + c[1] * logit(p[idx])
     if enfoque == 3:  # cascada: el 15% de arriba, con un modelo más grande
         k = np.zeros(len(train), bool)
         for mm in train.foto_mes.unique():
@@ -961,7 +967,30 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
     if enfoque in (0, 5, 9):
         return p
     idx = np.flatnonzero(en_franja(p, len(p)))
-    return reordenar(p, idx, puntaje_franja(enfoque, train, score, seed, p, idx, intermedio))
+    s = puntaje_franja(enfoque, train, score, seed, p, idx, intermedio)
+    if CAMBIOS["franja_extra"]:  # v4: dos segundas etapas sobre la misma franja, sumadas por puestos
+        s2 = otra_franja(CAMBIOS["franja_extra"]).puntaje_franja(enfoque, train, score, seed, p, idx, intermedio)
+        s = pd.Series(s).rank().to_numpy() + pd.Series(s2).rank().to_numpy()
+    return reordenar(p, idx, s)
+
+
+_FRANJAS = {}
+
+
+def otra_franja(fp: dict):
+    """Una copia de este módulo con los parámetros de franja fp encima de los del vigente (franja_extra). Entrena con su
+    propia franja pero comparte la base fuera de muestra y su candado: no depende de los parámetros de la franja."""
+    clave = repr(sorted(fp.items()))
+    with _CANDADO:
+        if clave not in _FRANJAS:
+            spec = importlib.util.spec_from_file_location(f"{__name__}_franja{len(_FRANJAS)}", __file__)
+            m = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m)
+            m._OOF, m._CANDADO_OOF, m._CANDADO_CACHE = _OOF, _CANDADO_OOF, _CANDADO_CACHE
+            m.PARAMS["num_threads"] = PARAMS["num_threads"]  # los del general, que pone el arnés
+            m.aplicar_franja(fp)
+            _FRANJAS[clave] = m
+    return _FRANJAS[clave]
 
 
 # ---------------------------------------------------------------- v4: hiperparámetros de una búsqueda
