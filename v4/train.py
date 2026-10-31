@@ -335,6 +335,8 @@ CAMBIOS = {
     "oof_clientes": False,          # la base fuera de muestra con 4 pliegues de clientes en lugar de un mes afuera
     "franja_bolsas": 1,             # modelos de la segunda etapa que se promedian (con bagging 0,8 si son varios)
     "franja_extra": {},             # parámetros de otra franja (como franja_params) cuyo puntaje se suma por puestos
+    "continua_dificiles": 0.0,      # el general guarda todas las CONTINUA del q de arriba de su mes (fuera de muestra)
+    "peso_dificiles": None,         # su peso: None = UNDERSAMPLING (misma pérdida esperada), o un número
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -436,7 +438,7 @@ def especialista(train: pd.DataFrame, score: pd.DataFrame, cols: list, seed: int
     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
 
 
-def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None):
+def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None):
     """Lo que ve el general: (filas, columnas, clase, pesos, objetivo). v4: lo usan también los modelos del ensamble."""
     objetivo = objetivo or ("binaria" if CAMBIOS["binaria"] else "multiclase")
     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
@@ -448,13 +450,21 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None):
     elegidas = general_canaritos(train, cols) if CAMBIOS["canaritos_general"] else None
     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
     keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
-    train = train[keep | (train.clase_ternaria != "CONTINUA").to_numpy()]
+    duras = np.zeros(len(train), bool)
+    if dificiles is not None:  # v4: continua_dificiles (dificiles es la base fuera de muestra de cada fila)
+        q = dificiles.reindex(train.index).groupby(train.foto_mes.to_numpy()).rank(pct=True, ascending=False)
+        duras = (q <= CAMBIOS["continua_dificiles"]).to_numpy() & (train.clase_ternaria == "CONTINUA").to_numpy()
+    sigue = keep | duras | (train.clase_ternaria != "CONTINUA").to_numpy()
+    train, duras = train[sigue], duras[sigue]
     if objetivo == "binaria":
         y = (train.clase_ternaria != "CONTINUA").astype(int)
         w = np.ones(len(train))
     else:
         y = train.clase_ternaria.map({"CONTINUA": 0, "BAJA+1": 1, "BAJA+2": 2})
         w = np.select([train.clase_ternaria == "BAJA+1", train.clase_ternaria == "BAJA+2"], [PESO_BAJA1, PESO_BAJA2], 1.0)
+    if duras.any():
+        pd_ = CAMBIOS["peso_dificiles"]
+        w = np.where(duras, UNDERSAMPLING if pd_ is None else pd_, w)
     if peso_fila is not None:  # enfoque 5
         w = w * peso_fila.reindex(train.index).fillna(1.0).to_numpy()
     if CAMBIOS["peso_mes"] != 1.0:  # v4: r^(meses antes del último mes de entrenamiento)
@@ -482,9 +492,9 @@ def puntaje(P: np.ndarray) -> np.ndarray:
     return P[:, 2] + CAMBIOS["puntaje_baja1"] * P[:, 1]
 
 
-def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, objetivo=None) -> np.ndarray:
+def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None) -> np.ndarray:
     """El general (E019 ya no tiene especialista ni segunda etapa). Devuelve el puntaje de cada fila de score."""
-    train, cols, y, w, objetivo = preparar(train, seed, peso_fila, objetivo)
+    train, cols, y, w, objetivo = preparar(train, seed, peso_fila, objetivo, dificiles)
     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
     if objetivo == "binaria":
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
@@ -959,7 +969,8 @@ def peso_franja(train: pd.DataFrame) -> pd.Series:
 
 def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, intermedio=None) -> np.ndarray:
     enfoque = CAMBIOS["franja"]
-    p = base(train, score, seed, peso_fila=peso_franja(train) if enfoque == 5 else None)
+    p = base(train, score, seed, peso_fila=peso_franja(train) if enfoque == 5 else None,
+             dificiles=fuera_de_muestra(train) if CAMBIOS["continua_dificiles"] else None)
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
     otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
