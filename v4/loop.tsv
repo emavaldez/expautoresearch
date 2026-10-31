@@ -53,3 +53,6 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 52	V49	peso_mes=0.7	agrega	+0.3	screening	-3398570	-798949	194052	0/5	0	-2566667	-0.00014	se descarta	B2	4438	2026-10-30 23:03
 53	V50	params={'learning_rate': 0.0079, 'num_rounds': 1334, 'num_leaves': 254, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}	agrega	+0.3	screening	126413	718109	742451	3/5	2	733333	-0.00015	se descarta	B2	8999	2026-10-31 01:33
 54	V51	params={'learning_rate': 0.0158, 'num_rounds': 667, 'num_leaves': 254, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'peso_baja2': 3.0}	agrega	+0.3	screening	-601022	81906	988701	1/5	1	733333	-7e-05	se descarta	B2	4406	2026-10-31 02:46
+55	V52	deflactar=True	agrega	+0.2	screening	-6325251	-4993744	1041628	0/5	1	-5866667	-0.00111	se descarta	B2	3740	2026-10-31 03:49
+56	V53	oof_clientes=True	agrega	+0.3	screening	-3425293	-869229	757119	2/5	1	-2566667	3e-05	se descarta	B2	3955	2026-10-31 04:55
+57	V54	razones2=True; sacar=('_min3', '_max3', '_ratiomax3')	agrega	+0.5	screening	-924439	1168190	1176933	3/5	1	1100000	0.00016	se descarta	B2	3667	2026-10-31 05:56

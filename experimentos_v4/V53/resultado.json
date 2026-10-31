@@ -1,0 +1,74 @@
+{
+ "id": "V53",
+ "titulo": "Base fuera de muestra de la franja con pliegues de clientes",
+ "cambio": "oof_clientes=True",
+ "tipo": "agrega",
+ "paso": 56,
+ "vigente": "B2",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 3955,
+ "fecha": "2026-10-31 04:55",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 267444563.59102246,
+   "ganancia": 265494166.66666666,
+   "auc": 0.9141542959294909
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -3425293.0174563527,
+    "por_mes": {
+     "201907": -8369943.890274346,
+     "201908": 109931.421446383,
+     "201909": -2015866.5835410953
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -869228.5951787174,
+     "se": 757118.5131117431,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -2566666.6666666665,
+    "por_mes": {
+     "201907": -6600000.0,
+     "201908": -2200000.0,
+     "201909": 1100000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -953333.3333333333,
+     "se": 682039.4253837366,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 2.6170875798666355e-05,
+    "por_mes": {
+     "201907": -0.00016474887942918848,
+     "201908": 3.0171637605325152e-05,
+     "201909": 0.0002130898692198624
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 0.0001051379180645832,
+     "se": 2.3642814736500353e-05,
+     "ganadas": 5,
+     "n": 5
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,74 @@
+{
+ "id": "V54",
+ "titulo": "Razones de orden 2 en lugar de los extremos de la ventana",
+ "cambio": "razones2=True; sacar=('_min3', '_max3', '_ratiomax3')",
+ "tipo": "agrega",
+ "paso": 57,
+ "vigente": "B2",
+ "pred_meseta": "+0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 3667,
+ "fecha": "2026-10-31 05:56",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 269945417.7057356,
+   "ganancia": 269160833.3333333,
+   "auc": 0.9142904050749688
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -924438.9027431508,
+    "por_mes": {
+     "201907": -5910854.114713252,
+     "201908": 4733497.506234407,
+     "201909": -1595960.0997506082
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 1168189.9418121497,
+     "se": 1176933.3244155534,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 1100000.0,
+    "por_mes": {
+     "201907": -4400000.0,
+     "201908": 5500000.0,
+     "201909": 2200000.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 146666.6666666668,
+     "se": 1432348.4988724713,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 0.00016228002127645821,
+    "por_mes": {
+     "201907": -0.0008704918769351089,
+     "201908": 0.0007678330937564981,
+     "201909": 0.0005894988470079854
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 0.0002092785699711423,
+     "se": 0.00018475820166897794,
+     "ganadas": 4,
+     "n": 5
+    }
+   }
+  }
+ }
+}
