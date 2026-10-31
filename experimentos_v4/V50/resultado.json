@@ -1,0 +1,74 @@
+{
+ "id": "V50",
+ "titulo": "La mitad del learning rate con el doble de árboles",
+ "cambio": "params={'learning_rate': 0.0079, 'num_rounds': 1334, 'num_leaves': 254, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}",
+ "tipo": "agrega",
+ "paso": 53,
+ "vigente": "B2",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 8999,
+ "fecha": "2026-10-31 01:33",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 270996269.74231094,
+   "ganancia": 268794166.6666667,
+   "auc": 0.9139808723997292
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 126413.13383212686,
+    "por_mes": {
+     "201907": -2114962.593516171,
+     "201908": 1935698.254364103,
+     "201909": 558503.7406484485
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 718108.8944305917,
+     "se": 742451.0461091448,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 733333.3333333334,
+    "por_mes": {
+     "201907": 0.0,
+     "201908": 2200000.0,
+     "201909": 0.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 1613333.3333333335,
+     "se": 824796.2711414794,
+     "ganadas": 4,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.0001472526539630555,
+    "por_mes": {
+     "201907": -0.0007323024566189273,
+     "201908": 0.0003725285078471918,
+     "201909": -8.198401311743098e-05
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 4.298266305611254e-05,
+     "se": 0.0001231586671049679,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}

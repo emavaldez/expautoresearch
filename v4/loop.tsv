@@ -48,3 +48,8 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 47	V44	sacar=('_lag2', '_delta2')	agrega	+0.0	screening	-4576178	-1131052	340398	0/5	0	-2933333	-0.00039	se descarta	B2	3660	2026-10-30 13:22
 48	V45	sacar=('_min3', '_max3', '_ratiomax3')	agrega	+0.0	screening	1840763	621047	836972	3/5	3	1100000	-0.00038	se descarta	B2	3633	2026-10-30 14:23
 49	V46	sacar=('_ratiolag1', '_ratioavg3', '_ratiomax3')	agrega	-0.5	screening	-6618470	-4482742	869013	0/5	1	-4400000	-0.00136	se descarta	B2	3544	2026-10-30 15:22
+50	V47	razones2=True	agrega	+0.5	screening	160977	1322460	718485	4/5	2	1100000	0.00018	se descarta	B2	12981	2026-10-30 19:03
+51	V48	semillas_oof=3	agrega	+0.3	screening	-672298	-1154877	510855	1/5	1	-1833333	1e-05	se descarta	B2	9938	2026-10-30 21:49
+52	V49	peso_mes=0.7	agrega	+0.3	screening	-3398570	-798949	194052	0/5	0	-2566667	-0.00014	se descarta	B2	4438	2026-10-30 23:03
+53	V50	params={'learning_rate': 0.0079, 'num_rounds': 1334, 'num_leaves': 254, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132}	agrega	+0.3	screening	126413	718109	742451	3/5	2	733333	-0.00015	se descarta	B2	8999	2026-10-31 01:33
+54	V51	params={'learning_rate': 0.0158, 'num_rounds': 667, 'num_leaves': 254, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'peso_baja2': 3.0}	agrega	+0.3	screening	-601022	81906	988701	1/5	1	733333	-7e-05	se descarta	B2	4406	2026-10-31 02:46
