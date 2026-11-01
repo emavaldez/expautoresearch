@@ -80,3 +80,6 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 79	V76	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}	agrega	+0.3	screening	572539	1770273	1134478	4/5	2	-366667	-0.00064	se descarta	B2	2233	2026-11-01 06:46
 80	V77	sacar=('_min3', '_max3', '_ratiomax3', '_avg3'); params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}	agrega	+1.0	screening	-221600	1623990	1084562	4/5	1	366667	-0.00056	se descarta	B2	1950	2026-11-01 07:19
 81	V78	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.3}	agrega	+0.5	screening	-2477835	665139	915456	3/5	0	0	-0.0015	se descarta	B2	2557	2026-11-01 08:01
+82	V79	intermedio_plano=True	agrega	+0.5	screening	-20335324	-19555147	1454674	0/5	0	-22366667	-0.00603	se descarta	B2	2020	2026-11-01 10:26
+83	V80	deriva=50	agrega	-0.5	screening	44782	1390686	331081	5/5	2	366667	-0.00054	se descarta	B2	2043	2026-11-01 11:00
+84	V81	deriva=15	agrega	0.0	screening	-1057207	151271	476001	2/5	2	-3300000	-0.00017	se descarta	B2	2106	2026-11-01 11:44
