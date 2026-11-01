@@ -156,7 +156,7 @@ function ruta() {
     a.toggleAttribute("aria-current", activa);
     if (activa) a.setAttribute("aria-current", "page");
   });
-  const vistas = { protocolo: vProtocolo, hipotesis: vHipotesis, loop: vLoop, antecedentes: vAntecedentes, experimentos: vExperimentos,
+  const vistas = { protocolo: vProtocolo, hipotesis: vHipotesis, loop: vLoop, v4: vV4, antecedentes: vAntecedentes, experimentos: vExperimentos,
     ideas: vIdeas, propuestas: vPropuestas, proponer: vPropuestas, aula: vAula, metodo: vMetodo, papers: vPapers };
   (vistas[seccion] || vProtocolo)(decodeURIComponent(id), seccion);
 }
@@ -615,6 +615,67 @@ function vLoop() {
     t += `</tbody></table>`;
   }
   vista(t);
+}
+
+const CADENA_V4 = {
+  V0: "E019, el modelo de la primera competencia",
+  V14: "sin la tendencia ni el promedio de 3 meses de la cátedra",
+  V28: "+ los árboles grandes de E025 (254 hojas)",
+  V29: "sólo los árboles grandes",
+  B2: "+ segunda etapa en la franja dudosa (el vigente)",
+};
+
+function vV4() {
+  const V = D.v4 || {};
+  const pasos = V.loop || [];
+  const ideas = V.ideas || {};
+  const F = V.final;
+  const M1 = (x) => `${x > 0 ? "+" : x < 0 ? "−" : ""}${nf1.format(Math.abs(x) / 1e6)}`;
+  let t = `<h2>Mejorar el modelo de la primera competencia (v4)</h2><div class="texto-largo">
+    <p>¿Se puede ganar más plata que E019 (el modelo de la primera competencia) con los datos de 2019? El mismo loop que v3, pero decide la plata: la meseta del ensamble de 5 semillas en 201907, 201908 y 201909, cada mes entrenado con su ventana (m − 5 a m − 2, como en el aula).</p>
+    <p>Una idea queda si la meseta sube más de 1 M por mes, la diferencia por semilla supera dos errores estándar y gana en al menos 2 de los 3 meses; después se confirma con 10 semillas nuevas. 201910 no se mira hasta el final.</p>
+  </div>`;
+  if (F) {
+    t += `<h3>El final: 201910, con 20 semillas que no se usaron para decidir</h3>
+      <div class="scroll-x"><table class="libro"><thead><tr><th>Modelo</th><th class="num">Meseta</th><th class="num">Contra E019</th><th class="num">Por semilla</th><th class="num">Bootstrap 90%</th><th class="num">AUC</th></tr></thead><tbody>`;
+    for (const [m, f] of Object.entries(F.modelos || {})) {
+      const c = f.contra_E019 && f.contra_E019.meseta;
+      const b = f.bootstrap_meseta;
+      t += `<tr><td><b>${esc(m)}</b> <span class="apagado">${esc(CADENA_V4[m] || "")}</span></td>
+        <td class="num">${M(f.meseta)}</td>
+        <td class="num ${c ? claseSigno(c.delta) : ""}">${c ? signo(c.delta) : "–"}</td>
+        <td class="num">${c ? `${M1(c.pareado.media)}<small> ± ${nf1.format(c.pareado.se / 1e6)}</small>` : "–"}</td>
+        <td class="num apagado">${b ? `${M1(b.p05)} a ${M1(b.p95)}` : "–"}</td>
+        <td class="num">${A(f.auc)}</td></tr>`;
+    }
+    t += `</tbody></table></div>
+      <p class="nota">B2 le gana a E019 por 3,3 M en 201910: por semilla la diferencia supera dos errores estándar y la AUC sube en 19 de 20 semillas. Con un solo mes de test, el intervalo por clientes todavía cruza el cero. Lo que se sostiene son los árboles grandes (V28 → V29); el resto de la cadena no se nota en 201910.</p>`;
+  }
+  const quedan = pasos.filter((p) => p.decision === "queda").length;
+  t += `<h3>Los ${pasos.length} pasos del loop</h3><p class="intro">Quedaron ${quedan}. Δ meseta es la diferencia contra el vigente, por mes, en la etapa a la que llegó (screening o confirmación). Tocá un renglón para ver por qué se probó.</p>
+    <div class="scroll-x"><table class="libro fija"><colgroup><col style="width:50px"><col><col style="width:90px"><col style="width:100px"><col style="width:120px"><col style="width:60px"><col style="width:110px"></colgroup><thead><tr><th class="num">Paso</th><th>Idea</th><th class="num">Predicción</th><th class="num">Δ meseta</th><th class="num">Por semilla</th><th class="num">Meses</th><th>Decisión</th></tr></thead><tbody>`;
+  for (const p of pasos.slice().reverse()) {
+    const q = p.decision === "queda";
+    const i = ideas[p.id] || {};
+    const err = (p.decision || "").startsWith("error");
+    t += `<tr class="fila-v4" tabindex="0"><td class="num">${esc(p.paso)}</td><td><b>${esc(p.id)}</b> ${esc(i.titulo || p.cambio)}${p.etapa === "confirmacion" ? ' <span class="apagado">(confirmación)</span>' : ""}</td>
+      <td class="num apagado">${p.pred_meseta ? `${esc(p.pred_meseta.replace(".", ","))} M` : "–"}</td>
+      <td class="num ${p.d_meseta ? claseSigno(Number(p.d_meseta)) : ""}">${p.d_meseta ? signo(Number(p.d_meseta)) : "–"}</td>
+      <td class="num">${p.pareado_meseta ? `${M1(Number(p.pareado_meseta))}<small> ± ${nf1.format(Number(p.se_meseta) / 1e6)}</small>` : "–"}</td>
+      <td class="num">${p.meses_ganados ? `${esc(p.meses_ganados)}/3` : "–"}</td>
+      <td><span class="estado ${q ? "adoptado" : err ? "fallido" : "descartado"}">${esc(q ? "queda" : err ? "error" : "se descarta")}</span></td></tr>
+      <tr class="detalle-v4" hidden><td></td><td colspan="6"><p>${esc(i.porque || "")}</p><p class="apagado"><code>${esc(p.cambio)}</code>${i.fuente ? ` · fuente: ${esc(i.fuente)}` : ""}</p></td></tr>`;
+  }
+  t += `</tbody></table></div>`;
+  const lec = (D.lecciones || []).filter((l) => l.startsWith("v4"));
+  if (lec.length) t += `<h3>Lo que aprendimos</h3><ul class="texto-largo">${lec.map((l) => `<li>${md(l)}</li>`).join("")}</ul>`;
+  t += `<div class="enlaces"><a href="https://github.com/${esc(D.repo)}/blob/main/v4/cola.tsv">La cola con las predicciones</a><a href="https://github.com/${esc(D.repo)}/tree/main/experimentos_v4">Resultados de cada paso</a><a href="https://github.com/${esc(D.repo)}/blob/main/v4/train.py">El modelo (v4/train.py)</a></div>`;
+  vista(t);
+  document.querySelectorAll(".fila-v4").forEach((tr) => {
+    const abrir = () => (tr.nextElementSibling.hidden = !tr.nextElementSibling.hidden);
+    tr.addEventListener("click", abrir);
+    tr.addEventListener("keydown", (k) => (k.key === "Enter" || k.key === " ") && (k.preventDefault(), abrir()));
+  });
 }
 
 function vAntecedentes() {

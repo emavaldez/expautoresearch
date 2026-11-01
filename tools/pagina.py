@@ -149,6 +149,15 @@ def _hipotesis(coment: dict) -> list[dict]:
     return out
 
 
+def _v4() -> dict:
+    """v4 (mejorar E019 con 2019): los pasos del loop con el título y el porqué de cada idea, y el final en 201910."""
+    ideas = {f["id"]: {k: f.get(k, "") for k in ("titulo", "porque", "fuente")}
+             for f in comun.leer_tsv(comun.RAIZ / "v4" / "cola.tsv")}
+    final = comun.RAIZ / "experimentos_v4" / "FINAL" / "resultado.json"
+    return {"loop": comun.leer_tsv(comun.RAIZ / "v4" / "loop.tsv"), "ideas": ideas,
+            "final": json.loads(final.read_text(encoding="utf-8")) if final.exists() else None}
+
+
 def generar() -> None:
     coment = _comentarios()
     ideas = []
@@ -177,6 +186,7 @@ def generar() -> None:
         "protocolo": (comun.RAIZ / "PROTOCOLO.md").read_text(encoding="utf-8") if (comun.RAIZ / "PROTOCOLO.md").exists() else "",
         "hipotesis": _hipotesis(coment),
         "loop": comun.leer_tsv(comun.RAIZ / "v3" / "loop.tsv"),
+        "v4": _v4(),
     }
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
