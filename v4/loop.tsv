@@ -60,3 +60,5 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 59	V56	franja_extra={'franja_desde': 0.4439775502637413, 'franja_hasta': 3.6704581693426626, 'learning_rate': 0.06296393343471367, 'num_leaves': 4, 'min_data_in_leaf': 742, 'feature_fraction': 0.2782757110492038, 'lambda_l2': 0.5006752178558876, 'rondas': 59, 'baja1': 'negativa', 'init': True}	agrega	+0.4	screening	-9692	324532	265783	2/5	1	-1466667	0.0001	se descarta	B2	4101	2026-10-31 08:09
 60	V57	continua_dificiles=0.15	agrega	+0.5	screening	-10314649	-6399856	1322799	0/5	0	-12833333	-0.00418	se descarta	B2	6936	2026-10-31 16:36
 61	V58	continua_dificiles=0.15; peso_dificiles=1.0	agrega	+0.0	screening	-18675106	-15339943	2480464	0/5	0	-20166667	-0.00997	se descarta	B2	6779	2026-10-31 18:29
+62	V59	baja3=1.0	agrega	+0.5	screening	-1288774	1161140	567456	4/5	0	-366667	0.00065	se descarta	B2	6579	2026-10-31 20:19
+63	V60	baja3=0.3	agrega	+0.3	screening	-587330	516305	1238610	3/5	1	-1466667	0.00061	se descarta	B2	2696	2026-10-31 21:04

@@ -338,6 +338,9 @@ CAMBIOS = {
     "continua_dificiles": 0.0,      # el general guarda todas las CONTINUA del q de arriba de su mes (fuera de muestra)
     "peso_dificiles": None,         # su peso: None = UNDERSAMPLING (misma pérdida esperada), o un número
     "baja3": None,                  # peso de las que se van a los tres meses como cuarta clase (None: siguen CONTINUA)
+    "maestro": 0.0,                 # a: la clase de las filas presentes en t + 1 pasa a a·q + (1 - a)·y, q del maestro
+    "franja_suave": 0.0,            # el mismo a para la clase de la franja de entrenamiento (segunda etapa)
+    "intermedio_suave": False,      # el intermedio entra al general, con q del maestro sobre el mes que se puntúa
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -439,11 +442,14 @@ def especialista(train: pd.DataFrame, score: pd.DataFrame, cols: list, seed: int
     return en_seg, p / (p + UNDERSAMPLING * (1 - p))
 
 
-def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None, baja3=None):
+def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None, baja3=None, suave=None,
+             extra=None):
     """Lo que ve el general: (filas, columnas, clase, pesos, objetivo). v4: lo usan también los modelos del ensamble."""
     objetivo = objetivo or ("binaria" if CAMBIOS["binaria"] else "multiclase")
     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
     train = train[train.foto_mes.isin(months)]
+    if extra is not None:  # v4: intermedio_suave (después de elegir los meses: months sigue siendo los de clase completa)
+        train, suave = pd.concat([train, extra[0]]), pd.concat([suave, extra[1]])
     # Columnas: todas menos la historia del resumen de tarjetas (ver historia_de_resumen); el FE de la cátedra lo ve sólo el general.
     cols = _cols(train)  # P3: sin foto_mes
     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
@@ -456,8 +462,10 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
         q = dificiles.reindex(train.index).groupby(train.foto_mes.to_numpy()).rank(pct=True, ascending=False)
         duras = (q <= CAMBIOS["continua_dificiles"]).to_numpy() & (train.clase_ternaria == "CONTINUA").to_numpy()
     b3 = np.zeros(len(train), bool) if baja3 is None else baja3.reindex(train.index, fill_value=False).to_numpy(bool)
-    sigue = keep | duras | b3 | (train.clase_ternaria != "CONTINUA").to_numpy()
-    train, duras, b3 = train[sigue], duras[sigue], b3[sigue]
+    # v4: maestro; las CONTINUA con clase suave alta se quedan todas (abajo pesan 1 / probabilidad de quedar)
+    alto = np.zeros(len(train), bool) if suave is None else (suave.reindex(train.index).to_numpy() > Q_ALTO)
+    sigue = keep | duras | b3 | alto | (train.clase_ternaria != "CONTINUA").to_numpy()
+    train, duras, b3, alto = train[sigue], duras[sigue], b3[sigue], alto[sigue]
     if objetivo == "binaria":
         y = (train.clase_ternaria != "CONTINUA").astype(int)
         w = np.ones(len(train))
@@ -467,6 +475,9 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
         if b3.any():  # v4: baja3, la cuarta clase
             y = y.where(~b3, 3)
             w = np.where(b3, CAMBIOS["baja3"], w)
+        if suave is not None:  # v4: maestro
+            assert not duras.any() and not b3.any(), "maestro no se combina con continua_dificiles ni baja3"
+            train, y, w = suavizar(train, y.to_numpy(), w, suave.reindex(train.index).to_numpy(), alto, seed)
     if duras.any():
         pd_ = CAMBIOS["peso_dificiles"]
         w = np.where(duras, UNDERSAMPLING if pd_ is None else pd_, w)
@@ -498,9 +509,9 @@ def puntaje(P: np.ndarray) -> np.ndarray:
 
 
 def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None,
-         baja3=None) -> np.ndarray:
+         baja3=None, suave=None, extra=None) -> np.ndarray:
     """El general (E019 ya no tiene especialista ni segunda etapa). Devuelve el puntaje de cada fila de score."""
-    train, cols, y, w, objetivo = preparar(train, seed, peso_fila, objetivo, dificiles, baja3)
+    train, cols, y, w, objetivo = preparar(train, seed, peso_fila, objetivo, dificiles, baja3, suave, extra)
     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
     if objetivo == "binaria":
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
@@ -839,11 +850,16 @@ def puntaje_franja(enfoque, train, score, seed, p, idx, intermedio=None):
             y = np.maximum(y, (t.clase_ternaria == "BAJA+1").to_numpy())
         if enfoque == 2:
             cols = le_ganan_al_ruido(t, cols, y.astype(int))
+        params = PARAMS_2
+        if CAMBIOS["franja_suave"]:  # v4: la clase de la franja sale del maestro
+            y = clase_suave(train, intermedio, score, CAMBIOS["franja_suave"]).reindex(t.index).fillna(
+                pd.Series(y, index=t.index)).to_numpy()
+            params = {**PARAMS_2, "objective": "cross_entropy"}
         if not FRANJA_INIT:
-            return _lgb(t[cols], y, PARAMS_2, RONDAS_2, seed).predict(score.iloc[idx][cols], raw_score=True)
+            return _lgb(t[cols], y, params, RONDAS_2, seed).predict(score.iloc[idx][cols], raw_score=True)
         c = calibracion(logit(l), y)
         bolsas = CAMBIOS["franja_bolsas"]
-        params = {**PARAMS_2, "bagging_fraction": 0.8, "bagging_freq": 1} if bolsas > 1 else PARAMS_2
+        params = {**params, "bagging_fraction": 0.8, "bagging_freq": 1} if bolsas > 1 else params
         Z = score.iloc[idx][cols]
         s = np.mean([_lgb(t[cols], y, params, RONDAS_2, seed + 1000 * j, init=c[0] + c[1] * logit(l)).predict(Z, raw_score=True)
                      for j in range(bolsas)], axis=0)
@@ -978,7 +994,10 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
     enfoque = CAMBIOS["franja"]
     p = base(train, score, seed, peso_fila=peso_franja(train) if enfoque == 5 else None,
              dificiles=fuera_de_muestra(train) if CAMBIOS["continua_dificiles"] else None,
-             baja3=baja3(train, score, intermedio) if CAMBIOS["baja3"] is not None else None)
+             baja3=baja3(train, score, intermedio) if CAMBIOS["baja3"] is not None else None,
+             suave=clase_suave(train, intermedio, score, CAMBIOS["maestro"])
+             if CAMBIOS["maestro"] or CAMBIOS["intermedio_suave"] else None,
+             extra=intermedio_suave(train, intermedio, score) if CAMBIOS["intermedio_suave"] else None)
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
     otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
@@ -991,6 +1010,89 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
         s2 = otra_franja(CAMBIOS["franja_extra"]).puntaje_franja(enfoque, train, score, seed, p, idx, intermedio)
         s = pd.Series(s).rank().to_numpy() + pd.Series(s2).rank().to_numpy()
     return reordenar(p, idx, s)
+
+
+Q_ALTO = 0.05       # maestro: las CONTINUA con clase suave mayor a ésta no se submuestrean
+PESO_MINIMO = 0.1   # maestro: una copia BAJA+2 más liviana entra con probabilidad peso / PESO_MINIMO y pesa PESO_MINIMO
+PARAMS_MAESTRO = dict(objective="binary", learning_rate=0.05, num_leaves=63, min_data_in_leaf=100, feature_fraction=0.5)
+RONDAS_MAESTRO = 400
+SUB_MAESTRO = 0.25  # fracción de los negativos con que entrena el maestro (pesan 1 / SUB_MAESTRO: q queda calibrada)
+_MAESTRO = {}
+
+
+def del_maestro(train: pd.DataFrame, intermedio, score) -> tuple:
+    """v4: (q de cada fila de train, q de cada cliente del score), con q = P(BAJA+1 en el mes siguiente | sus variables)
+    fuera de muestra. No depende de la semilla: se calcula una vez por proceso."""
+    clave = _clave(train)
+    with _CANDADO_CACHE:
+        if clave not in _MAESTRO:
+            _MAESTRO[clave] = _maestro(train, intermedio, score)
+    return _MAESTRO[clave]
+
+
+def clase_suave(train: pd.DataFrame, intermedio, score, a: float) -> pd.Series:
+    """v4: a·q + (1 - a)·y de cada fila de train presente en t + 1 (NaN en las BAJA+1)."""
+    y = (train.clase_ternaria == "BAJA+2").astype(float).where(train.clase_ternaria != "BAJA+1")
+    return a * del_maestro(train, intermedio, score)[0] + (1 - a) * y
+
+
+def intermedio_suave(train: pd.DataFrame, intermedio, score) -> tuple:
+    """v4: las filas del intermedio como filas de train (BAJA+1 o, por ahora, CONTINUA) y su clase suave: NaN en las
+    BAJA+1 y q = P(BAJA+1 en m | X_m) en el resto, que están todas en el mes que se puntúa."""
+    q_m = del_maestro(train, intermedio, score)[1]
+    b1 = intermedio.baja1.to_numpy(bool)
+    x = intermedio.drop(columns=["baja1"]).assign(clase_ternaria=np.where(b1, "BAJA+1", "CONTINUA"))
+    return x, pd.Series(x.numero_de_cliente.map(q_m).to_numpy(), index=x.index).where(~b1)
+
+
+def _maestro(train, intermedio, score):
+    cols = _cols(train)
+    meses = sorted(train.foto_mes.unique())
+    m_u = train[train.foto_mes.isin(meses[1:])]  # los meses u = t + 1 de algún t de train
+    M = pd.concat([m_u[cols + ["numero_de_cliente", "foto_mes"]], intermedio[cols + ["numero_de_cliente", "foto_mes"]]])
+    yb1 = np.concatenate([(m_u.clase_ternaria == "BAJA+1").to_numpy(), intermedio.baja1.to_numpy()])
+    clientes = M.numero_de_cliente.unique()
+    pliegue = dict(zip(clientes, np.random.default_rng(SEMILLA_OOF).permutation(len(clientes)) % 4))
+    g = M.numero_de_cliente.map(pliegue).to_numpy()
+    sub = np.random.default_rng(SEMILLA_OOF + 1).random(len(M)) < SUB_MAESTRO
+
+    def uno(k):
+        fuera = g == k
+        entra = ~fuera & (yb1 | sub)
+        d = lgb.Dataset(M.loc[entra, cols], label=yb1[entra], weight=np.where(yb1[entra], 1.0, 1 / SUB_MAESTRO))
+        m = lgb.train({**PARAMS_MAESTRO, "seed": SEMILLA_OOF, "verbosity": -1, "num_threads": PARAMS["num_threads"]}, d,
+                      num_boost_round=RONDAS_MAESTRO)
+        return fuera, m.predict(M.loc[fuera, cols]), m.predict(score[cols])
+
+    q, q_score = np.zeros(len(M)), np.zeros(len(score))
+    with ThreadPoolExecutor(max_workers=4) as hilos:
+        for fuera, v, vs in hilos.map(uno, range(4)):
+            q[fuera] = v
+            q_score += vs / 4
+    qs = pd.Series(q, index=pd.MultiIndex.from_arrays([M.numero_de_cliente.to_numpy(), M.foto_mes.to_numpy()]))
+    siguiente = dict(zip(meses, meses[1:] + [int(intermedio.foto_mes.iloc[0])]))
+    clave = pd.MultiIndex.from_arrays([train.numero_de_cliente.to_numpy(), train.foto_mes.map(siguiente).to_numpy()])
+    return (pd.Series(qs.reindex(clave).to_numpy(), index=train.index).where(train.clase_ternaria != "BAJA+1"),
+            pd.Series(q_score, index=score.numero_de_cliente.to_numpy()))
+
+
+def suavizar(train, y, w, qt, alto, seed):
+    """v4: maestro. Cada fila presente en t + 1 (qt no es NaN) va como CONTINUA con peso s·(1 - qt)/π y otra vez como
+    BAJA+2 con peso PESO_BAJA2·qt/π, con s el submuestreo y π la probabilidad de que la fila quedara (s para las
+    CONTINUA submuestreadas, 1 para el resto): el mismo peso esperado que en el vigente, repartido según qt. Las copias
+    BAJA+2 de menos de PESO_MINIMO se sortean (ruleta): mismo peso esperado con muchas menos filas."""
+    pres = ~np.isnan(qt)
+    q = np.nan_to_num(qt)
+    pi = np.where((train.clase_ternaria == "CONTINUA").to_numpy() & ~alto, UNDERSAMPLING, 1.0)
+    w0 = np.where(pres, UNDERSAMPLING * (1 - q) / pi, w)
+    w2 = PESO_BAJA2 * q / pi
+    chico = w2 < PESO_MINIMO
+    dup = pres & (w2 > 0) & (~chico | (np.random.default_rng(seed + 1).random(len(w2)) < w2 / PESO_MINIMO))
+    w2 = np.where(chico, PESO_MINIMO, w2)
+    queda = w0 > 0
+    train = pd.concat([train[queda], train[dup]])
+    y = np.concatenate([np.where(pres, 0, y)[queda], np.full(dup.sum(), 2)])
+    return train, y, np.concatenate([w0[queda], w2[dup]])
 
 
 def baja3(train: pd.DataFrame, score: pd.DataFrame, intermedio) -> pd.Series:
