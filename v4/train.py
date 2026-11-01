@@ -144,7 +144,7 @@ def lags_y_deltas(df: pd.DataFrame) -> pd.DataFrame:
     base = [c for c in df.columns if c not in ("numero_de_cliente", "foto_mes")]
     g = df.groupby("numero_de_cliente")[base]
     new = {}
-    for k in (1, 2):  # Feature Engineering histórico de la cátedra: lags y delta lags de orden 1 y 2
+    for k in (1, 2, 3) if CAMBIOS["lag3"] else (1, 2):  # FE histórico de la cátedra: lags y delta lags de orden 1 y 2 (v4: y 3)
         lag = g.shift(k)
         new.update({f"{c}_lag{k}": lag[c] for c in base})
         new.update({f"{c}_delta{k}": df[c] - lag[c] for c in base})
@@ -160,7 +160,8 @@ def historia(x, l1, l2):
     prom = razon(np.nansum(v, axis=0).round(2), (~np.isnan(v)).sum(axis=0))
     maxi = np.fmax.reduce(v)  # fmax y fmin saltean los NaN
     orden2 = {"ratiolag2": razon(x, l2), "ratio12": razon(l1, l2)} if CAMBIOS["razones2"] else {}
-    return {**orden2,
+    acel = {"acel": x - 2 * l1 + l2} if CAMBIOS["aceleracion"] else {}
+    return {**orden2, **acel,
         # razones sin escala: un árbol no las arma solo y no se corren con la inflación
         "ratiolag1": razon(x, l1),
         "ratioavg3": razon(x, prom),
@@ -345,13 +346,15 @@ CAMBIOS = {
     "semillas_diversas": 0.0,       # j: hojas, mínimo por hoja y fracción de columnas de cada semilla, por exp(U(-j, j))
     "intermedio_plano": False,      # el intermedio entra al general: sus BAJA+1 como BAJA+1, el resto como CONTINUA
     "deriva": 0,                    # k: el general no ve las k variables que más separan el mes que se puntúa del train
+    "lag3": False,                  # lag y delta de orden 3 (el primer mes de entrenamiento los tiene en NaN)
+    "aceleracion": False,           # x - 2 lag1 + lag2 de las magnitudes
     "alternar": [],                 # versiones del general que se turnan con la vigente por semilla: {"sacar": sufijos}, {"deriva": k} o {"params": {...}}
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
 
 HISTORIA = tuple(f"_{s}" for s in ("lag1", "delta1", "lag2", "delta2", "ratiolag1", "ratioavg3", "avg3", "min3", "max3", "ratiomax3",
-                                    "ratiolag2", "ratio12"))
+                                    "ratiolag2", "ratio12", "lag3", "delta3", "acel"))
 
 
 def historia_de_resumen(c: str) -> bool:
@@ -510,7 +513,7 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
     # quedan las 5 columnas de internet (cruda, 2 lags, 2 deltas). El assert es para que un cambio de nombres no deje
     # el enmascarado vacío sin avisar (el modelo entrenaría igual, con internet promediado en los tres meses).
     internet = [c for c in train.columns if c.startswith("internet")]
-    assert len(internet) == 5, f"se esperaban 5 columnas de internet y hay {internet}"
+    assert len(internet) == (7 if CAMBIOS["lag3"] else 5), f"se esperaban 5 columnas de internet (7 con lag3) y hay {internet}"
     # En 2019 el valor mayoritario es 1 (no 0, como en 2021): la variable y sus lags van a 1 y los deltas a 0.
     if not CAMBIOS["sin_enmascarar_internet"]:
         viejos = (train.foto_mes < months[-1]).to_numpy()
