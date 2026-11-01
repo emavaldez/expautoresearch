@@ -1,0 +1,74 @@
+{
+ "id": "V69",
+ "titulo": "Árboles grandes con 511 cortes por variable",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'max_bin': 511}",
+ "tipo": "agrega",
+ "paso": 72,
+ "vigente": "B2",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2215,
+ "fecha": "2026-11-01 02:28",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 269504000.4156276,
+   "ganancia": 267327500.0,
+   "auc": 0.9138423848932522
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -1365856.1928512056,
+    "por_mes": {
+     "201907": -5465093.516209483,
+     "201908": -527780.5486284494,
+     "201909": 1895305.4862843156
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -749394.4305901667,
+     "se": 1023068.4654170119,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -733333.3333333334,
+    "por_mes": {
+     "201907": -2200000.0,
+     "201908": 1100000.0,
+     "201909": -1100000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -880000.0,
+     "se": 1355179.3649222641,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00028574016044017697,
+    "por_mes": {
+     "201907": -0.00047221797984053904,
+     "201908": 0.0003000464109952361,
+     "201909": -0.0006850489124752279
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -0.00045797180423178625,
+     "se": 7.890292651812524e-05,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}

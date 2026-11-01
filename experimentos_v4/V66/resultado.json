@@ -1,0 +1,74 @@
+{
+ "id": "V66",
+ "titulo": "El intermedio con la clase del maestro, en una sola fila",
+ "cambio": "intermedio_suave=True; suave_una_fila=True",
+ "tipo": "agrega",
+ "paso": 69,
+ "vigente": "B2",
+ "pred_meseta": "+1.0",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2214,
+ "fecha": "2026-11-01 00:40",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 268645739.8171239,
+   "ganancia": 266227500.0,
+   "auc": 0.9137656090333901
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -2224116.7913549147,
+    "por_mes": {
+     "201907": -3956982.543640852,
+     "201908": -121246.88279300928,
+     "201909": -2594120.9476308823
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": 646892.3524522185,
+     "se": 797281.488081218,
+     "ganadas": 4,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -1833333.3333333333,
+    "por_mes": {
+     "201907": -3300000.0,
+     "201908": -3300000.0,
+     "201909": 1100000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 1686666.6666666672,
+     "se": 1527728.8881066416,
+     "ganadas": 4,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00036251602030220226,
+    "por_mes": {
+     "201907": -0.002037833790220489,
+     "201908": 0.0003852988288801651,
+     "201909": 0.0005649869004337171
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": -0.00024043816662848712,
+     "se": 0.00020275812800832753,
+     "ganadas": 1,
+     "n": 5
+    }
+   }
+  }
+ }
+}

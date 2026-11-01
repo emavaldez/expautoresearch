@@ -342,6 +342,7 @@ CAMBIOS = {
     "franja_suave": 0.0,            # el mismo a para la clase de la franja de entrenamiento (segunda etapa)
     "intermedio_suave": False,      # el intermedio entra al general, con q del maestro sobre el mes que se puntúa
     "suave_una_fila": False,        # la clase suave en una fila con clase blanda (en lugar de dos copias con peso)
+    "semillas_diversas": 0.0,       # j: hojas, mínimo por hoja y fracción de columnas de cada semilla, por exp(U(-j, j))
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -514,6 +515,17 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
     return train, elegidas or cols, np.asarray(y), w, objetivo
 
 
+def diversos(seed: int) -> dict:
+    """v4: semillas_diversas. Los hiperparámetros propios de la semilla (nada si j = 0)."""
+    j = CAMBIOS["semillas_diversas"]
+    if not j:
+        return {}
+    f = np.exp(np.random.default_rng(seed + 2).uniform(-j, j, 3))
+    return {"num_leaves": max(2, round(PARAMS["num_leaves"] * f[0])),
+            "min_data_in_leaf": max(1, round(PARAMS["min_data_in_leaf"] * f[1])),
+            "feature_fraction": float(min(1.0, PARAMS["feature_fraction"] * f[2]))}
+
+
 def puntaje(P: np.ndarray) -> np.ndarray:
     """De las tres probabilidades de la multiclase al puntaje que ordena: P(BAJA+2) + a · P(BAJA+1) (E019: a = 1)."""
     return P[:, 2] + CAMBIOS["puntaje_baja1"] * P[:, 1]
@@ -530,7 +542,8 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, ob
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
         return model.predict(score[cols])
     clases = int(np.max(y)) + 1 if baja3 is not None else 3
-    model = lgb.train({**PARAMS, "objective": "multiclass", "num_class": clases, "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
+    model = lgb.train({**PARAMS, **diversos(seed), "objective": "multiclass", "num_class": clases, "seed": seed}, dtrain,
+                      num_boost_round=NUM_ROUNDS)
     return puntaje(model.predict(score[cols]))
 
 
