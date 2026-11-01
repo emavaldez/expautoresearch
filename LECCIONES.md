@@ -67,3 +67,37 @@ hasta 201912: nada de 2020 entra acá.
 - v3, loop: especialistas y segundas etapas no suben la AUC (H7, H24 en los tres segmentos, H8, H30 TabPFN), y algunos suben un poco la meseta (+0,7 a +3,0 M). H14 (pesos por costo) es el caso extremo: +8,9 M de meseta y −0,0030 de AUC: ordena mejor arriba y peor el resto.
 - v3, loop: SMOTE (H26 −0,0058) y la red sobre la historia (H29 −0,0046 en el ensamble; sola, 0,89 de AUC) empeoran, como predecían los papers.
 - v3, loop: las predicciones del agente fueron optimistas: predijo subas en 20 de 26 y hubo una sola. Lo que no se probó todavía es combinar columnas distintas (sumas entre productos y canales): el árbol no puede sumar columnas, y es lo que proponen las ideas de H28.
+
+## v4 (mejorar E019 con 2019, desde 2026-10-29)
+
+- v4, regla: decide la meseta del ensamble de 5 semillas en 201907, 201908 y 201909 (cada mes con su ventana m − 5 a
+  m − 2), con confirmación de 10 semillas nuevas. De 82 ideas quedaron 4: V14 (sin la tendencia y el promedio de 3
+  meses de la cátedra, +0,5 M por mes), V28 (sumar los árboles grandes de E025, +4,3 M), V29 (sólo los árboles
+  grandes, +3,5 M) y B2 (segunda etapa en la franja dudosa con los parámetros de su búsqueda, +1,1 M).
+- v4: lo que más dio fue capacidad. De 31 a 254 hojas (E025) fueron +7,8 M por mes entre V28 y V29. Más allá de eso
+  no sube: 400 hojas (V75 −2,2), la mitad del learning rate con el doble de árboles (V50 +0,1), DART (V73 −4,9).
+- v4: las perillas sueltas alrededor del vigente no mueven nada (path_smooth, sorteo por nodo, max_bin 511, bagging,
+  extra_trees, submuestreo 0,2 y 0,3: de +0,6 a −3,9 M). Las búsquedas de los parámetros del general (B1, B4) no
+  encontraron nada que se sostuviera con las semillas del loop: eligen sobre los mismos tres meses y se ajustan a
+  ellos.
+- v4: otros algoritmos en el ensamble empeoran: XGBoost (V1 −2,9, V39 −4,2), la binaria (V20, V36), el modelo de la
+  cátedra (V2), una red neuronal (exploración, 32 M por debajo y peor con cualquier peso). Un miembro más débil y
+  parecido baja el promedio.
+- v4: sacar variables apenas se nota (V14 quedó; V45 y V74, sin los extremos de la ventana, dan +1,4 a +1,8 por
+  semilla pero no en el ensamble); sacar familias enteras pierde (sin lags −1,1, sin orden 2 −4,6, sin razones −6,6);
+  agregar variables nuevas (del agente, razones de orden 2, historia de tarjetas, IPC, percentil) no suma. Los
+  canaritos en el general son lo peor (V37 −13,6): el modelo grande vive de muchas variables débiles.
+- v4: tocar la clase no sirvió. Cuarta clase con las que se van a los tres meses (V59, V60), guardar las CONTINUA
+  difíciles (V57 −10,3, V58 −18,7: filas livianas que arman hojas solas), y un maestro que mira el mes siguiente
+  (V61–V66). El argumento de Rao-Blackwell vale con la probabilidad verdadera, no con una estimada: el general sólo
+  puede aprender lo que el maestro captó (V65, clase blanda en una fila: −7,4 M, AUC −0,002).
+- v4: patrón que se repite (V59, V60, V63, V64, V74, V76, V77): cada modelo suelto mejora y el ensamble de 5 no. Lo que
+  se entrega es el ensamble, así que esas mejoras no sirven. Darle a cada semilla sus propios hiperparámetros tampoco
+  ayuda (V71, V72): el ensamble no se queda corto por falta de diversidad.
+- v4: el mínimo de filas por hoja cuenta filas, no peso. Mandar filas con pesos chicos (0,1 a 0,13) arma hojas con
+  filas que casi no pesan y sobreajusta justo en la zona difícil (V57, V61).
+- v4, final (201910, 20 semillas del bloque final, la primera vez que v4 mira ese mes): E019 293,4 M de meseta, B2
+  296,8 M (+3,3 M; por semilla +2,5 ± 1,0, gana en 15 de 20; AUC +0,0022, sube en 19 de 20; bootstrap de clientes
+  90% −4,3 a +12,3 M). En screening la cadena sumaba +9,4 M por mes y en 201910 quedan +3,3: lo que se sostiene son
+  los árboles grandes (V28 → V29 +3,5); V14 (+0,1) y la segunda etapa de B2 (−0,3) no. Elegir 4 de 82 ideas sobre los
+  mismos tres meses infla lo que cada una parece sumar.
