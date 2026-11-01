@@ -341,6 +341,7 @@ CAMBIOS = {
     "maestro": 0.0,                 # a: la clase de las filas presentes en t + 1 pasa a a·q + (1 - a)·y, q del maestro
     "franja_suave": 0.0,            # el mismo a para la clase de la franja de entrenamiento (segunda etapa)
     "intermedio_suave": False,      # el intermedio entra al general, con q del maestro sobre el mes que se puntúa
+    "suave_una_fila": False,        # la clase suave en una fila con clase blanda (en lugar de dos copias con peso)
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -456,7 +457,8 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
     # igual sólo mira el último mes con clase, que el enmascarado no toca.
     elegidas = general_canaritos(train, cols) if CAMBIOS["canaritos_general"] else None
     # modelo general, para todos los clientes: multiclase, con submuestreo de los CONTINUA y las BAJA+1 a medio peso
-    keep = np.random.default_rng(seed).random(len(train)) < UNDERSAMPLING
+    sorteo = np.random.default_rng(seed).random(len(train))
+    keep = sorteo < UNDERSAMPLING
     duras = np.zeros(len(train), bool)
     if dificiles is not None:  # v4: continua_dificiles (dificiles es la base fuera de muestra de cada fila)
         q = dificiles.reindex(train.index).groupby(train.foto_mes.to_numpy()).rank(pct=True, ascending=False)
@@ -465,6 +467,12 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
     # v4: maestro; las CONTINUA con clase suave alta se quedan todas (abajo pesan 1 / probabilidad de quedar)
     alto = np.zeros(len(train), bool) if suave is None else (suave.reindex(train.index).to_numpy() > Q_ALTO)
     sigue = keep | duras | b3 | alto | (train.clase_ternaria != "CONTINUA").to_numpy()
+    una_fila = suave is not None and CAMBIOS["suave_una_fila"]
+    if una_fila:  # v4: cada fila presente en t + 1 queda con probabilidad max(s, q); las BAJA+1, siempre
+        qt = suave.reindex(train.index).to_numpy()
+        pi = np.where((train.clase_ternaria == "BAJA+1").to_numpy(), 1.0, np.maximum(UNDERSAMPLING, np.nan_to_num(qt)))
+        sigue = (sorteo < pi) | duras | b3
+        qt, pi = qt[sigue], pi[sigue]
     train, duras, b3, alto = train[sigue], duras[sigue], b3[sigue], alto[sigue]
     if objetivo == "binaria":
         y = (train.clase_ternaria != "CONTINUA").astype(int)
@@ -477,7 +485,10 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
             w = np.where(b3, CAMBIOS["baja3"], w)
         if suave is not None:  # v4: maestro
             assert not duras.any() and not b3.any(), "maestro no se combina con continua_dificiles ni baja3"
-            train, y, w = suavizar(train, y.to_numpy(), w, suave.reindex(train.index).to_numpy(), alto, seed)
+            if una_fila:
+                y, w = clase_blanda(qt, pi, w, (train.clase_ternaria == "BAJA+1").to_numpy())
+            else:
+                train, y, w = suavizar(train, y.to_numpy(), w, suave.reindex(train.index).to_numpy(), alto, seed)
     if duras.any():
         pd_ = CAMBIOS["peso_dificiles"]
         w = np.where(duras, UNDERSAMPLING if pd_ is None else pd_, w)
@@ -512,6 +523,8 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, ob
          baja3=None, suave=None, extra=None) -> np.ndarray:
     """El general (E019 ya no tiene especialista ni segunda etapa). Devuelve el puntaje de cada fila de score."""
     train, cols, y, w, objetivo = preparar(train, seed, peso_fila, objetivo, dificiles, baja3, suave, extra)
+    if np.ndim(y) == 2:  # v4: suave_una_fila, la clase de cada fila es una distribución
+        return puntaje(blanda(train[cols], y, w, score[cols], seed))
     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
     if objetivo == "binaria":
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
@@ -1033,7 +1046,8 @@ def del_maestro(train: pd.DataFrame, intermedio, score) -> tuple:
 def clase_suave(train: pd.DataFrame, intermedio, score, a: float) -> pd.Series:
     """v4: a·q + (1 - a)·y de cada fila de train presente en t + 1 (NaN en las BAJA+1)."""
     y = (train.clase_ternaria == "BAJA+2").astype(float).where(train.clase_ternaria != "BAJA+1")
-    return a * del_maestro(train, intermedio, score)[0] + (1 - a) * y
+    q = del_maestro(train, intermedio, score)[0].fillna(y)  # una fila sin q (no pasa con los datos enteros): su clase
+    return a * q + (1 - a) * y
 
 
 def intermedio_suave(train: pd.DataFrame, intermedio, score) -> tuple:
@@ -1074,6 +1088,40 @@ def _maestro(train, intermedio, score):
     clave = pd.MultiIndex.from_arrays([train.numero_de_cliente.to_numpy(), train.foto_mes.map(siguiente).to_numpy()])
     return (pd.Series(qs.reindex(clave).to_numpy(), index=train.index).where(train.clase_ternaria != "BAJA+1"),
             pd.Series(q_score, index=score.numero_de_cliente.to_numpy()))
+
+
+def clase_blanda(qt, pi, w, b1):
+    """v4: suave_una_fila. La clase de cada fila como distribución sobre (CONTINUA, BAJA+1, BAJA+2) y su peso: las
+    presentes en t + 1 reparten s·(1 - q) y PESO_BAJA2·q entre CONTINUA y BAJA+2, divididos por π (con q = 0 o 1 es el
+    vigente); las BAJA+1 (b1) quedan como estaban."""
+    pres = ~b1
+    q = np.nan_to_num(qt)
+    a0, a2 = UNDERSAMPLING * (1 - q) / pi, PESO_BAJA2 * q / pi
+    W = np.where(pres, a0 + a2, w)
+    R = np.zeros((len(q), 3))
+    R[~pres, 1] = 1.0
+    R[pres, 0], R[pres, 2] = (a0 / W)[pres], (a2 / W)[pres]
+    return R, W
+
+
+def softmax(z):
+    z = np.exp(z - z.max(axis=1, keepdims=True))
+    return z / z.sum(axis=1, keepdims=True)
+
+
+def blanda(X, R, w, Z, seed):
+    """v4: la multiclase de LightGBM con clase blanda: el mismo gradiente y hessiano que la multiclase, (p - r)·w y
+    1,5·p(1 - p)·w, y el mismo punto de partida (el log de la proporción pesada de cada clase). Devuelve las
+    probabilidades de Z."""
+    prior = np.log((R * w[:, None]).sum(axis=0) / w.sum())
+
+    def objetivo(preds, _):
+        p = softmax(preds)
+        return w[:, None] * (p - R), w[:, None] * 1.5 * p * (1 - p)
+
+    d = lgb.Dataset(X, label=R.argmax(axis=1), weight=w, init_score=np.tile(prior, (len(X), 1)), free_raw_data=True)
+    m = lgb.train({**PARAMS, "objective": objetivo, "num_class": 3, "seed": seed}, d, num_boost_round=NUM_ROUNDS)
+    return softmax(m.predict(Z, raw_score=True) + prior)
 
 
 def suavizar(train, y, w, qt, alto, seed):

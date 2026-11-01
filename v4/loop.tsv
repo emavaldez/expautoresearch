@@ -62,3 +62,7 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 61	V58	continua_dificiles=0.15; peso_dificiles=1.0	agrega	+0.0	screening	-18675106	-15339943	2480464	0/5	0	-20166667	-0.00997	se descarta	B2	6779	2026-10-31 18:29
 62	V59	baja3=1.0	agrega	+0.5	screening	-1288774	1161140	567456	4/5	0	-366667	0.00065	se descarta	B2	6579	2026-10-31 20:19
 63	V60	baja3=0.3	agrega	+0.3	screening	-587330	516305	1238610	3/5	1	-1466667	0.00061	se descarta	B2	2696	2026-10-31 21:04
+64	V61	maestro=1.0	agrega	+1.5	screening	-6991926	-4117804	1310659	0/5	0	-11000000	-0.00214	se descarta	B2	2117	2026-10-31 21:40
+65	V62	maestro=0.5	agrega	+1.0	screening	-5347001	-2704116	1205939	1/5	0	-3300000	-0.00094	se descarta	B2	2158	2026-10-31 22:16
+66	V63	franja_suave=1.0	agrega	+0.8	screening	-2795810	371362	774892	4/5	1	-3666667	0.00014	se descarta	B2	2123	2026-10-31 22:51
+67	V64	intermedio_suave=True	agrega	+1.0	screening	-2688645	577774	510549	4/5	0	-1466667	-0.00035	se descarta	B2	2211	2026-10-31 23:28
