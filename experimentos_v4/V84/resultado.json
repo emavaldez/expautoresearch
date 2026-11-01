@@ -1,0 +1,74 @@
+{
+ "id": "V84",
+ "titulo": "Tres versiones en ronda: vigente, sin extremos, sin deriva",
+ "cambio": "alternar=[{'sacar': ('_min3', '_max3', '_ratiomax3')}, {'deriva': 50}]",
+ "tipo": "agrega",
+ "paso": 87,
+ "vigente": "B2",
+ "pred_meseta": "+0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1892,
+ "fecha": "2026-11-01 13:21",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 270680762.67664176,
+   "ganancia": 268427500.0,
+   "auc": 0.9138180476348223
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -189093.93183707198,
+    "por_mes": {
+     "201907": -2443385.286783099,
+     "201908": 1232150.8728179634,
+     "201909": 643952.6184539199
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 917571.903574405,
+     "se": 515071.09621871036,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 366666.6666666667,
+    "por_mes": {
+     "201907": 1100000.0,
+     "201908": 0.0,
+     "201909": 0.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 953333.3333333333,
+     "se": 910042.7340393295,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00031007741887008794,
+    "por_mes": {
+     "201907": -0.00036203929072575747,
+     "201908": -0.00019460004589455515,
+     "201909": -0.00037359291998995126
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.0004708684638518775,
+     "se": 0.00019614414873362815,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}

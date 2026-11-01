@@ -1,0 +1,74 @@
+{
+ "id": "V83",
+ "titulo": "La mitad de las semillas sin las 50 variables que más se corrieron",
+ "cambio": "alternar=[{'deriva': 50}]",
+ "tipo": "agrega",
+ "paso": 86,
+ "vigente": "B2",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2007,
+ "fecha": "2026-11-01 12:49",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 271379943.89027435,
+   "ganancia": 267327500.0,
+   "auc": 0.9141781548064584
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 510087.28179552156,
+    "por_mes": {
+     "201907": -835766.8329177499,
+     "201908": 1995567.3316708207,
+     "201909": 370461.3466334939
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 716179.5511221945,
+     "se": 474570.2038076533,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -733333.3333333334,
+    "por_mes": {
+     "201907": -1100000.0,
+     "201908": -1100000.0,
+     "201909": 0.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": 1100000.0,
+     "se": 695701.0852370433,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 5.002975276591215e-05,
+    "por_mes": {
+     "201907": 1.0760651582009118e-05,
+     "201908": -0.00018908495120673052,
+     "201909": 0.00032841355792245785
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": -6.138159561062857e-05,
+     "se": 0.0001062586907765258,
+     "ganadas": 1,
+     "n": 5
+    }
+   }
+  }
+ }
+}

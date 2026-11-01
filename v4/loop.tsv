@@ -83,3 +83,7 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 82	V79	intermedio_plano=True	agrega	+0.5	screening	-20335324	-19555147	1454674	0/5	0	-22366667	-0.00603	se descarta	B2	2020	2026-11-01 10:26
 83	V80	deriva=50	agrega	-0.5	screening	44782	1390686	331081	5/5	2	366667	-0.00054	se descarta	B2	2043	2026-11-01 11:00
 84	V81	deriva=15	agrega	0.0	screening	-1057207	151271	476001	2/5	2	-3300000	-0.00017	se descarta	B2	2106	2026-11-01 11:44
+85	V82	alternar=[{'sacar': ('_min3', '_max3', '_ratiomax3')}]	agrega	+0.5	screening	825983	763398	514660	2/5	3	1100000	0.00011	se descarta	B2	1895	2026-11-01 12:16
+86	V83	alternar=[{'deriva': 50}]	agrega	+0.3	screening	510087	716180	474570	2/5	2	-733333	5e-05	se descarta	B2	2007	2026-11-01 12:49
+87	V84	alternar=[{'sacar': ('_min3', '_max3', '_ratiomax3')}, {'deriva': 50}]	agrega	+0.5	screening	-189094	917572	515071	3/5	2	366667	-0.00031	se descarta	B2	1892	2026-11-01 13:21
+88	V85	alternar=[{'params': {'extra_trees': True}}]	agrega	0.0	screening	-1184352	-727230	648357	0/5	1	-1466667	-0.00066	se descarta	B2	6233	2026-11-01 15:05

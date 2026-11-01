@@ -1,0 +1,74 @@
+{
+ "id": "V82",
+ "titulo": "La mitad de las semillas sin los extremos de la ventana",
+ "cambio": "alternar=[{'sacar': ('_min3', '_max3', '_ratiomax3')}]",
+ "tipo": "agrega",
+ "paso": 85,
+ "vigente": "B2",
+ "pred_meseta": "+0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1895,
+ "fecha": "2026-11-01 12:16",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 271695839.5677473,
+   "ganancia": 269160833.3333333,
+   "auc": 0.9142379270838544
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 825982.9592684805,
+    "por_mes": {
+     "201907": 543210.7231919765,
+     "201908": 1532936.4089775383,
+     "201909": 401801.7456359267
+    },
+    "meses_ganados": 3,
+    "pareado": {
+     "media": 763398.1712385714,
+     "se": 514659.96999885846,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 1100000.0,
+    "por_mes": {
+     "201907": 2200000.0,
+     "201908": 0.0,
+     "201909": 1100000.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 1173333.3333333335,
+     "se": 855206.2779106441,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 0.00010980203016208723,
+    "por_mes": {
+     "201907": -1.1480388146134501e-05,
+     "201908": 0.0004923169258003179,
+     "201909": -0.00015143044716792176
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 4.403683360827415e-05,
+     "se": 0.0002593226929220643,
+     "ganadas": 1,
+     "n": 5
+    }
+   }
+  }
+ }
+}
