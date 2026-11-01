@@ -345,6 +345,7 @@ CAMBIOS = {
     "semillas_diversas": 0.0,       # j: hojas, mínimo por hoja y fracción de columnas de cada semilla, por exp(U(-j, j))
     "intermedio_plano": False,      # el intermedio entra al general: sus BAJA+1 como BAJA+1, el resto como CONTINUA
     "deriva": 0,                    # k: el general no ve las k variables que más separan el mes que se puntúa del train
+    "alternar": [],                 # versiones del general que se turnan con la vigente por semilla: {"sacar": sufijos}, {"deriva": k} o {"params": {...}}
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -547,7 +548,7 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, ob
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
         return model.predict(score[cols])
     clases = int(np.max(y)) + 1 if baja3 is not None else 3
-    model = lgb.train({**PARAMS, **diversos(seed), "objective": "multiclass", "num_class": clases, "seed": seed}, dtrain,
+    model = lgb.train({**PARAMS, **diversos(seed), **turno(seed).get("params", {}), "objective": "multiclass", "num_class": clases, "seed": seed}, dtrain,
                       num_boost_round=NUM_ROUNDS)
     return puntaje(model.predict(score[cols]))
 
@@ -1030,7 +1031,7 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
              if CAMBIOS["maestro"] or CAMBIOS["intermedio_suave"] else None,
              extra=intermedio_suave(train, intermedio, score) if CAMBIOS["intermedio_suave"]
              else intermedio_plano(intermedio) if CAMBIOS["intermedio_plano"] else None,
-             fuera=deriva(train, score) if CAMBIOS["deriva"] else None)
+             fuera=fuera_del_general(train, score, seed))
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
     otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
@@ -1090,9 +1091,31 @@ PARAMS_DERIVA = dict(objective="binary", learning_rate=0.1, num_leaves=31, min_d
 _DERIVA = {}
 
 
-def deriva(train: pd.DataFrame, score: pd.DataFrame) -> set:
-    """v4: las k variables (CAMBIOS["deriva"]) que más ganancia dan a un clasificador del mes que se puntúa contra los
-    meses de entrenamiento (tantas filas de cada lado). No depende de la semilla: una vez por mes."""
+def fuera_del_general(train: pd.DataFrame, score: pd.DataFrame, seed: int):
+    """v4: las columnas que no ve el general de esta semilla: las de deriva y las de la versión que le toca (alternar)."""
+    fuera = deriva(train, score, CAMBIOS["deriva"]) if CAMBIOS["deriva"] else set()
+    v = turno(seed)
+    if "sacar" in v:
+        fuera = fuera | {c for c in _cols(train) if c.endswith(tuple(v["sacar"]))}
+    if "deriva" in v:
+        fuera = fuera | deriva(train, score, v["deriva"])
+    return fuera or None
+
+
+def turno(seed: int) -> dict:
+    """v4: alternar. La versión del general de esta semilla: {} (la vigente) o una de CAMBIOS["alternar"], en ronda por el
+    lugar de la semilla entre los primos desde la primigenia (las semillas del arnés): cada bloque queda parejo."""
+    if not CAMBIOS["alternar"]:
+        return {}
+    import config
+    from prepare import _es_primo
+    i = sum(map(_es_primo, range(config.SEMILLA_PRIMIGENIA, seed))) % (len(CAMBIOS["alternar"]) + 1)
+    return {} if i == 0 else CAMBIOS["alternar"][i - 1]
+
+
+def deriva(train: pd.DataFrame, score: pd.DataFrame, k: int) -> set:
+    """v4: las k variables que más ganancia dan a un clasificador del mes que se puntúa contra los meses de
+    entrenamiento (tantas filas de cada lado). No depende de la semilla: una vez por mes."""
     clave = _clave(train) + (int(score.foto_mes.iloc[0]),)
     with _CANDADO_CACHE:
         if clave not in _DERIVA:
@@ -1102,9 +1125,9 @@ def deriva(train: pd.DataFrame, score: pd.DataFrame) -> set:
             m = _lgb(pd.concat([t[cols], score[cols]]), np.r_[np.zeros(len(t)), np.ones(len(score))], PARAMS_DERIVA,
                      200, 0)
             imp = pd.Series(m.feature_importance("gain"), index=cols).sort_values(ascending=False)
-            _DERIVA[clave] = set(imp.index[:CAMBIOS["deriva"]])
+            _DERIVA[clave] = list(imp.index)
             print(f"deriva {int(score.foto_mes.iloc[0])}: {', '.join(imp.index[:12])}", flush=True)
-    return _DERIVA[clave]
+    return set(_DERIVA[clave][:k])
 
 
 def _maestro(train, intermedio, score):
