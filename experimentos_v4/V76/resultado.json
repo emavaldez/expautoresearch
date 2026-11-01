@@ -1,0 +1,74 @@
+{
+ "id": "V76",
+ "titulo": "Más CONTINUA en el submuestreo (20%)",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+ "tipo": "agrega",
+ "paso": 79,
+ "vigente": "B2",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2233,
+ "fecha": "2026-11-01 06:46",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 271442396.0931006,
+   "ganancia": 267694166.66666666,
+   "auc": 0.9134903653770171
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 572539.4846217731,
+    "por_mes": {
+     "201907": 369569.8254363537,
+     "201908": 1852923.940149635,
+     "201909": -504875.31172066927
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 1770273.0673316855,
+     "se": 1134478.0358161388,
+     "ganadas": 4,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -366666.6666666667,
+    "por_mes": {
+     "201907": -2200000.0,
+     "201908": -1100000.0,
+     "201909": 2200000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 3006666.6666666665,
+     "se": 1713553.8120136955,
+     "ganadas": 4,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.0006377596766752683,
+    "por_mes": {
+     "201907": -0.001058638094179054,
+     "201908": -0.0005282843244899249,
+     "201909": -0.00032635661135682614
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.0004472529697871079,
+     "se": 0.00010790363797984673,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}

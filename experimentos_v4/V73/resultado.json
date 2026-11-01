@@ -1,0 +1,74 @@
+{
+ "id": "V73",
+ "titulo": "Árboles grandes con DART",
+ "cambio": "params={'num_leaves': 254, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.132, 'learning_rate': 0.05, 'boosting': 'dart', 'drop_rate': 0.1, 'skip_drop': 0.5, 'max_drop': 50}",
+ "tipo": "agrega",
+ "paso": 76,
+ "vigente": "B2",
+ "pred_meseta": "+0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2740,
+ "fecha": "2026-11-01 04:57",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270869856.6084788,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9141281250536922
+  },
+  "cambio": {
+   "meseta": 266002173.7323358,
+   "ganancia": 262560833.33333334,
+   "auc": 0.9132082880208139
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -4867682.876142979,
+    "por_mes": {
+     "201907": -5519682.044887781,
+     "201908": -3617793.0174563825,
+     "201909": -5465573.566084772
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -1735490.0249376458,
+     "se": 1482370.835104039,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -5500000.0,
+    "por_mes": {
+     "201907": -4400000.0,
+     "201908": -3300000.0,
+     "201909": -8800000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -1173333.3333333335,
+     "se": 1778994.7223705365,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.0009198370328784566,
+    "por_mes": {
+     "201907": -0.0014553781264647903,
+     "201908": -0.0008369612271722504,
+     "201909": -0.00046717174499832925
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.0010003887374626208,
+     "se": 0.00015335894318676142,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}
