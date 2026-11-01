@@ -197,3 +197,14 @@ bloque final, y la ablación de lo que quedó.
 **Limitaciones.** Los tres meses de decisión se usan muchas veces: con muchos pasos, algo puede quedar por suerte del
 mes; la confirmación con semillas nuevas protege de la suerte de las semillas, no de la del mes. Por eso el test
 201910 queda sin mirar hasta el final. 201908 y 201909 ya se habían usado para elegir E019.
+
+**Enmienda (2026-11-01, después de 90 pasos): volver a medir con semillas nuevas.** Las 5 semillas de screening
+compararon cada idea contra un vigente que se eligió con esas mismas semillas, y el vigente arrastra la suerte que lo
+hizo pasar. Con B2 se nota: contra V29 dio +5,2 M por mes en screening y +1,1 M en confirmación, y su ensamble de 10
+semillas quedó por debajo del de 5 (V29 subió 2,1 M al pasar de 5 a 10). En las 53 ideas medidas contra B2, el
+ensamble de la idea quedó en promedio 1,7 M por debajo de su diferencia por semilla; contra los vigentes anteriores,
+entre -0,9 y +0,5. Las ideas con `tipo` = `reprueba` hacen el primer paso con las 10 semillas del bloque de
+confirmación que el loop nunca usó (de la 15 a la 24, `arnes.EXTRA`), el vigente incluido, con la misma regla del
+screening, y lo que pasa se confirma como siempre. Se vuelven a medir las 8 ideas sobre B2 con la mejor diferencia por
+semilla o con el ensamble arriba en los tres meses, elegidas antes de correr. Si una queda, las siguientes se miden
+contra un vigente elegido con estas semillas, y vale la misma advertencia.

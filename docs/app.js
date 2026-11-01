@@ -652,7 +652,7 @@ function vV4() {
       <p class="nota">B2 le gana a E019 por 3,3 M en 201910: por semilla la diferencia supera dos errores estándar y la AUC sube en 19 de 20 semillas. Con un solo mes de test, el intervalo por clientes todavía cruza el cero. Lo que se sostiene son los árboles grandes (V28 → V29); el resto de la cadena no se nota en 201910.</p>`;
   }
   const quedan = pasos.filter((p) => p.decision === "queda").length;
-  t += `<h3>Los ${pasos.length} pasos del loop</h3><p class="intro">Quedaron ${quedan}. Δ meseta es la diferencia contra el vigente, por mes, en la etapa a la que llegó (screening o confirmación). Tocá un renglón para ver por qué se probó.</p>
+  t += `<h3>Los ${pasos.length} pasos del loop</h3><p class="intro">Quedaron ${quedan}. Δ meseta es la diferencia contra el vigente, por mes, en la etapa a la que llegó (screening, semillas nuevas o confirmación). Tocá un renglón para ver por qué se probó.</p>
     <div class="scroll-x"><table class="libro fija"><colgroup><col style="width:50px"><col><col style="width:90px"><col style="width:100px"><col style="width:120px"><col style="width:60px"><col style="width:110px"></colgroup><thead><tr><th class="num">Paso</th><th>Idea</th><th class="num">Predicción</th><th class="num">Δ meseta</th><th class="num">Por semilla</th><th class="num">Meses</th><th>Decisión</th></tr></thead><tbody>`;
   for (const p of pasos.slice().reverse()) {
     const q = p.decision === "queda";

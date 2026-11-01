@@ -43,7 +43,15 @@ def cargar_modulo(ruta: Path, nombre: str = "train_v4"):
     return mod
 
 
+# Enmienda del 2026-11-01 (PROTOCOLO.md, v4): las 10 semillas del bloque de confirmación que el loop nunca usó (de la
+# 15 a la 24), para volver a medir ideas contra un vigente que no se eligió con ellas.
+EXTRA = {"reprueba": ("confirmacion", 10, 20)}
+
+
 def semillas(bloque: str) -> list[int]:
+    if bloque in EXTRA:
+        b, i, j = EXTRA[bloque]
+        return prepare.semillas(b)[i:j]
     return prepare.semillas(bloque, N_CONFIRMACION if bloque == "confirmacion" else None)
 
 

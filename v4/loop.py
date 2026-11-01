@@ -98,16 +98,18 @@ def base(log) -> str:
 
 def paso(fila: dict, vigente: str, n: int, log) -> dict:
     idea, tipo = fila["id"], fila["tipo"] or "agrega"
+    # reprueba: la regla del screening con las semillas que ninguna decisión vio (arnes.EXTRA)
+    primera = "reprueba" if tipo == "reprueba" else "screening"
     carpeta = arnes.RESULTADOS / idea
     carpeta.mkdir(parents=True, exist_ok=True)
     (carpeta / "train.py").write_text(prender(VIGENTE.read_text(encoding="utf-8"), fila["cambio"]), encoding="utf-8")
     t0 = time.time()
-    a = arnes.evaluar(vigente, "screening", log=log)
-    b = arnes.evaluar(idea, "screening", log=log)
-    comp = {"screening": arnes.todas(a, b)}
-    etapa, ok = "screening", regla(tipo, comp["screening"]["meseta"], "screening")
+    a = arnes.evaluar(vigente, primera, log=log)
+    b = arnes.evaluar(idea, primera, log=log)
+    comp = {primera: arnes.todas(a, b)}
+    etapa, ok = primera, regla(tipo, comp[primera]["meseta"], "screening")
     if ok:
-        log(f"{idea} pasa el screening: confirmación con {arnes.N_CONFIRMACION} semillas nuevas")
+        log(f"{idea} pasa el {primera}: confirmación con {arnes.N_CONFIRMACION} semillas nuevas")
         a = arnes.evaluar(vigente, "confirmacion", log=log)
         b = arnes.evaluar(idea, "confirmacion", log=log)
         comp["confirmacion"] = arnes.todas(a, b)
