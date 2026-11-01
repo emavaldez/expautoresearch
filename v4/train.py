@@ -343,6 +343,8 @@ CAMBIOS = {
     "intermedio_suave": False,      # el intermedio entra al general, con q del maestro sobre el mes que se puntúa
     "suave_una_fila": False,        # la clase suave en una fila con clase blanda (en lugar de dos copias con peso)
     "semillas_diversas": 0.0,       # j: hojas, mínimo por hoja y fracción de columnas de cada semilla, por exp(U(-j, j))
+    "intermedio_plano": False,      # el intermedio entra al general: sus BAJA+1 como BAJA+1, el resto como CONTINUA
+    "deriva": 0,                    # k: el general no ve las k variables que más separan el mes que se puntúa del train
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
 }
 
@@ -450,8 +452,9 @@ def preparar(train: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, difi
     objetivo = objetivo or ("binaria" if CAMBIOS["binaria"] else "multiclase")
     months = sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:]
     train = train[train.foto_mes.isin(months)]
-    if extra is not None:  # v4: intermedio_suave (después de elegir los meses: months sigue siendo los de clase completa)
-        train, suave = pd.concat([train, extra[0]]), pd.concat([suave, extra[1]])
+    if extra is not None:  # v4: intermedio_suave o _plano (después de elegir los meses: months sigue siendo los de clase completa)
+        train = pd.concat([train, extra[0]])
+        suave = None if suave is None else pd.concat([suave, extra[1]])
     # Columnas: todas menos la historia del resumen de tarjetas (ver historia_de_resumen); el FE de la cátedra lo ve sólo el general.
     cols = _cols(train)  # P3: sin foto_mes
     # El especialista va antes del submuestreo (usa todas las filas del segmento) y antes de enmascarar internet:
@@ -532,9 +535,11 @@ def puntaje(P: np.ndarray) -> np.ndarray:
 
 
 def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None,
-         baja3=None, suave=None, extra=None) -> np.ndarray:
+         baja3=None, suave=None, extra=None, fuera=None) -> np.ndarray:
     """El general (E019 ya no tiene especialista ni segunda etapa). Devuelve el puntaje de cada fila de score."""
     train, cols, y, w, objetivo = preparar(train, seed, peso_fila, objetivo, dificiles, baja3, suave, extra)
+    if fuera:  # v4: deriva
+        cols = [c for c in cols if c not in fuera]
     if np.ndim(y) == 2:  # v4: suave_una_fila, la clase de cada fila es una distribución
         return puntaje(blanda(train[cols], y, w, score[cols], seed))
     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
@@ -1023,7 +1028,9 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
              baja3=baja3(train, score, intermedio) if CAMBIOS["baja3"] is not None else None,
              suave=clase_suave(train, intermedio, score, CAMBIOS["maestro"])
              if CAMBIOS["maestro"] or CAMBIOS["intermedio_suave"] else None,
-             extra=intermedio_suave(train, intermedio, score) if CAMBIOS["intermedio_suave"] else None)
+             extra=intermedio_suave(train, intermedio, score) if CAMBIOS["intermedio_suave"]
+             else intermedio_plano(intermedio) if CAMBIOS["intermedio_plano"] else None,
+             fuera=deriva(train, score) if CAMBIOS["deriva"] else None)
     otros = [f(train, score, seed) for k, f in ENSAMBLE.items() if CAMBIOS[k]]
     otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
@@ -1070,6 +1077,34 @@ def intermedio_suave(train: pd.DataFrame, intermedio, score) -> tuple:
     b1 = intermedio.baja1.to_numpy(bool)
     x = intermedio.drop(columns=["baja1"]).assign(clase_ternaria=np.where(b1, "BAJA+1", "CONTINUA"))
     return x, pd.Series(x.numero_de_cliente.map(q_m).to_numpy(), index=x.index).where(~b1)
+
+
+def intermedio_plano(intermedio) -> tuple:
+    """v4: las filas del intermedio como filas de train con lo que se sabe: BAJA+1 o CONTINUA (sus BAJA+2 todavía no se
+    conocen y quedan como CONTINUA)."""
+    b1 = intermedio.baja1.to_numpy(bool)
+    return intermedio.drop(columns=["baja1"]).assign(clase_ternaria=np.where(b1, "BAJA+1", "CONTINUA")), None
+
+
+PARAMS_DERIVA = dict(objective="binary", learning_rate=0.1, num_leaves=31, min_data_in_leaf=200, feature_fraction=0.5)
+_DERIVA = {}
+
+
+def deriva(train: pd.DataFrame, score: pd.DataFrame) -> set:
+    """v4: las k variables (CAMBIOS["deriva"]) que más ganancia dan a un clasificador del mes que se puntúa contra los
+    meses de entrenamiento (tantas filas de cada lado). No depende de la semilla: una vez por mes."""
+    clave = _clave(train) + (int(score.foto_mes.iloc[0]),)
+    with _CANDADO_CACHE:
+        if clave not in _DERIVA:
+            cols = _cols(train)
+            t = train[train.foto_mes.isin(sorted(train.foto_mes.unique())[-TRAIN_MONTHS_BACK:])]
+            t = t.sample(n=min(len(t), len(score)), random_state=0)
+            m = _lgb(pd.concat([t[cols], score[cols]]), np.r_[np.zeros(len(t)), np.ones(len(score))], PARAMS_DERIVA,
+                     200, 0)
+            imp = pd.Series(m.feature_importance("gain"), index=cols).sort_values(ascending=False)
+            _DERIVA[clave] = set(imp.index[:CAMBIOS["deriva"]])
+            print(f"deriva {int(score.foto_mes.iloc[0])}: {', '.join(imp.index[:12])}", flush=True)
+    return _DERIVA[clave]
 
 
 def _maestro(train, intermedio, score):
