@@ -1,0 +1,74 @@
+{
+ "id": "V93",
+ "titulo": "Cuarta clase con mínimo por hoja 108",
+ "cambio": "baja3=1.0; params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 108, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+ "tipo": "agrega",
+ "paso": 102,
+ "vigente": "R6",
+ "pred_meseta": "+1.0",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 2286,
+ "fecha": "2026-11-02 14:58",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 271678946.3840399,
+   "ganancia": 268794166.6666667,
+   "auc": 0.9151082895769722
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 1030689.9418121278,
+    "por_mes": {
+     "201907": 1466895.2618453503,
+     "201908": -1361421.4463840425,
+     "201909": 2986596.0099750757
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 52000.83125520148,
+     "se": 511517.8354008881,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 366666.6666666667,
+    "por_mes": {
+     "201907": 3300000.0,
+     "201908": -4400000.0,
+     "201909": 2200000.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 2713333.333333333,
+     "se": 411582.3125451335,
+     "ganadas": 5,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 0.001544026583062852,
+    "por_mes": {
+     "201907": 0.0017644754833656684,
+     "201908": 0.0022287999198865593,
+     "201909": 0.000638804345936328
+    },
+    "meses_ganados": 3,
+    "pareado": {
+     "media": 0.0015574002698869106,
+     "se": 9.948685526489369e-05,
+     "ganadas": 5,
+     "n": 5
+    }
+   }
+  }
+ }
+}

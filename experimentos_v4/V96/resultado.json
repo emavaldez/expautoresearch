@@ -1,0 +1,74 @@
+{
+ "id": "V96",
+ "titulo": "Las BAJA+1 pesan 1 al entrenar (sobre R6)",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'peso_baja1': 1.0}",
+ "tipo": "agrega",
+ "paso": 106,
+ "vigente": "R6",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1998,
+ "fecha": "2026-11-02 18:24",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 271442213.21695757,
+   "ganancia": 269160833.3333333,
+   "auc": 0.9133967503700092
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": 793956.7747298181,
+    "por_mes": {
+     "201907": 998709.4763091803,
+     "201908": -949264.3391521275,
+     "201909": 2332425.1870324016
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": -812358.6866167843,
+     "se": 1018762.4624613054,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 733333.3333333334,
+    "por_mes": {
+     "201907": 1100000.0,
+     "201908": 1100000.0,
+     "201909": 0.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 880000.0,
+     "se": 1157180.4814576965,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00016751262390024557,
+    "por_mes": {
+     "201907": 8.102345878679973e-05,
+     "201908": -6.87492337807516e-05,
+     "201909": -0.0005148120967067848
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -0.00023982318465326133,
+     "se": 0.0003107796449707946,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}
