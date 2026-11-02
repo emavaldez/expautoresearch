@@ -89,3 +89,9 @@ paso	id	cambio	tipo	pred_meseta	etapa	d_meseta	pareado_meseta	se_meseta	ganadas	
 88	V85	alternar=[{'params': {'extra_trees': True}}]	agrega	0.0	screening	-1184352	-727230	648357	0/5	1	-1466667	-0.00066	se descarta	B2	6233	2026-11-01 15:05
 89	V86	lag3=True	agrega	+0.5	screening	-5116052	-2291228	757599	0/5	0	-4766667	0.0002	se descarta	B2	5342	2026-11-01 16:39
 90	V87	aceleracion=True	agrega	0.0	screening	-2193394	-596131	913931	2/5	0	-2933333	-0.00041	se descarta	B2	4676	2026-11-01 17:57
+91	R1	deriva=50	reprueba	+1.0	reprueba	-329131	-907143	490248	4/10	2	-733333	-0.00064	se descarta	B2	15892	2026-11-01 22:30
+92	R2	sacar=('_min3', '_max3', '_ratiomax3')	reprueba	+1.0	reprueba	2773728	795077	600407	7/10	3	1833333	-0.00022	se descarta	B2	5580	2026-11-02 00:03
+93	R3	params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}	reprueba	+0.8	reprueba	1551635	1323475	886547	7/10	2	-733333	-0.00066	se descarta	B2	7176	2026-11-02 02:02
+94	R4	alternar=[{'sacar': ('_min3', '_max3', '_ratiomax3')}]	reprueba	+0.5	confirmacion	786665	171227	476324	3/10	2	2200000	4e-05	se descarta	B2	11702	2026-11-02 05:17
+95	R5	sacar=('_min3', '_max3', '_ratiomax3', '_avg3')	reprueba	+0.5	reprueba	1881338	577139	712838	5/10	2	1100000	-0.00022	se descarta	B2	4792	2026-11-02 06:37
+96	R6	sacar=('_min3', '_max3', '_ratiomax3', '_avg3'); params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}	reprueba	+0.5	confirmacion	1670025	3542165	1045758	8/10	2	4033333	-0.0004	queda	B2	11833	2026-11-02 09:54

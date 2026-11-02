@@ -208,3 +208,8 @@ confirmación que el loop nunca usó (de la 15 a la 24, `arnes.EXTRA`), el vigen
 screening, y lo que pasa se confirma como siempre. Se vuelven a medir las 8 ideas sobre B2 con la mejor diferencia por
 semilla o con el ensamble arriba en los tres meses, elegidas antes de correr. Si una queda, las siguientes se miden
 contra un vigente elegido con estas semillas, y vale la misma advertencia.
+
+**Después de R6 (2026-11-02).** R6 (sin extremos ni promedio de la ventana, con 20% de CONTINUA) pasó con las semillas
+nuevas y en la confirmación, y quedó. Como se eligió con las semillas de reprueba y de confirmación, R7 y R8 no corren
+ahí: vuelven como V88 y V89 con las de screening, que R6 no vio como decisión (con ellas perdió como V77 contra B2).
+Las ideas nuevas sobre R6 también usan las de screening.
