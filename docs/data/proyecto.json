@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-02 14:59",
+ "generado": "2026-11-02 16:12",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4334,7 +4334,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-11-02 14:59",
+   "actualizado": "2026-11-02 16:12",
    "experimentos": [
     "E033"
    ],
@@ -18496,6 +18496,25 @@
     "vigente": "R6",
     "segundos": "2286",
     "fecha": "2026-11-02 14:58"
+   },
+   {
+    "paso": "103",
+    "id": "V94",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0079, 'num_rounds': 1334, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+    "tipo": "agrega",
+    "pred_meseta": "+0.5",
+    "etapa": "screening",
+    "d_meseta": "-739734",
+    "pareado_meseta": "190379",
+    "se_meseta": "955510",
+    "ganadas": "4/5",
+    "meses_ganados": "1",
+    "d_lista": "-366667",
+    "d_auc": "0.00014",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "4333",
+    "fecha": "2026-11-02 16:11"
    }
   ],
   "ideas": {
@@ -19038,6 +19057,11 @@
     "titulo": "850 árboles con el mismo learning rate (sobre R6)",
     "porque": "Los 667 árboles se eligieron con 13% de CONTINUA y todas las variables; R6 tiene 1,5 veces más filas. Más filas suelen pedir más rondas antes de sobreajustar. V94 prueba lo mismo con el paso a la mitad; esta es la versión barata.",
     "fuente": "R6, V94"
+   },
+   "V98": {
+    "titulo": "Cuarta clase que también suma al puntaje (0,5)",
+    "porque": "La cuarta clase ganó por semilla con dos vigentes (V59 +1,16 ± 0,57; V88 +1,06 ± 0,53, 5 de 5), pero el puntaje tira su probabilidad: sólo la usa para que el modelo aprenda a separar. Quien parece irse a los tres meses en el mes que se puntúa tiene más chance de irse a los dos que un CONTINUA cualquiera (el mes exacto de la baja es ruidoso), como pasa con BAJA+1, que suma con peso 1. Medio peso porque está un mes más lejos.",
+    "fuente": "V88, V59"
    }
   },
   "final": {
