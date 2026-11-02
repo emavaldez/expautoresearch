@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-02 16:12",
+ "generado": "2026-11-02 20:28",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4334,7 +4334,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-11-02 16:12",
+   "actualizado": "2026-11-02 20:28",
    "experimentos": [
     "E033"
    ],
@@ -18515,6 +18515,101 @@
     "vigente": "R6",
     "segundos": "4333",
     "fecha": "2026-11-02 16:11"
+   },
+   {
+    "paso": "104",
+    "id": "V95",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.4, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+    "tipo": "agrega",
+    "pred_meseta": "+0.0",
+    "etapa": "screening",
+    "d_meseta": "-714474",
+    "pareado_meseta": "-540372",
+    "se_meseta": "998518",
+    "ganadas": "2/5",
+    "meses_ganados": "1",
+    "d_lista": "-1100000",
+    "d_auc": "4e-05",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "2021",
+    "fecha": "2026-11-02 16:44"
+   },
+   {
+    "paso": "105",
+    "id": "B5",
+    "cambio": "franja_params={'franja_desde': 0.3286085714509984, 'franja_hasta': 3.12528573916481, 'learning_rate': 0.013626093598634693, 'num_leaves': 13, 'min_data_in_leaf': 352, 'feature_fraction': 0.17673159462634783, 'lambda_l2': 1.6157659816771763, 'rondas': 358, 'peso_base': 0.05422455508279517, 'baja1': 'negativa', 'init': True}",
+    "tipo": "agrega",
+    "pred_meseta": "+1.6",
+    "etapa": "screening",
+    "d_meseta": "-1595297",
+    "pareado_meseta": "-1390929",
+    "se_meseta": "339546",
+    "ganadas": "0/5",
+    "meses_ganados": "2",
+    "d_lista": "-2200000",
+    "d_auc": "0.00023",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "2008",
+    "fecha": "2026-11-02 17:51"
+   },
+   {
+    "paso": "106",
+    "id": "V96",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'peso_baja1': 1.0}",
+    "tipo": "agrega",
+    "pred_meseta": "+0.3",
+    "etapa": "screening",
+    "d_meseta": "793957",
+    "pareado_meseta": "-812359",
+    "se_meseta": "1018762",
+    "ganadas": "2/5",
+    "meses_ganados": "2",
+    "d_lista": "733333",
+    "d_auc": "-0.00017",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1998",
+    "fecha": "2026-11-02 18:24"
+   },
+   {
+    "paso": "107",
+    "id": "V97",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 850, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+    "tipo": "agrega",
+    "pred_meseta": "+0.3",
+    "etapa": "screening",
+    "d_meseta": "1517461",
+    "pareado_meseta": "88901",
+    "se_meseta": "302925",
+    "ganadas": "3/5",
+    "meses_ganados": "3",
+    "d_lista": "366667",
+    "d_auc": "0.00022",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "4770",
+    "fecha": "2026-11-02 19:44"
+   },
+   {
+    "paso": "108",
+    "id": "V98",
+    "cambio": "baja3=1.0; puntaje_baja3=0.5",
+    "tipo": "agrega",
+    "pred_meseta": "+0.5",
+    "etapa": "screening",
+    "d_meseta": "-132357",
+    "pareado_meseta": "1270779",
+    "se_meseta": "789642",
+    "ganadas": "4/5",
+    "meses_ganados": "1",
+    "d_lista": "733333",
+    "d_auc": "0.00149",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "2266",
+    "fecha": "2026-11-02 20:22"
    }
   ],
   "ideas": {
@@ -19062,6 +19157,51 @@
     "titulo": "Cuarta clase que también suma al puntaje (0,5)",
     "porque": "La cuarta clase ganó por semilla con dos vigentes (V59 +1,16 ± 0,57; V88 +1,06 ± 0,53, 5 de 5), pero el puntaje tira su probabilidad: sólo la usa para que el modelo aprenda a separar. Quien parece irse a los tres meses en el mes que se puntúa tiene más chance de irse a los dos que un CONTINUA cualquiera (el mes exacto de la baja es ruidoso), como pasa con BAJA+1, que suma con peso 1. Medio peso porque está un mes más lejos.",
     "fuente": "V88, V59"
+   },
+   "V99": {
+    "titulo": "Árboles lineales: un modelo lineal en cada hoja",
+    "porque": "Una familia que no probamos: LightGBM ajusta en cada hoja una regresión con las variables de los cortes de su camino (linear_tree, con penalidad 1). Los montos se corren de un mes a otro (inflación, aguinaldo), y una hoja constante corta en pesos de entrenamiento; una pendiente dentro de la hoja extrapola mejor. Deflactar (V52) y percentil (V34) atacaron lo mismo cambiando las variables y perdieron. Predicción negativa: 254 hojas ya aproximan bien, y los lineales suelen sobreajustar con ruido; corre porque es barata y es otra dirección. Resultado: LightGBM 4.7 se cae (crash dentro de lib_lightgbm, sin traceback) al entrenar con linear_tree sobre los datos reales, en 201907 y en las dos veces que corrió; no hay medición.",
+    "fuente": "R6, V52, V34"
+   },
+   "B5": {
+    "titulo": "Parámetros de la franja de la búsqueda B5",
+    "porque": "la búsqueda ganó +3.2 M por mes contra su franja actual (+4.0 M sobre el general solo) con sus semillas",
+    "fuente": "v4/hpo_franja.py, trial 56 de 60"
+   },
+   "V100": {
+    "titulo": "Mínimo por hoja 150 (sobre R6)",
+    "porque": "V91 (108) dio +1,2 en el ensamble y +0,8 por semilla: regularizar las hojas parece ir bien con 1,5 veces más filas. Un paso más en la misma dirección dice si hay pendiente o era ruido.",
+    "fuente": "V91"
+   },
+   "V101": {
+    "titulo": "Penalidad L2 de 5 en las hojas (sobre R6)",
+    "porque": "R6 casi no tiene penalidad (0,0033) con 254 hojas. Achicar los valores de las hojas con pocas filas es otra forma de la regularización que sugirió V91, sin tocar dónde corta el árbol.",
+    "fuente": "V91, R6"
+   },
+   "V102": {
+    "titulo": "127 cortes por variable (sobre R6)",
+    "porque": "Con 511 cortes por variable se perdió 1,4 (V69, sobre B2): más resolución en los cortes sobreajusta. Con 127 (en lugar de 255) los cortes son más gruesos, lo que regulariza y además es más rápido.",
+    "fuente": "V69"
+   },
+   "V103": {
+    "titulo": "Fracción de columnas 0,65 (sobre R6)",
+    "porque": "La fracción 0,4 perdió 0,7 (V95). La otra dirección: con menos familias, cada árbol puede ver más columnas sin repetir tanto los mismos cortes.",
+    "fuente": "V95"
+   },
+   "V104": {
+    "titulo": "Cuarta clase con medio peso (sobre R6)",
+    "porque": "La cuarta clase ganó por semilla en las tres mediciones (V59, V88, V98: +1,2, +1,1, +1,3) pero el ensamble no la siguió siempre. Con medio peso la señal extra entra más suave y el modelo se parece más a R6, que es lo que el ensamble premia.",
+    "fuente": "V88, V59, V98"
+   },
+   "V105": {
+    "titulo": "Learning rate 0,02 con 527 árboles (sobre R6)",
+    "porque": "La mitad del paso con el doble de árboles perdió (V94) y 850 árboles al mismo paso ganó en el ensamble sin ganar por semilla (V97). Falta la otra dirección: un paso más largo con menos árboles, a igual producto.",
+    "fuente": "V94, V97"
+   },
+   "V106": {
+    "titulo": "Muestreo por gradiente (GOSS) en lugar de todas las filas (sobre R6)",
+    "porque": "GOSS se queda con las filas de gradiente grande y una muestra de las demás en cada árbol: cada árbol mira más a las que el modelo todavía erra. Es otra forma de submuestrear CONTINUA fáciles, que fue lo que funcionó (submuestreo 0,2).",
+    "fuente": "R6"
    }
   },
   "final": {
