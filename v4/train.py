@@ -339,6 +339,7 @@ CAMBIOS = {
     "continua_dificiles": 0.0,      # el general guarda todas las CONTINUA del q de arriba de su mes (fuera de muestra)
     "peso_dificiles": None,         # su peso: None = UNDERSAMPLING (misma pérdida esperada), o un número
     "baja3": None,                  # peso de las que se van a los tres meses como cuarta clase (None: siguen CONTINUA)
+    "puntaje_baja3": 0.0,           # con baja3: el puntaje suma b · P(se va a los tres meses)
     "maestro": 0.0,                 # a: la clase de las filas presentes en t + 1 pasa a a·q + (1 - a)·y, q del maestro
     "franja_suave": 0.0,            # el mismo a para la clase de la franja de entrenamiento (segunda etapa)
     "intermedio_suave": False,      # el intermedio entra al general, con q del maestro sobre el mes que se puntúa
@@ -534,8 +535,10 @@ def diversos(seed: int) -> dict:
 
 
 def puntaje(P: np.ndarray) -> np.ndarray:
-    """De las tres probabilidades de la multiclase al puntaje que ordena: P(BAJA+2) + a · P(BAJA+1) (E019: a = 1)."""
-    return P[:, 2] + CAMBIOS["puntaje_baja1"] * P[:, 1]
+    """De las probabilidades de la multiclase al puntaje que ordena: P(BAJA+2) + a · P(BAJA+1) (E019: a = 1), y con la
+    cuarta clase (baja3) + b · P(se va a los tres meses)."""
+    s = P[:, 2] + CAMBIOS["puntaje_baja1"] * P[:, 1]
+    return s + CAMBIOS["puntaje_baja3"] * P[:, 3] if P.shape[1] > 3 and CAMBIOS["puntaje_baja3"] else s
 
 
 def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, objetivo=None, dificiles=None,
