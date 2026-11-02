@@ -119,3 +119,33 @@
 2026-11-01 09:44:49 V28: meseta 293.5 M | lista 291.6 M | AUC 0.9256 | contra E019 +0.1 M (por semilla +1.6 ± 0.9, bootstrap 90% -4.9 a +6.5)
 2026-11-01 09:45:18 V29: meseta 297.1 M | lista 291.6 M | AUC 0.9261 | contra E019 +3.6 M (por semilla +2.1 ± 1.0, bootstrap 90% -4.6 a +11.3)
 2026-11-01 09:45:48 B2: meseta 296.8 M | lista 293.8 M | AUC 0.9262 | contra E019 +3.3 M (por semilla +2.5 ± 1.0, bootstrap 90% -4.3 a +12.3)
+2026-11-02 09:56:35 final: ['V0', 'V14', 'V28', 'V29', 'B2', 'R6'] en [201910] con 20 semillas del bloque final
+2026-11-02 09:56:36 ===== R6
+2026-11-02 09:56:43 [201910] entrena con [201905, 201906, 201907, 201908] (516,761 filas) | puntúa 135,633 clientes, 632 BAJA+2 | 1530 columnas | features 8 s
+2026-11-02 10:18:41 [201910] semilla 800539: lista 294.9M con 4,476 | meseta 298.3M en 3,241 | AUC 0.9248 (1318 s)
+2026-11-02 10:18:41 [201910] semilla 800549: lista 291.6M con 4,476 | meseta 293.9M en 5,426 | AUC 0.9245 (0 s)
+2026-11-02 10:18:41 [201910] semilla 800557: lista 285.0M con 4,476 | meseta 292.3M en 3,483 | AUC 0.9246 (0 s)
+2026-11-02 10:18:42 [201910] semilla 800573: lista 292.7M con 4,476 | meseta 294.8M en 4,072 | AUC 0.9243 (0 s)
+2026-11-02 10:18:42 [201910] semilla 800587: lista 294.9M con 4,476 | meseta 294.6M en 4,609 | AUC 0.9254 (0 s)
+2026-11-02 10:26:07 [201910] semilla 800593: lista 285.0M con 4,476 | meseta 294.1M en 3,745 | AUC 0.9245 (446 s)
+2026-11-02 10:26:07 [201910] semilla 800599: lista 279.5M con 4,476 | meseta 287.4M en 3,814 | AUC 0.9247 (0 s)
+2026-11-02 10:26:07 [201910] semilla 800621: lista 297.1M con 4,476 | meseta 296.9M en 4,350 | AUC 0.9261 (0 s)
+2026-11-02 10:26:08 [201910] semilla 800623: lista 294.9M con 4,476 | meseta 301.3M en 3,729 | AUC 0.9239 (0 s)
+2026-11-02 10:26:08 [201910] semilla 800647: lista 291.6M con 4,476 | meseta 294.3M en 4,021 | AUC 0.9247 (0 s)
+2026-11-02 10:30:25 [201910] semilla 800651: lista 292.7M con 4,476 | meseta 295.2M en 3,348 | AUC 0.9237 (257 s)
+2026-11-02 10:30:30 [201910] semilla 800659: lista 297.1M con 4,476 | meseta 298.4M en 5,165 | AUC 0.9245 (5 s)
+2026-11-02 10:31:21 [201910] semilla 800663: lista 290.5M con 4,476 | meseta 292.0M en 4,076 | AUC 0.9245 (52 s)
+2026-11-02 10:31:22 [201910] semilla 800669: lista 283.9M con 4,476 | meseta 289.0M en 3,798 | AUC 0.9252 (0 s)
+2026-11-02 10:31:22 [201910] semilla 800677: lista 292.7M con 4,476 | meseta 292.9M en 4,814 | AUC 0.9258 (1 s)
+2026-11-02 10:35:16 [201910] semilla 800687: lista 283.9M con 4,476 | meseta 293.4M en 3,110 | AUC 0.9244 (234 s)
+2026-11-02 10:35:38 [201910] semilla 800693: lista 291.6M con 4,476 | meseta 295.5M en 5,223 | AUC 0.9246 (22 s)
+2026-11-02 10:36:00 [201910] semilla 800707: lista 292.7M con 4,476 | meseta 293.6M en 4,406 | AUC 0.9259 (22 s)
+2026-11-02 10:36:27 [201910] semilla 800711: lista 291.6M con 4,476 | meseta 295.2M en 5,047 | AUC 0.9261 (27 s)
+2026-11-02 10:36:27 [201910] semilla 800729: lista 289.4M con 4,476 | meseta 292.1M en 3,766 | AUC 0.9249 (0 s)
+2026-11-02 10:36:27 [201910] ENSAMBLE de 20: lista 293.8M (379 de 632 BAJA+2 con 4,476 envíos) | meseta 294.9M en 3,846 | AUC 0.9261
+2026-11-02 10:36:27 V0: meseta 293.4 M | lista 294.9 M | AUC 0.9240
+2026-11-02 10:36:58 V14: meseta 293.5 M | lista 288.3 M | AUC 0.9237 | contra E019 +0.1 M (por semilla +0.6 ± 0.9, bootstrap 90% -3.1 a +2.9)
+2026-11-02 10:37:27 V28: meseta 293.5 M | lista 291.6 M | AUC 0.9256 | contra E019 +0.1 M (por semilla +1.6 ± 0.9, bootstrap 90% -4.9 a +6.5)
+2026-11-02 10:37:57 V29: meseta 297.1 M | lista 291.6 M | AUC 0.9261 | contra E019 +3.6 M (por semilla +2.1 ± 1.0, bootstrap 90% -4.6 a +11.3)
+2026-11-02 10:38:27 B2: meseta 296.8 M | lista 293.8 M | AUC 0.9262 | contra E019 +3.3 M (por semilla +2.5 ± 1.0, bootstrap 90% -4.3 a +12.3)
+2026-11-02 10:38:57 R6: meseta 294.9 M | lista 293.8 M | AUC 0.9261 | contra E019 +1.5 M (por semilla +2.9 ± 0.8, bootstrap 90% -5.3 a +10.8)
