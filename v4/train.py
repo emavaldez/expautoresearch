@@ -352,6 +352,8 @@ CAMBIOS = {
     "aceleracion": False,           # x - 2 lag1 + lag2 de las magnitudes
     "alternar": [],                 # versiones del general que se turnan con la vigente por semilla: {"sacar": sufijos}, {"deriva": k} o {"params": {...}}
     "miembros": [],                 # el general con otras constantes (ver miembro()), cada uno un miembro más del ensamble
+    "red": 0.0,                     # a: el puntaje mezcla en logits (1 - a) del general y a de una red neuronal (red_general)
+    "ranking": "",                  # el general ordena con este objetivo de LightGBM (rank_xendcg, lambdarank) en lugar de clasificar
 }
 
 
@@ -550,6 +552,8 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, ob
         cols = [c for c in cols if c not in fuera]
     if np.ndim(y) == 2:  # v4: suave_una_fila, la clase de cada fila es una distribución
         return puntaje(blanda(train[cols], y, w, score[cols], seed))
+    if CAMBIOS["ranking"] and objetivo == "multiclase":
+        return ordenar(train, cols, y, score, seed)
     dtrain = lgb.Dataset(train[cols], label=y, weight=w, free_raw_data=True)
     if objetivo == "binaria":
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
@@ -644,6 +648,92 @@ def binaria_general(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.n
 
 
 ENSAMBLE = {"xgboost": xgb_general, "catedra": modelo_catedra, "binaria_ensamble": binaria_general}
+
+
+def ordenar(train: pd.DataFrame, cols: list, y: np.ndarray, score: pd.DataFrame, seed: int) -> np.ndarray:
+    """v4: ranking. El general con un objetivo de orden: relevancia 2 las BAJA+2 y 1 las BAJA+1 (ganancias 3 y 1), en
+    consultas de hasta 5.000 filas al azar de un mes (LightGBM no acepta más de 10.000 por consulta). Sin pesos por
+    fila: en un objetivo de orden la relevancia ya los hace. Devuelve el sigmoide del puntaje crudo, para que la segunda
+    etapa lo lea como una probabilidad (su calibración se ajusta sobre la base fuera de muestra, que sale de acá)."""
+    orden = np.random.default_rng(seed).permutation(len(train))
+    mes = train.foto_mes.to_numpy()[orden]
+    q = pd.Series(mes).groupby(mes).cumcount().to_numpy() // 5000
+    k = np.lexsort((q, mes))  # por mes y, dentro del mes, por consulta: las filas de cada grupo juntas, como pide LightGBM
+    filas = orden[k]
+    grupos = np.unique(mes[k] * 1000 + q[k], return_counts=True)[1]
+    d = lgb.Dataset(train[cols].iloc[filas], label=np.asarray(y)[filas], group=grupos, free_raw_data=True)
+    m = lgb.train({**PARAMS, **diversos(seed), "objective": CAMBIOS["ranking"], "seed": seed}, d, num_boost_round=NUM_ROUNDS)
+    return 1 / (1 + np.exp(-m.predict(score[cols])))
+
+
+# ---------------------------------------------------------------- v4: red neuronal
+
+PARAMS_RED = dict(ocultas=(512, 128), dropout=0.2, lr=1e-3, decaimiento=1e-4, lote=1024, epocas=6)
+_CANDADO_RED = threading.Lock()
+
+
+def a_puestos(X: np.ndarray, Z: np.ndarray, seed: int) -> tuple:
+    """Cada columna a su puesto entre 201 cuantiles del entrenamiento, de -1 a 1 (los empates, como el cero, quedan al medio
+    de su escalón), y NaN a 0, con una columna 0/1 que lo marca si falta en más del 1% del entrenamiento. Los árboles no
+    necesitan escala; la red sí, y con colas largas un monto en pesos la satura."""
+    import warnings
+    m = np.random.default_rng(seed + 4).permutation(len(X))[:20_000]
+    with warnings.catch_warnings():  # columnas enteras en NaN en la muestra: su cuantil es NaN y se trata abajo
+        warnings.simplefilter("ignore", RuntimeWarning)
+        Q = np.nanquantile(X[m], np.linspace(0, 1, 201), axis=0)
+    marcas = np.flatnonzero(np.isnan(X).mean(axis=0) > 0.01)
+    salida = []
+    for A in (X, Z):
+        R = np.zeros((len(A), A.shape[1] + len(marcas)), np.float32)
+        for j in range(A.shape[1]):
+            q = np.unique(Q[:, j][~np.isnan(Q[:, j])])
+            if len(q) > 1:
+                R[:, j] = (np.searchsorted(q, A[:, j]) + np.searchsorted(q, A[:, j], side="right")) / len(q) - 1
+        R[:, :A.shape[1]][np.isnan(A)] = 0
+        R[:, A.shape[1]:] = np.isnan(A[:, marcas])
+        salida.append(R)
+    return tuple(salida)
+
+
+def red_general(train: pd.DataFrame, score: pd.DataFrame, seed: int) -> np.ndarray:
+    """v4: red. Un perceptrón de dos capas con las mismas filas, clase, pesos y columnas que el general (preparar), con
+    las variables a puestos (a_puestos). Es otra familia de modelo: no parte el espacio en cajas como los árboles. El
+    dropout usa el generador global de torch, así que con las semillas en hilos el resultado no se repite exacto."""
+    import torch
+    tr, cols, y, w, _ = preparar(train, seed)
+    X, Z = a_puestos(tr[cols].to_numpy(np.float32), score[cols].to_numpy(np.float32), seed)
+    # Un hilo: así torch no abre su OpenMP, que en la Mac convive mal con el de LightGBM (con 3 hilos la prueba de humo
+    # se colgó en una barrera de OpenMP). Las multiplicaciones van igual por Accelerate, y las semillas ya corren en hilos.
+    torch.set_num_threads(1)
+    p = PARAMS_RED
+    with _CANDADO_RED:  # la inicialización de las capas también usa el generador global
+        torch.manual_seed(int(seed))
+        capas, d = [], X.shape[1]
+        for h in p["ocultas"]:
+            capas += [torch.nn.Linear(d, h), torch.nn.SiLU(), torch.nn.Dropout(p["dropout"])]
+            d = h
+        red = torch.nn.Sequential(*capas, torch.nn.Linear(d, 3))
+    Xt, yt = torch.from_numpy(X), torch.from_numpy(np.array(y, np.int64))
+    wt = torch.from_numpy((w / w.mean()).astype(np.float32))
+    pasos = int(np.ceil(len(X) / p["lote"]))
+    opt = torch.optim.AdamW(red.parameters(), lr=p["lr"], weight_decay=p["decaimiento"])
+    plan = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=p["lr"], total_steps=p["epocas"] * pasos)
+    perdida = torch.nn.CrossEntropyLoss(reduction="none")
+    rng = np.random.default_rng(seed + 3)
+    red.train()
+    for _ in range(p["epocas"]):
+        orden = torch.from_numpy(rng.permutation(len(X)))
+        for k in range(pasos):
+            i = orden[k * p["lote"]:(k + 1) * p["lote"]]
+            opt.zero_grad()
+            (perdida(red(Xt[i]), yt[i]) * wt[i]).mean().backward()
+            opt.step()
+            plan.step()
+    red.eval()
+    with torch.no_grad():
+        P = np.vstack([torch.softmax(red(torch.from_numpy(Z[k:k + 20_000])), dim=1).numpy()
+                       for k in range(0, len(Z), 20_000)])
+    return puntaje(P.astype(np.float64))
 
 
 def logit(p: np.ndarray) -> np.ndarray:
@@ -1043,6 +1133,9 @@ def train_and_predict(train: pd.DataFrame, score: pd.DataFrame, seed: int, inter
     otros += [miembro(c, train, score, seed) for c in CAMBIOS["miembros"]]
     if otros:
         p = mezcla(p, *otros, pesos=[1.0] + [CAMBIOS["peso_miembros"]] * len(otros))
+    if CAMBIOS["red"]:  # v4: en logits, así la segunda etapa sigue leyendo una probabilidad en la escala del general
+        a = CAMBIOS["red"]
+        p = 1 / (1 + np.exp(-((1 - a) * logit(p) + a * logit(red_general(train, score, seed)))))
     if enfoque in (0, 5, 9):
         return p
     idx = np.flatnonzero(en_franja(p, len(p)))
