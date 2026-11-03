@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-03 02:13",
+ "generado": "2026-11-03 11:59",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4334,7 +4334,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-11-03 02:13",
+   "actualizado": "2026-11-03 11:59",
    "experimentos": [
     "E033"
    ],
@@ -18743,6 +18743,120 @@
     "vigente": "R6",
     "segundos": "7937",
     "fecha": "2026-11-03 02:10"
+   },
+   {
+    "paso": "116",
+    "id": "B6",
+    "cambio": "franja_params={'franja_desde': 0.4901880866567749, 'franja_hasta': 4.182351258868484, 'learning_rate': 0.0579446849916829, 'num_leaves': 3, 'min_data_in_leaf': 539, 'feature_fraction': 0.2278099535193507, 'lambda_l2': 0.4196009624262922, 'rondas': 223, 'peso_base': 0.5854786233801715, 'baja1': 'negativa', 'init': True}",
+    "tipo": "agrega",
+    "pred_meseta": "+0.7",
+    "etapa": "screening",
+    "d_meseta": "-201758",
+    "pareado_meseta": "184175",
+    "se_meseta": "659373",
+    "ganadas": "2/5",
+    "meses_ganados": "2",
+    "d_lista": "733333",
+    "d_auc": "0.0003",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "3926",
+    "fecha": "2026-11-03 04:46"
+   },
+   {
+    "paso": "117",
+    "id": "R9",
+    "cambio": "baja3=0.5",
+    "tipo": "nuevas",
+    "pred_meseta": "+0.5",
+    "etapa": "nuevas",
+    "d_meseta": "1106172",
+    "pareado_meseta": "59849",
+    "se_meseta": "598399",
+    "ganadas": "5/10",
+    "meses_ganados": "3",
+    "d_lista": "1466667",
+    "d_auc": "0.00129",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "13713",
+    "fecha": "2026-11-03 08:35"
+   },
+   {
+    "paso": "118",
+    "id": "R10",
+    "cambio": "baja3=1.0",
+    "tipo": "nuevas",
+    "pred_meseta": "+0.5",
+    "etapa": "nuevas",
+    "d_meseta": "-748695",
+    "pareado_meseta": "-391949",
+    "se_meseta": "474835",
+    "ganadas": "5/10",
+    "meses_ganados": "1",
+    "d_lista": "-2933333",
+    "d_auc": "0.00175",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "6456",
+    "fecha": "2026-11-03 10:22"
+   },
+   {
+    "paso": "119",
+    "id": "V107",
+    "cambio": "sacar=('_min3', '_max3', '_ratiomax3', '_avg3', '_lag1', '_lag2')",
+    "tipo": "agrega",
+    "pred_meseta": "+0.3",
+    "etapa": "screening",
+    "d_meseta": "-1579090",
+    "pareado_meseta": "-511473",
+    "se_meseta": "757915",
+    "ganadas": "2/5",
+    "meses_ganados": "2",
+    "d_lista": "-1833333",
+    "d_auc": "3e-05",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1985",
+    "fecha": "2026-11-03 10:56"
+   },
+   {
+    "paso": "120",
+    "id": "V108",
+    "cambio": "sacar=('_min3', '_max3', '_ratiomax3', '_avg3', '_delta2')",
+    "tipo": "agrega",
+    "pred_meseta": "+0.0",
+    "etapa": "screening",
+    "d_meseta": "-1161081",
+    "pareado_meseta": "-871263",
+    "se_meseta": "858429",
+    "ganadas": "2/5",
+    "meses_ganados": "0",
+    "d_lista": "-2200000",
+    "d_auc": "0.00014",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1775",
+    "fecha": "2026-11-03 11:25"
+   },
+   {
+    "paso": "121",
+    "id": "V109",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'peso_baja2': 1.5}",
+    "tipo": "agrega",
+    "pred_meseta": "+0.0",
+    "etapa": "screening",
+    "d_meseta": "-1261160",
+    "pareado_meseta": "301343",
+    "se_meseta": "914097",
+    "ganadas": "3/5",
+    "meses_ganados": "0",
+    "d_lista": "0",
+    "d_auc": "0.00017",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "2013",
+    "fecha": "2026-11-03 11:59"
    }
   ],
   "ideas": {
@@ -19360,6 +19474,41 @@
     "titulo": "Cuarta clase (otra vez, con 10 semillas que nada usó)",
     "porque": "La cuarta clase ganó por semilla las cuatro veces que se midió (V59, V88, V98, V104: +1,2, +1,1, +1,3, +2,0), pero siempre con las mismas 5 semillas de screening; V88 y V104 quedaron a menos de una décima de las 2 SE. Con 10 semillas que nada usó el ensamble de cada lado es menos ruidoso, y se ve si la señal es de la idea o de esas semillas.",
     "fuente": "V88, V59"
+   },
+   "B6": {
+    "titulo": "Parámetros de la franja de la búsqueda B6",
+    "porque": "la búsqueda ganó +1.5 M por mes contra su franja actual (+4.4 M sobre el general solo) con sus semillas",
+    "fuente": "v4/hpo_franja.py, trial 6 de 40"
+   },
+   "V110": {
+    "titulo": "Una binaria por clase (multiclassova) en lugar de softmax (sobre R6)",
+    "porque": "Con a = 1 el softmax ordena por 1 - P(CONTINUA), así que las tres clases comparten el mismo denominador; con una binaria por clase, las BAJA+2 y las BAJA+1 tienen cada una su modelo contra el resto y el puntaje las suma. Es otra forma de pérdida, no otra variable.",
+    "fuente": "R6"
+   },
+   "V111": {
+    "titulo": "Árboles de 200 hojas (sobre R6)",
+    "porque": "Se probó para arriba (320 y 400 hojas, las dos perdieron) y no para abajo desde que R6 sacó variables y subió el submuestreo.",
+    "fuente": "R6"
+   },
+   "V112": {
+    "titulo": "Penalidad L1 de 0,5 en las hojas (sobre R6)",
+    "porque": "La L2 de 5 perdió (V101); la L1 empuja a cero las hojas chicas, que con 254 hojas y 72 filas mínimas son muchas.",
+    "fuente": "R6"
+   },
+   "V113": {
+    "titulo": "15% de CONTINUA en el submuestreo (sobre R6)",
+    "porque": "R6 subió de 13,2% a 20% y ganó; 25% y 30% perdieron. Falta el punto de en medio para ver si 20% es el máximo o un lado.",
+    "fuente": "R6"
+   },
+   "V114": {
+    "titulo": "Sin ninguna razón: quedan el valor, los lags y los deltas (sobre R6)",
+    "porque": "R6 ganó sacando familias de la ventana; las razones que quedan (x / lag1, x / promedio) se pueden armar con el valor y los deltas. V46 las sacó sobre un vigente anterior, con los extremos todavía adentro.",
+    "fuente": "R6"
+   },
+   "V115": {
+    "titulo": "Mínimo por hoja 50 (sobre R6)",
+    "porque": "108 (V91) y 150 (V100) no pasaron; hacia abajo no se probó.",
+    "fuente": "R6"
    }
   },
   "final": {
