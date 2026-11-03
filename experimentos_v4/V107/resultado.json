@@ -1,0 +1,74 @@
+{
+ "id": "V107",
+ "titulo": "Sin los lags: quedan el valor, los deltas y las razones (sobre R6)",
+ "cambio": "sacar=('_min3', '_max3', '_ratiomax3', '_avg3', '_lag1', '_lag2')",
+ "tipo": "agrega",
+ "paso": 119,
+ "vigente": "R6",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1985,
+ "fecha": "2026-11-03 10:56",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 269069166.6666667,
+   "ganancia": 266594166.66666666,
+   "auc": 0.9135928890334332
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -1579089.7755610943,
+    "por_mes": {
+     "201907": 1238460.099750638,
+     "201908": -6832481.296758115,
+     "201909": 856751.8703241944
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": -511472.56857855327,
+     "se": 757914.5761259851,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -1833333.3333333333,
+    "por_mes": {
+     "201907": 2200000.0,
+     "201908": -8800000.0,
+     "201909": 1100000.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 1173333.3333333333,
+     "se": 972876.6051709172,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": 2.8626039523767705e-05,
+    "por_mes": {
+     "201907": 0.0009607775193752888,
+     "201908": -0.0008951995044105265,
+     "201909": 2.0300103606540887e-05
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": -6.850979123547893e-05,
+     "se": 0.00032589788603061375,
+     "ganadas": 3,
+     "n": 5
+    }
+   }
+  }
+ }
+}
