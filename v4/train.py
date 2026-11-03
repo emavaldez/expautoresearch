@@ -340,6 +340,7 @@ CAMBIOS = {
     "peso_dificiles": None,         # su peso: None = UNDERSAMPLING (misma pérdida esperada), o un número
     "baja3": None,                  # peso de las que se van a los tres meses como cuarta clase (None: siguen CONTINUA)
     "puntaje_baja3": 0.0,           # con baja3: el puntaje suma b · P(se va a los tres meses)
+    "ova": False,                   # el general como una binaria por clase (multiclassova) en lugar de softmax
     "maestro": 0.0,                 # a: la clase de las filas presentes en t + 1 pasa a a·q + (1 - a)·y, q del maestro
     "franja_suave": 0.0,            # el mismo a para la clase de la franja de entrenamiento (segunda etapa)
     "intermedio_suave": False,      # el intermedio entra al general, con q del maestro sobre el mes que se puntúa
@@ -554,7 +555,7 @@ def base(train: pd.DataFrame, score: pd.DataFrame, seed: int, peso_fila=None, ob
         model = lgb.train({**PARAMS, "objective": "binary", "seed": seed}, dtrain, num_boost_round=NUM_ROUNDS)
         return model.predict(score[cols])
     clases = int(np.max(y)) + 1 if baja3 is not None else 3
-    model = lgb.train({**PARAMS, **diversos(seed), **turno(seed).get("params", {}), "objective": "multiclass", "num_class": clases, "seed": seed}, dtrain,
+    model = lgb.train({**PARAMS, **diversos(seed), **turno(seed).get("params", {}), "objective": "multiclassova" if CAMBIOS["ova"] else "multiclass", "num_class": clases, "seed": seed}, dtrain,
                       num_boost_round=NUM_ROUNDS)
     return puntaje(model.predict(score[cols]))
 
