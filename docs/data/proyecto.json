@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-03 15:01",
+ "generado": "2026-11-03 15:38",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4334,7 +4334,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-11-03 15:01",
+   "actualizado": "2026-11-03 15:38",
    "experimentos": [
     "E033"
    ],
@@ -4952,15 +4952,22 @@
   "v3, loop: especialistas y segundas etapas no suben la AUC (H7, H24 en los tres segmentos, H8, H30 TabPFN), y algunos suben un poco la meseta (+0,7 a +3,0 M). H14 (pesos por costo) es el caso extremo: +8,9 M de meseta y −0,0030 de AUC: ordena mejor arriba y peor el resto.",
   "v3, loop: SMOTE (H26 −0,0058) y la red sobre la historia (H29 −0,0046 en el ensamble; sola, 0,89 de AUC) empeoran, como predecían los papers.",
   "v3, loop: las predicciones del agente fueron optimistas: predijo subas en 20 de 26 y hubo una sola. Lo que no se probó todavía es combinar columnas distintas (sumas entre productos y canales): el árbol no puede sumar columnas, y es lo que proponen las ideas de H28.",
-  "v4, regla: decide la meseta del ensamble de 5 semillas en 201907, 201908 y 201909 (cada mes con su ventana m − 5 a",
-  "v4: lo que más dio fue capacidad. De 31 a 254 hojas (E025) fueron +7,8 M por mes entre V28 y V29. Más allá de eso",
-  "v4: las perillas sueltas alrededor del vigente no mueven nada (path_smooth, sorteo por nodo, max_bin 511, bagging,",
-  "v4: otros algoritmos en el ensamble empeoran: XGBoost (V1 −2,9, V39 −4,2), la binaria (V20, V36), el modelo de la",
-  "v4: sacar variables apenas se nota (V14 quedó; V45 y V74, sin los extremos de la ventana, dan +1,4 a +1,8 por",
-  "v4: tocar la clase no sirvió. Cuarta clase con las que se van a los tres meses (V59, V60), guardar las CONTINUA",
-  "v4: patrón que se repite (V59, V60, V63, V64, V74, V76, V77): cada modelo suelto mejora y el ensamble de 5 no. Lo que",
-  "v4: el mínimo de filas por hoja cuenta filas, no peso. Mandar filas con pesos chicos (0,1 a 0,13) arma hojas con",
-  "v4, final (201910, 20 semillas del bloque final, la primera vez que v4 mira ese mes): E019 293,4 M de meseta, B2"
+  "v4, regla: decide la meseta del ensamble de 5 semillas en 201907, 201908 y 201909 (cada mes con su ventana m − 5 a m − 2), con confirmación de 10 semillas nuevas. Hasta el 31-oct, de 82 ideas quedaron 4: V14 (sin la tendencia y el promedio de 3 meses de la cátedra, +0,5 M por mes), V28 (sumar los árboles grandes de E025, +4,3 M), V29 (sólo los árboles grandes, +3,5 M) y B2 (segunda etapa en la franja dudosa con los parámetros de su búsqueda, +1,1 M).",
+  "v4: lo que más dio fue capacidad. De 31 a 254 hojas (E025) fueron +7,8 M por mes entre V28 y V29. Más allá de eso no sube: 400 hojas (V75 −2,2), la mitad del learning rate con el doble de árboles (V50 +0,1), DART (V73 −4,9).",
+  "v4: las perillas sueltas alrededor del vigente no mueven nada (path_smooth, sorteo por nodo, max_bin 511, bagging, extra_trees, submuestreo 0,2 y 0,3: de +0,6 a −3,9 M). Las búsquedas de los parámetros del general (B1, B4) no encontraron nada que se sostuviera con las semillas del loop: eligen sobre los mismos tres meses y se ajustan a ellos.",
+  "v4: otros algoritmos en el ensamble empeoran: XGBoost (V1 −2,9, V39 −4,2), la binaria (V20, V36), el modelo de la cátedra (V2), una red neuronal (exploración, 32 M por debajo y peor con cualquier peso). Un miembro más débil y parecido baja el promedio.",
+  "v4: sacar variables apenas se nota (V14 quedó; V45 y V74, sin los extremos de la ventana, dan +1,4 a +1,8 por semilla pero no en el ensamble); sacar familias enteras pierde (sin lags −1,1, sin orden 2 −4,6, sin razones −6,6); agregar variables nuevas (del agente, razones de orden 2, historia de tarjetas, IPC, percentil) no suma. Los canaritos en el general son lo peor (V37 −13,6): el modelo grande vive de muchas variables débiles.",
+  "v4: tocar la clase no sirvió. Cuarta clase con las que se van a los tres meses (V59, V60), guardar las CONTINUA difíciles (V57 −10,3, V58 −18,7: filas livianas que arman hojas solas), y un maestro que mira el mes siguiente (V61–V66). El argumento de Rao-Blackwell vale con la probabilidad verdadera, no con una estimada: el general sólo puede aprender lo que el maestro captó (V65, clase blanda en una fila: −7,4 M, AUC −0,002).",
+  "v4: patrón que se repite (V59, V60, V63, V64, V74, V76, V77): cada modelo suelto mejora y el ensamble de 5 no. Lo que se entrega es el ensamble, así que esas mejoras no sirven. Darle a cada semilla sus propios hiperparámetros tampoco ayuda (V71, V72): el ensamble no se queda corto por falta de diversidad.",
+  "v4: el mínimo de filas por hoja cuenta filas, no peso. Mandar filas con pesos chicos (0,1 a 0,13) arma hojas con filas que casi no pesan y sobreajusta justo en la zona difícil (V57, V61).",
+  "v4, final (201910, 20 semillas del bloque final, la primera vez que v4 mira ese mes): E019 293,4 M de meseta, B2 296,8 M (+3,3 M; por semilla +2,5 ± 1,0, gana en 15 de 20; AUC +0,0022, sube en 19 de 20; bootstrap de clientes 90% −4,3 a +12,3 M). En screening la cadena sumaba +9,4 M por mes y en 201910 quedan +3,3: lo que se sostiene son los árboles grandes (V28 → V29 +3,5); V14 (+0,1) y la segunda etapa de B2 (−0,3) no. Elegir 4 de 82 ideas sobre los mismos tres meses infla lo que cada una parece sumar.",
+  "v4, semillas nuevas (enmienda del 1-nov): el vigente arrastra la suerte de las semillas con que se eligió (B2 dio +5,2 M contra V29 en screening y +1,1 en confirmación). De las 8 ideas que se volvieron a medir con 10 semillas que ninguna decisión vio quedó R6: sin los extremos ni el promedio de la ventana y con 20% de CONTINUA (+1,7 M por mes en confirmación). Es el vigente: de 128 pasos quedaron 5 (V14, V28, V29, B2, R6).",
+  "v4, segunda mirada a 201910 (2-nov, informada aparte): R6 294,9 M, +1,5 contra E019 en el ensamble y +2,9 ± 0,8 por semilla; contra B2, −1,8 en el ensamble y +0,4 ± 0,7 por semilla (gana en 11 de 20). R6 y B2 empatan.",
+  "v4: después de R6, 40 ideas (V88 a V120, B5, B6, R9, R10) y ninguna pasa. Las que más pierden: una binaria por clase en lugar del softmax (V110, −5,4), sacar todas las razones (V114, −2,9), L1 = 0,5 (V112, −3,5). Los árboles lineales de LightGBM 4.7 se caen adentro de la librería con estos datos (V99, sin medición).",
+  "v4: buscar los parámetros de la franja sobre el vigente se sobreajusta a las semillas de la búsqueda: B5 (4 semillas) ganaba 3,1 M en la búsqueda y perdió 1,6 en screening; B6 (8 semillas) ganaba 1,5 y quedó en −0,2. La franja en sí vale unos 4 M por mes sobre no tenerla.",
+  "v4: la cuarta clase ganó por semilla las cuatro veces que se midió con las 5 semillas de screening (+1,1 a +2,0) y con 10 semillas que nada usó no gana (R9 +0,1 ± 0,6, R10 −0,4 ± 0,5). R6 había perdido con las semillas de screening, así que contra R6 casi cualquier cambio parece ganar con ellas: las semillas de comparación también tienen suerte, y por eso lo que pasa el screening tiene que pasar la confirmación.",
+  "v4: el ensamble deja de crecer cerca de 10 semillas (R6 con 5, 10, 15, 20 y 25 en 201907-09), y mezclar R6 con B2 (25 semillas cada uno) no le gana a R6 solo. Entregar con más semillas o mezclar los dos no es una mejora.",
+  "v4, el ruido de los clientes (`v4/bootstrap.py`): sortear con reposición los clientes de cada mes da un error de 1,6 a 2,0 M por mes en la diferencia de meseta entre dos variantes cercanas con los tres meses, y de casi 3 M con un mes. Una idea tiene que valer unos +4 M por mes para distinguirse; el umbral de +1 M está adentro de ese ruido y la confirmación con semillas nuevas no lo corrige (son los mismos clientes). Contra E019: +7,8 ± 3,3 M en 201907-09 (optimista: se eligió con esos meses) y +1,5 ± 5,0 en 201910. La mejora es probablemente real y chica."
  ],
  "aula": {
   "modelo": "E019",
@@ -18971,6 +18978,25 @@
     "vigente": "R6",
     "segundos": "2019",
     "fecha": "2026-11-03 15:00"
+   },
+   {
+    "paso": "128",
+    "id": "V116",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'peso_baja1': 0.25}",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "-25008",
+    "pareado_meseta": "-401756",
+    "se_meseta": "880990",
+    "ganadas": "2/5",
+    "meses_ganados": "2",
+    "d_lista": "-366667",
+    "d_auc": "-3e-05",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1998",
+    "fecha": "2026-11-03 15:34"
    }
   ],
   "ideas": {
@@ -19941,6 +19967,209 @@
      }
     }
    }
-  }
+  },
+  "ruido": [
+   {
+    "a": "V0",
+    "b": "V29",
+    "bloque_a": "screening",
+    "bloque_b": "screening_p5h3",
+    "meses": [
+     201907,
+     201908,
+     201909
+    ],
+    "delta": 2837254.7797173657,
+    "se": 3063373.616689163,
+    "por_mes": [
+     5496913.965087235,
+     6003778.054862827,
+     -2988927.6807979643
+    ],
+    "se_por_mes": [
+     5513281.9566433495,
+     5935535.795010015,
+     3954078.0470225895
+    ],
+    "prob_positiva": 0.8625,
+    "reps": 400
+   },
+   {
+    "a": "V0",
+    "b": "B2",
+    "bloque_a": "screening",
+    "bloque_b": "screening_p5h3",
+    "meses": [
+     201907,
+     201908,
+     201909
+    ],
+    "delta": 8037223.607647548,
+    "se": 3139214.368956749,
+    "por_mes": [
+     15640024.937655866,
+     7163029.9251870215,
+     1308615.9600997567
+    ],
+    "se_por_mes": [
+     5728845.305319125,
+     5480694.727065048,
+     4532638.427589445
+    ],
+    "prob_positiva": 0.9975,
+    "reps": 400
+   },
+   {
+    "a": "V0",
+    "b": "R6",
+    "bloque_a": "screening",
+    "bloque_b": "screening_p5h3",
+    "meses": [
+     201907,
+     201908,
+     201909
+    ],
+    "delta": 7815623.441396515,
+    "se": 3276046.196336229,
+    "por_mes": [
+     15356246.88279301,
+     8952175.8104738,
+     -861552.3690772653
+    ],
+    "se_por_mes": [
+     6532240.789937834,
+     5836553.619073304,
+     4484956.112290677
+    ],
+    "prob_positiva": 0.9975,
+    "reps": 400
+   },
+   {
+    "a": "B2",
+    "b": "R6",
+    "bloque_a": "screening_p5h3",
+    "bloque_b": "screening_p5h3",
+    "meses": [
+     201907,
+     201908,
+     201909
+    ],
+    "delta": -221600.16625103354,
+    "se": 1997306.3811428577,
+    "por_mes": [
+     -283778.05486285686,
+     1789145.8852867782,
+     -2170168.329177022
+    ],
+    "se_por_mes": [
+     3752031.555933157,
+     3123530.7591266455,
+     3689808.5227905936
+    ],
+    "prob_positiva": 0.6125,
+    "reps": 400
+   },
+   {
+    "a": "R6",
+    "b": "V115",
+    "bloque_a": "screening_p5h3",
+    "bloque_b": "screening_p5h3",
+    "meses": [
+     201907,
+     201908,
+     201909
+    ],
+    "delta": 1993898.5868661702,
+    "se": 1611307.4545527168,
+    "por_mes": [
+     2593023.69077307,
+     -1051172.0698254406,
+     4439844.139650881
+    ],
+    "se_por_mes": [
+     2031441.999431702,
+     2585013.5790540907,
+     3631580.467819061
+    ],
+    "prob_positiva": 0.755,
+    "reps": 400
+   },
+   {
+    "a": "V0",
+    "b": "V29",
+    "bloque_a": "final_p5h3",
+    "bloque_b": "final_p5h3",
+    "meses": [
+     201910
+    ],
+    "delta": 3638092.269326687,
+    "se": 4767091.785995988,
+    "por_mes": [
+     3638092.269326687
+    ],
+    "se_por_mes": [
+     4767091.785995988
+    ],
+    "prob_positiva": 0.765,
+    "reps": 400
+   },
+   {
+    "a": "V0",
+    "b": "B2",
+    "bloque_a": "final_p5h3",
+    "bloque_b": "final_p5h3",
+    "meses": [
+     201910
+    ],
+    "delta": 3347387.7805486917,
+    "se": 5200530.199685674,
+    "por_mes": [
+     3347387.7805486917
+    ],
+    "se_por_mes": [
+     5200530.199685674
+    ],
+    "prob_positiva": 0.805,
+    "reps": 400
+   },
+   {
+    "a": "V0",
+    "b": "R6",
+    "bloque_a": "final_p5h3",
+    "bloque_b": "final_p5h3",
+    "meses": [
+     201910
+    ],
+    "delta": 1507836.6583541036,
+    "se": 5047161.417447321,
+    "por_mes": [
+     1507836.6583541036
+    ],
+    "se_por_mes": [
+     5047161.417447321
+    ],
+    "prob_positiva": 0.6975,
+    "reps": 400
+   },
+   {
+    "a": "B2",
+    "b": "R6",
+    "bloque_a": "final_p5h3",
+    "bloque_b": "final_p5h3",
+    "meses": [
+     201910
+    ],
+    "delta": -1839551.1221945882,
+    "se": 2937861.9356020857,
+    "por_mes": [
+     -1839551.1221945882
+    ],
+    "se_por_mes": [
+     2937861.9356020857
+    ],
+    "prob_positiva": 0.3325,
+    "reps": 400
+   }
+  ]
  }
 }
