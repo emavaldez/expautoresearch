@@ -1,0 +1,74 @@
+{
+ "id": "V106",
+ "titulo": "Muestreo por gradiente (GOSS) en lugar de todas las filas (sobre R6)",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'data_sample_strategy': 'goss'}",
+ "tipo": "agrega",
+ "paso": 115,
+ "vigente": "R6",
+ "pred_meseta": "-0.5",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 7937,
+ "fecha": "2026-11-03 02:10",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 269602296.34247714,
+   "ganancia": 265494166.66666666,
+   "auc": 0.9131197170424025
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -1045960.0997506281,
+    "por_mes": {
+     "201907": -1556184.5386533737,
+     "201908": -1577855.361596018,
+     "201909": -3840.399002492428
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -1666285.1205319962,
+     "se": 964854.0473109831,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -2933333.3333333335,
+    "por_mes": {
+     "201907": -3300000.0,
+     "201908": -3300000.0,
+     "201909": -2200000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -366666.6666666666,
+     "se": 844130.0584362316,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00044454595150685466,
+    "por_mes": {
+     "201907": 0.0010847727907297156,
+     "201908": -0.001102626004617302,
+     "201909": -0.0013157846406329776
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -0.00033187816318040275,
+     "se": 0.00032539453284661737,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}

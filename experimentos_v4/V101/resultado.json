@@ -1,0 +1,74 @@
+{
+ "id": "V101",
+ "titulo": "Penalidad L2 de 5 en las hojas (sobre R6)",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 5.0, 'submuestreo': 0.2}",
+ "tipo": "agrega",
+ "paso": 110,
+ "vigente": "R6",
+ "pred_meseta": "+0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1773,
+ "fecha": "2026-11-02 21:25",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 269555068.5785536,
+   "ganancia": 269527500.0,
+   "auc": 0.9132127117471733
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -1093187.8636741538,
+    "por_mes": {
+     "201907": -6121047.38154614,
+     "201908": 582643.3915211856,
+     "201909": 2258840.3990024924
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": -677254.3640897751,
+     "se": 1075963.2386644005,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 1100000.0,
+    "por_mes": {
+     "201907": -5500000.0,
+     "201908": 1100000.0,
+     "201909": 7700000.0
+    },
+    "meses_ganados": 2,
+    "pareado": {
+     "media": 880000.0,
+     "se": 1072774.1814773716,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00035155124673606303,
+    "por_mes": {
+     "201907": 0.0008988683758985871,
+     "201908": -0.0004905066275440184,
+     "201909": -0.0014630154885627578
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -3.938844077064166e-05,
+     "se": 0.0001819933850929399,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}
