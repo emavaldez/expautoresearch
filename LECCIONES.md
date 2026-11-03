@@ -71,7 +71,7 @@ hasta 201912: nada de 2020 entra acá.
 ## v4 (mejorar E019 con 2019, desde 2026-10-29)
 
 - v4, regla: decide la meseta del ensamble de 5 semillas en 201907, 201908 y 201909 (cada mes con su ventana m − 5 a
-  m − 2), con confirmación de 10 semillas nuevas. De 82 ideas quedaron 4: V14 (sin la tendencia y el promedio de 3
+  m − 2), con confirmación de 10 semillas nuevas. Hasta el 31-oct, de 82 ideas quedaron 4: V14 (sin la tendencia y el promedio de 3
   meses de la cátedra, +0,5 M por mes), V28 (sumar los árboles grandes de E025, +4,3 M), V29 (sólo los árboles
   grandes, +3,5 M) y B2 (segunda etapa en la franja dudosa con los parámetros de su búsqueda, +1,1 M).
 - v4: lo que más dio fue capacidad. De 31 a 254 hojas (E025) fueron +7,8 M por mes entre V28 y V29. Más allá de eso
@@ -101,3 +101,26 @@ hasta 201912: nada de 2020 entra acá.
   90% −4,3 a +12,3 M). En screening la cadena sumaba +9,4 M por mes y en 201910 quedan +3,3: lo que se sostiene son
   los árboles grandes (V28 → V29 +3,5); V14 (+0,1) y la segunda etapa de B2 (−0,3) no. Elegir 4 de 82 ideas sobre los
   mismos tres meses infla lo que cada una parece sumar.
+- v4, semillas nuevas (enmienda del 1-nov): el vigente arrastra la suerte de las semillas con que se eligió (B2 dio
+  +5,2 M contra V29 en screening y +1,1 en confirmación). De las 8 ideas que se volvieron a medir con 10 semillas que
+  ninguna decisión vio quedó R6: sin los extremos ni el promedio de la ventana y con 20% de CONTINUA (+1,7 M por mes en
+  confirmación). Es el vigente: de 128 pasos quedaron 5 (V14, V28, V29, B2, R6).
+- v4, segunda mirada a 201910 (2-nov, informada aparte): R6 294,9 M, +1,5 contra E019 en el ensamble y +2,9 ± 0,8 por
+  semilla; contra B2, −1,8 en el ensamble y +0,4 ± 0,7 por semilla (gana en 11 de 20). R6 y B2 empatan.
+- v4: después de R6, 40 ideas (V88 a V120, B5, B6, R9, R10) y ninguna pasa. Las que más pierden: una binaria por clase
+  en lugar del softmax (V110, −5,4), sacar todas las razones (V114, −2,9), L1 = 0,5 (V112, −3,5). Los árboles lineales
+  de LightGBM 4.7 se caen adentro de la librería con estos datos (V99, sin medición).
+- v4: buscar los parámetros de la franja sobre el vigente se sobreajusta a las semillas de la búsqueda: B5 (4 semillas)
+  ganaba 3,1 M en la búsqueda y perdió 1,6 en screening; B6 (8 semillas) ganaba 1,5 y quedó en −0,2. La franja en sí
+  vale unos 4 M por mes sobre no tenerla.
+- v4: la cuarta clase ganó por semilla las cuatro veces que se midió con las 5 semillas de screening (+1,1 a +2,0) y
+  con 10 semillas que nada usó no gana (R9 +0,1 ± 0,6, R10 −0,4 ± 0,5). R6 había perdido con las semillas de
+  screening, así que contra R6 casi cualquier cambio parece ganar con ellas: las semillas de comparación también
+  tienen suerte, y por eso lo que pasa el screening tiene que pasar la confirmación.
+- v4: el ensamble deja de crecer cerca de 10 semillas (R6 con 5, 10, 15, 20 y 25 en 201907-09), y mezclar R6 con B2
+  (25 semillas cada uno) no le gana a R6 solo. Entregar con más semillas o mezclar los dos no es una mejora.
+- v4, el ruido de los clientes (`v4/bootstrap.py`): sortear con reposición los clientes de cada mes da un error de 1,6
+  a 2,0 M por mes en la diferencia de meseta entre dos variantes cercanas con los tres meses, y de casi 3 M con un mes.
+  Una idea tiene que valer unos +4 M por mes para distinguirse; el umbral de +1 M está adentro de ese ruido y la
+  confirmación con semillas nuevas no lo corrige (son los mismos clientes). Contra E019: +7,8 ± 3,3 M en 201907-09
+  (optimista: se eligió con esos meses) y +1,5 ± 5,0 en 201910. La mejora es probablemente real y chica.

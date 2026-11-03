@@ -12,6 +12,7 @@ import json
 import shutil
 import subprocess
 from datetime import datetime
+from pathlib import Path
 
 import comun
 import config as C
@@ -150,12 +151,26 @@ def _hipotesis(coment: dict) -> list[dict]:
 
 
 def _v4() -> dict:
-    """v4 (mejorar E019 con 2019): los pasos del loop con el título y el porqué de cada idea, y el final en 201910."""
+    """v4 (mejorar E019 con 2019): los pasos del loop con el título y el porqué de cada idea, el final en 201910 y el
+    bootstrap de clientes de las diferencias (el ruido de la medición)."""
     ideas = {f["id"]: {k: f.get(k, "") for k in ("titulo", "porque", "fuente")}
              for f in comun.leer_tsv(comun.RAIZ / "v4" / "cola.tsv")}
     final = comun.RAIZ / "experimentos_v4" / "FINAL" / "resultado.json"
+    ruido = comun.RAIZ / "experimentos_v4" / "RUIDO" / "resultado.json"  # v4/bootstrap.py
     return {"loop": comun.leer_tsv(comun.RAIZ / "v4" / "loop.tsv"), "ideas": ideas,
-            "final": json.loads(final.read_text(encoding="utf-8")) if final.exists() else None}
+            "final": json.loads(final.read_text(encoding="utf-8")) if final.exists() else None,
+            "ruido": json.loads(ruido.read_text(encoding="utf-8")) if ruido.exists() else []}
+
+
+def _lecciones(ruta: Path) -> list[str]:
+    """Cada viñeta de LECCIONES.md entera: las líneas que siguen con sangría son parte de la misma."""
+    out: list[str] = []
+    for l in ruta.read_text(encoding="utf-8").splitlines() if ruta.exists() else []:
+        if l.startswith("- "):
+            out.append(l[2:].strip())
+        elif out and l.startswith("  ") and l.strip():
+            out[-1] += " " + l.strip()
+    return out
 
 
 def generar() -> None:
@@ -166,8 +181,7 @@ def generar() -> None:
                                                   "como_medir", "prioridad", "estado", "issue", "actualizado")},
                       "experimentos": [e for e in f.get("experimentos", "").split(",") if e],
                       "comentarios": coment.get(f.get("issue", ""), 0)})
-    lecciones = [l[2:].strip() for l in (comun.RAIZ / "LECCIONES.md").read_text(encoding="utf-8").splitlines()
-                 if l.startswith("- ")] if (comun.RAIZ / "LECCIONES.md").exists() else []
+    lecciones = _lecciones(comun.RAIZ / "LECCIONES.md")
     datos = {
         "generado": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "repo": C.REPO_GITHUB,

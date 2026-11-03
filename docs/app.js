@@ -622,8 +622,33 @@ const CADENA_V4 = {
   V14: "sin la tendencia ni el promedio de 3 meses de la cátedra",
   V28: "+ los árboles grandes de E025 (254 hojas)",
   V29: "sólo los árboles grandes",
-  B2: "+ segunda etapa en la franja dudosa (el vigente)",
+  B2: "+ segunda etapa en la franja dudosa",
+  R6: "sin los extremos ni el promedio de la ventana, con 20% de CONTINUA (el vigente)",
 };
+
+const ETAPA_V4 = { confirmacion: "confirmación", reprueba: "semillas nuevas", nuevas: "10 semillas que nada usó" };
+
+// El bootstrap de clientes (v4/bootstrap.py): cuánto se mueve la diferencia de meseta si los clientes del mes fueran otros.
+function ruidoV4(R) {
+  if (!R.length) return "";
+  const M1 = (x) => `${x > 0 ? "+" : x < 0 ? "−" : ""}${nf1.format(Math.abs(x) / 1e6)}`;
+  const pares = [];
+  for (const r of R) {
+    const k = `${r.b}|${r.a}`;
+    let f = pares.find((x) => x.k === k);
+    if (!f) pares.push((f = { k, a: r.a, b: r.b }));
+    f[r.meses.length > 1 ? "sel" : "test"] = r;
+  }
+  const celda = (r) => (r ? `<td class="num ${claseSigno(r.delta)}">${M1(r.delta)}<small> ± ${nf1.format(r.se / 1e6)}</small></td>` : `<td class="num">–</td>`);
+  const nombre = (id) => (id === "V0" ? "E019" : id);
+  let t = `<h3>El ruido de la medición</h3><div class="texto-largo">
+    <p>La regla compara por semilla, y eso mide la suerte de las semillas. Los clientes de cada mes son una muestra: si fueran otros, la diferencia cambiaría. El bootstrap de clientes sortea con reposición los clientes de cada mes y recalcula la meseta de los dos ensambles; el ± es el error estándar de la diferencia, en M por mes.</p></div>
+    <div class="scroll-x"><table class="libro"><thead><tr><th>Comparación</th><th class="num">201907-09 (deciden)</th><th class="num">201910 (test)</th></tr></thead><tbody>`;
+  for (const f of pares) t += `<tr><td><b>${esc(nombre(f.b))}</b> contra ${esc(nombre(f.a))}</td>${celda(f.sel)}${celda(f.test)}</tr>`;
+  t += `</tbody></table></div>
+    <p class="nota">Entre dos variantes cercanas el error es de 1,6 a 2,0 M por mes con los tres meses, y de casi 3 M con uno. Una idea tiene que valer unos +4 M por mes para que tres meses la distingan; el umbral de +1 M queda adentro del ruido de los clientes, y la confirmación con semillas nuevas no lo corrige, porque los clientes son los mismos. Contra E019, la cadena gana +8 ± 3 M en los meses que decidieron (optimista: se eligió 130 veces con ellos) y +1,5 a +3,6 ± 5 M en 201910, que con un solo mes no se distingue del cero. La mejora es probablemente real y chica.</p>`;
+  return t;
+}
 
 function vV4() {
   const V = D.v4 || {};
@@ -634,9 +659,11 @@ function vV4() {
   let t = `<h2>Mejorar el modelo de la primera competencia (v4)</h2><div class="texto-largo">
     <p>¿Se puede ganar más plata que E019 (el modelo de la primera competencia) con los datos de 2019? El mismo loop que v3, pero decide la plata: la meseta del ensamble de 5 semillas en 201907, 201908 y 201909, cada mes entrenado con su ventana (m − 5 a m − 2, como en el aula).</p>
     <p>Una idea queda si la meseta sube más de 1 M por mes, la diferencia por semilla supera dos errores estándar y gana en al menos 2 de los 3 meses; después se confirma con 10 semillas nuevas. 201910 no se mira hasta el final.</p>
+    <p>Dos enmiendas (en el <a href="#/protocolo">protocolo</a>): desde el 1-nov algunas ideas se vuelven a medir con semillas que ninguna decisión vio, porque el vigente arrastraba la suerte de las semillas con que se eligió; y desde el 3-nov hay un bloque de 10 semillas que nada usó, para la cuarta clase.</p>
   </div>`;
   if (F) {
     t += `<h3>El final: 201910, con 20 semillas que no se usaron para decidir</h3>
+      <p class="intro">201910 se miró dos veces: con la cadena hasta B2 (31-oct) y con R6 (2-nov), después de que R6 quedó. Ninguna decisión se tomó con este mes.</p>
       <div class="scroll-x"><table class="libro"><thead><tr><th>Modelo</th><th class="num">Meseta</th><th class="num">Contra E019</th><th class="num">Por semilla</th><th class="num">Bootstrap 90%</th><th class="num">AUC</th></tr></thead><tbody>`;
     for (const [m, f] of Object.entries(F.modelos || {})) {
       const c = f.contra_E019 && f.contra_E019.meseta;
@@ -649,8 +676,10 @@ function vV4() {
         <td class="num">${A(f.auc)}</td></tr>`;
     }
     t += `</tbody></table></div>
-      <p class="nota">B2 le gana a E019 por 3,3 M en 201910: por semilla la diferencia supera dos errores estándar y la AUC sube en 19 de 20 semillas. Con un solo mes de test, el intervalo por clientes todavía cruza el cero. Lo que se sostiene son los árboles grandes (V28 → V29); el resto de la cadena no se nota en 201910.</p>`;
+      <p class="nota">B2 le gana a E019 por 3,3 M en 201910: por semilla la diferencia supera dos errores estándar y la AUC sube en 19 de 20 semillas. Con un solo mes de test, el intervalo por clientes todavía cruza el cero. Lo que se sostiene son los árboles grandes (V28 → V29); el resto de la cadena no se nota en 201910.</p>
+      <p class="nota">R6 (la segunda mirada): +1,5 M contra E019 en el ensamble y +2,9 ± 0,8 por semilla. Contra B2, −1,8 en el ensamble y +0,4 ± 0,7 por semilla (gana en 11 de 20): empatan.</p>`;
   }
+  t += ruidoV4(V.ruido || []);
   const quedan = pasos.filter((p) => p.decision === "queda").length;
   t += `<h3>Los ${pasos.length} pasos del loop</h3><p class="intro">Quedaron ${quedan}. Δ meseta es la diferencia contra el vigente, por mes, en la etapa a la que llegó (screening, semillas nuevas o confirmación). Tocá un renglón para ver por qué se probó.</p>
     <div class="scroll-x"><table class="libro fija"><colgroup><col style="width:50px"><col><col style="width:90px"><col style="width:100px"><col style="width:120px"><col style="width:60px"><col style="width:110px"></colgroup><thead><tr><th class="num">Paso</th><th>Idea</th><th class="num">Predicción</th><th class="num">Δ meseta</th><th class="num">Por semilla</th><th class="num">Meses</th><th>Decisión</th></tr></thead><tbody>`;
@@ -658,7 +687,7 @@ function vV4() {
     const q = p.decision === "queda";
     const i = ideas[p.id] || {};
     const err = (p.decision || "").startsWith("error");
-    t += `<tr class="fila-v4" tabindex="0"><td class="num">${esc(p.paso)}</td><td><b>${esc(p.id)}</b> ${esc(i.titulo || p.cambio)}${p.etapa === "confirmacion" ? ' <span class="apagado">(confirmación)</span>' : ""}</td>
+    t += `<tr class="fila-v4" tabindex="0"><td class="num">${esc(p.paso)}</td><td><b>${esc(p.id)}</b> ${esc(i.titulo || p.cambio)}${ETAPA_V4[p.etapa] ? ` <span class="apagado">(${ETAPA_V4[p.etapa]})</span>` : ""}</td>
       <td class="num apagado">${p.pred_meseta ? `${esc(p.pred_meseta.replace(".", ","))} M` : "–"}</td>
       <td class="num ${p.d_meseta ? claseSigno(Number(p.d_meseta)) : ""}">${p.d_meseta ? signo(Number(p.d_meseta)) : "–"}</td>
       <td class="num">${p.pareado_meseta ? `${M1(Number(p.pareado_meseta))}<small> ± ${nf1.format(Number(p.se_meseta) / 1e6)}</small>` : "–"}</td>
