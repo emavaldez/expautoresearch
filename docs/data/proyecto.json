@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-03 11:59",
+ "generado": "2026-11-03 15:01",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4334,7 +4334,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-11-03 11:59",
+   "actualizado": "2026-11-03 15:01",
    "experimentos": [
     "E033"
    ],
@@ -18857,6 +18857,120 @@
     "vigente": "R6",
     "segundos": "2013",
     "fecha": "2026-11-03 11:59"
+   },
+   {
+    "paso": "122",
+    "id": "V110",
+    "cambio": "ova=True",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "-5354065",
+    "pareado_meseta": "-5422817",
+    "se_meseta": "1585357",
+    "ganadas": "0/5",
+    "meses_ganados": "0",
+    "d_lista": "-6233333",
+    "d_auc": "-0.0021",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1928",
+    "fecha": "2026-11-03 12:31"
+   },
+   {
+    "paso": "123",
+    "id": "V111",
+    "cambio": "params={'num_leaves': 200, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+    "tipo": "agrega",
+    "pred_meseta": "-0.3",
+    "etapa": "screening",
+    "d_meseta": "-1018529",
+    "pareado_meseta": "-1329875",
+    "se_meseta": "1185077",
+    "ganadas": "2/5",
+    "meses_ganados": "0",
+    "d_lista": "1466667",
+    "d_auc": "-0.0006",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1715",
+    "fecha": "2026-11-03 13:00"
+   },
+   {
+    "paso": "124",
+    "id": "V112",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'lambda_l1': 0.5}",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "-3528458",
+    "pareado_meseta": "-2317754",
+    "se_meseta": "1197008",
+    "ganadas": "0/5",
+    "meses_ganados": "0",
+    "d_lista": "-3300000",
+    "d_auc": "9e-05",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1703",
+    "fecha": "2026-11-03 13:28"
+   },
+   {
+    "paso": "125",
+    "id": "V113",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.15}",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "257124",
+    "pareado_meseta": "-163971",
+    "se_meseta": "1383520",
+    "ganadas": "2/5",
+    "meses_ganados": "2",
+    "d_lista": "-366667",
+    "d_auc": "0.00027",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1823",
+    "fecha": "2026-11-03 13:58"
+   },
+   {
+    "paso": "126",
+    "id": "V114",
+    "cambio": "sacar=('_min3', '_max3', '_ratiomax3', '_avg3', '_ratiolag1', '_ratioavg3')",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "-2935916",
+    "pareado_meseta": "-3863739",
+    "se_meseta": "1593372",
+    "ganadas": "1/5",
+    "meses_ganados": "0",
+    "d_lista": "-4400000",
+    "d_auc": "-0.00093",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1672",
+    "fecha": "2026-11-03 14:26"
+   },
+   {
+    "paso": "127",
+    "id": "V115",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 50, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+    "tipo": "agrega",
+    "pred_meseta": "-0.3",
+    "etapa": "screening",
+    "d_meseta": "1993899",
+    "pareado_meseta": "-743346",
+    "se_meseta": "939979",
+    "ganadas": "1/5",
+    "meses_ganados": "2",
+    "d_lista": "2200000",
+    "d_auc": "6e-05",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "2019",
+    "fecha": "2026-11-03 15:00"
    }
   ],
   "ideas": {
@@ -19508,6 +19622,31 @@
    "V115": {
     "titulo": "Mínimo por hoja 50 (sobre R6)",
     "porque": "108 (V91) y 150 (V100) no pasaron; hacia abajo no se probó.",
+    "fuente": "R6"
+   },
+   "V116": {
+    "titulo": "Las BAJA+1 pesan 0,25 al entrenar (sobre R6)",
+    "porque": "Con peso 1 perdieron por semilla (V96, −0,8 ± 1,0); para abajo no se probó. Las BAJA+1 se parecen a las BAJA+2 pero no pagan.",
+    "fuente": "R6"
+   },
+   "V117": {
+    "titulo": "550 árboles con el mismo learning rate (sobre R6)",
+    "porque": "850 árboles dio +1,5 en el ensamble y +0,1 por semilla (V97); falta el otro lado para ver si 667 es el máximo.",
+    "fuente": "R6"
+   },
+   "V118": {
+    "titulo": "Puntaje P(BAJA+2) + 0,75 P(BAJA+1) (sobre R6)",
+    "porque": "0, 0,5 y 1,5 perdieron sobre vigentes anteriores; 0,75 no se probó y con R6 el general cambió.",
+    "fuente": "R6"
+   },
+   "V119": {
+    "titulo": "Los meses viejos pesan menos (0,85 por mes; sobre R6)",
+    "porque": "0,7 perdió dos veces (V35, V49); con 0,85 el mes más viejo pesa 0,61 en lugar de 0,34.",
+    "fuente": "R6"
+   },
+   "V120": {
+    "titulo": "Bagging de filas 0,9 (sobre R6)",
+    "porque": "0,8 perdió sobre V29 (V70); con 20% de CONTINUA hay más filas para sortear.",
     "fuente": "R6"
    }
   },
