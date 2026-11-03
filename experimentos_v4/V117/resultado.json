@@ -1,0 +1,74 @@
+{
+ "id": "V117",
+ "titulo": "550 árboles con el mismo learning rate (sobre R6)",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 550, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+ "tipo": "agrega",
+ "paso": 129,
+ "vigente": "R6",
+ "pred_meseta": "0",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1648,
+ "fecha": "2026-11-03 16:01",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 269941257.2734829,
+   "ganancia": 266227500.0,
+   "auc": 0.9133218556960077
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -706999.1687448323,
+    "por_mes": {
+     "201907": -679750.6234414577,
+     "201908": -1386315.461346656,
+     "201909": -54931.421446383
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -711369.9085619232,
+     "se": 309324.8657794867,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -2200000.0,
+    "por_mes": {
+     "201907": -2200000.0,
+     "201908": -1100000.0,
+     "201909": -3300000.0
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -9.313225746154786e-11,
+     "se": 956149.6860963884,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00024240729790185137,
+    "por_mes": {
+     "201907": -0.0003052744938387697,
+     "201908": -4.7460687619182984e-05,
+     "201909": -0.00037448671224760144
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.00019362728592486149,
+     "se": 6.710520929291388e-05,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}

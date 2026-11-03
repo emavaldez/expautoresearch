@@ -1,0 +1,74 @@
+{
+ "id": "V120",
+ "titulo": "Bagging de filas 0,9 (sobre R6)",
+ "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'bagging_fraction': 0.9, 'bagging_freq': 1}",
+ "tipo": "agrega",
+ "paso": 132,
+ "vigente": "R6",
+ "pred_meseta": "-0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1983,
+ "fecha": "2026-11-03 17:41",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 269432267.24854535,
+   "ganancia": 268060833.33333334,
+   "auc": 0.9133803813586773
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -1215989.193682462,
+    "por_mes": {
+     "201907": -1287493.7655860186,
+     "201908": -2253697.007481307,
+     "201909": -106776.80798006058
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -1433831.2551953397,
+     "se": 1241008.7977355479,
+     "ganadas": 1,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": -366666.6666666667,
+    "por_mes": {
+     "201907": -1100000.0,
+     "201908": -4400000.0,
+     "201909": 4400000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 220000.0,
+     "se": 832906.5573840401,
+     "ganadas": 3,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.00018388163523216003,
+    "por_mes": {
+     "201907": 3.151502234155501e-05,
+     "201908": -0.00015575581664262206,
+     "201909": -0.000427404111395413
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": -0.00015688983481192408,
+     "se": 0.00022614427156226596,
+     "ganadas": 2,
+     "n": 5
+    }
+   }
+  }
+ }
+}
