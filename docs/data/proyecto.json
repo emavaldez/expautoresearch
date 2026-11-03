@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-03 15:38",
+ "generado": "2026-11-03 18:31",
  "repo": "emavaldez/expautoresearch",
  "escenario": {
   "meses_test": [
@@ -4334,7 +4334,7 @@
    "prioridad": "media",
    "estado": "probada",
    "issue": "12",
-   "actualizado": "2026-11-03 15:38",
+   "actualizado": "2026-11-03 18:31",
    "experimentos": [
     "E033"
    ],
@@ -18997,6 +18997,82 @@
     "vigente": "R6",
     "segundos": "1998",
     "fecha": "2026-11-03 15:34"
+   },
+   {
+    "paso": "129",
+    "id": "V117",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 550, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "-706999",
+    "pareado_meseta": "-711370",
+    "se_meseta": "309325",
+    "ganadas": "1/5",
+    "meses_ganados": "0",
+    "d_lista": "-2200000",
+    "d_auc": "-0.00024",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1648",
+    "fecha": "2026-11-03 16:01"
+   },
+   {
+    "paso": "130",
+    "id": "V118",
+    "cambio": "puntaje_baja1=0.75",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "-669258",
+    "pareado_meseta": "-394674",
+    "se_meseta": "477015",
+    "ganadas": "2/5",
+    "meses_ganados": "0",
+    "d_lista": "0",
+    "d_auc": "0.0001",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1999",
+    "fecha": "2026-11-03 16:34"
+   },
+   {
+    "paso": "131",
+    "id": "V119",
+    "cambio": "peso_mes=0.85",
+    "tipo": "agrega",
+    "pred_meseta": "0",
+    "etapa": "screening",
+    "d_meseta": "15453",
+    "pareado_meseta": "-824529",
+    "se_meseta": "938143",
+    "ganadas": "1/5",
+    "meses_ganados": "1",
+    "d_lista": "733333",
+    "d_auc": "-2e-05",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "2003",
+    "fecha": "2026-11-03 17:08"
+   },
+   {
+    "paso": "132",
+    "id": "V120",
+    "cambio": "params={'num_leaves': 254, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2, 'bagging_fraction': 0.9, 'bagging_freq': 1}",
+    "tipo": "agrega",
+    "pred_meseta": "-0.3",
+    "etapa": "screening",
+    "d_meseta": "-1215989",
+    "pareado_meseta": "-1433831",
+    "se_meseta": "1241009",
+    "ganadas": "1/5",
+    "meses_ganados": "0",
+    "d_lista": "-366667",
+    "d_auc": "-0.00018",
+    "decision": "se descarta",
+    "vigente": "R6",
+    "segundos": "1983",
+    "fecha": "2026-11-03 17:41"
    }
   ],
   "ideas": {
@@ -19673,6 +19749,26 @@
    "V120": {
     "titulo": "Bagging de filas 0,9 (sobre R6)",
     "porque": "0,8 perdió sobre V29 (V70); con 20% de CONTINUA hay más filas para sortear.",
+    "fuente": "R6"
+   },
+   "V121": {
+    "titulo": "Red neuronal mezclada con el general (0,2 en logits; sobre R6)",
+    "porque": "Otra familia de modelo: los LightGBM con otros hiperparámetros no suman diversidad (V71, V72) y XGBoost tampoco (V39); un perceptrón no parte el espacio en cajas y puede ordenar distinto a los clientes de la punta.",
+    "fuente": "R6"
+   },
+   "V122": {
+    "titulo": "Red neuronal con más peso (0,4 en logits; sobre R6)",
+    "porque": "Si la red sola ordena bastante peor que el general, con 0,4 se nota la pérdida; si 0,2 gana poco y 0,4 más, falta subir.",
+    "fuente": "R6"
+   },
+   "V123": {
+    "titulo": "El general con un objetivo de orden (rank_xendcg; sobre R6)",
+    "porque": "La meseta sólo mira el orden de arriba: un objetivo de orden lo optimiza directo en lugar de la verosimilitud de las tres clases.",
+    "fuente": "R6"
+   },
+   "V124": {
+    "titulo": "El general con lambdarank (sobre R6)",
+    "porque": "lambdarank pesa cada par por cuánto cambia el NDCG: se concentra en la punta de cada consulta, que es donde se cobra.",
     "fuente": "R6"
    }
   },
