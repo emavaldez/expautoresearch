@@ -1,0 +1,93 @@
+{
+ "vigente": "R6",
+ "trials": 40,
+ "semillas": [
+  800311,
+  800329,
+  800333,
+  800351,
+  800357,
+  800399,
+  800407,
+  800417
+ ],
+ "mejor_trial": 6,
+ "valor": 272105642.14463836,
+ "valor_franja1": 270647959.2684954,
+ "valor_sin_franja": 266210538.23773897,
+ "params": {
+  "franja_desde": 0.4901880866567749,
+  "franja_hasta": 4.182351258868484,
+  "learning_rate": 0.0579446849916829,
+  "num_leaves": 3,
+  "min_data_in_leaf": 539,
+  "feature_fraction": 0.2278099535193507,
+  "lambda_l2": 0.4196009624262922,
+  "rondas": 223,
+  "peso_base": 0.5854786233801715,
+  "baja1": "negativa",
+  "init": true
+ },
+ "espacio": {
+  "franja_desde": [
+   "float",
+   0.3,
+   1.0
+  ],
+  "franja_hasta": [
+   "float",
+   1.5,
+   5.0
+  ],
+  "learning_rate": [
+   "log",
+   0.01,
+   0.1
+  ],
+  "num_leaves": [
+   "intlog",
+   2,
+   31
+  ],
+  "min_data_in_leaf": [
+   "intlog",
+   50,
+   1000
+  ],
+  "feature_fraction": [
+   "float",
+   0.1,
+   0.8
+  ],
+  "lambda_l2": [
+   "log",
+   0.1,
+   100.0
+  ],
+  "rondas": [
+   "intlog",
+   30,
+   500
+  ],
+  "peso_base": [
+   "float",
+   0.0,
+   3.0
+  ],
+  "baja1": [
+   "cat",
+   [
+    "fuera",
+    "negativa",
+    "positiva"
+   ]
+  ],
+  "init": [
+   "cat",
+   [
+    true,
+    false
+   ]
+  ]
+ }
+}
