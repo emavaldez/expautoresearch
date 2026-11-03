@@ -98,8 +98,8 @@ def base(log) -> str:
 
 def paso(fila: dict, vigente: str, n: int, log) -> dict:
     idea, tipo = fila["id"], fila["tipo"] or "agrega"
-    # reprueba: la regla del screening con las semillas que ninguna decisión vio (arnes.EXTRA)
-    primera = "reprueba" if tipo == "reprueba" else "screening"
+    # reprueba, nuevas: la regla del screening con semillas que ninguna decisión vio (arnes.EXTRA)
+    primera = tipo if tipo in arnes.EXTRA else "screening"
     carpeta = arnes.RESULTADOS / idea
     carpeta.mkdir(parents=True, exist_ok=True)
     (carpeta / "train.py").write_text(prender(VIGENTE.read_text(encoding="utf-8"), fila["cambio"]), encoding="utf-8")

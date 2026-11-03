@@ -213,3 +213,12 @@ contra un vigente elegido con estas semillas, y vale la misma advertencia.
 nuevas y en la confirmación, y quedó. Como se eligió con las semillas de reprueba y de confirmación, R7 y R8 no corren
 ahí: vuelven como V88 y V89 con las de screening, que R6 no vio como decisión (con ellas perdió como V77 contra B2).
 Las ideas nuevas sobre R6 también usan las de screening.
+
+**Enmienda (2026-11-03, después de 113 pasos): diez semillas que nada usó.** La cuarta clase (las CONTINUA que se van
+a los tres meses) ganó por semilla las cuatro veces que se midió (V59 +1,2 ± 0,6; V88 +1,1 ± 0,5; V98 +1,3 ± 0,8; V104
++2,0 ± 1,0), pero siempre con las mismas 5 semillas de screening, y el ensamble no la siguió siempre (-1,3; +1,3; -0,1;
++1,5). V88 y V104 quedaron a menos de una décima de las 2 SE. Como R6 se eligió con las semillas de reprueba y las de
+confirmación, las ideas con `tipo` = `nuevas` hacen el primer paso con 10 semillas del bloque final que nunca se usaron
+(de la 80 a la 89; el test usa las primeras 20 en 201910), el vigente incluido, con la regla del screening, y lo que
+pasa se confirma como siempre. Las dos ideas (R9: peso 0,5; R10: peso 1) se eligieron mirando el screening: por eso la
+regla entera se aplica con semillas nuevas y la confirmación sigue después.
