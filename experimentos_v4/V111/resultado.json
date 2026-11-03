@@ -1,0 +1,74 @@
+{
+ "id": "V111",
+ "titulo": "Árboles de 200 hojas (sobre R6)",
+ "cambio": "params={'num_leaves': 200, 'learning_rate': 0.0158, 'num_rounds': 667, 'min_data_in_leaf': 72, 'feature_fraction': 0.517, 'lambda_l2': 0.0033, 'submuestreo': 0.2}",
+ "tipo": "agrega",
+ "paso": 123,
+ "vigente": "R6",
+ "pred_meseta": "-0.3",
+ "decision": "se descarta",
+ "etapa": "screening",
+ "segundos": 1715,
+ "fecha": "2026-11-03 13:00",
+ "seleccion": {
+  "vigente": {
+   "meseta": 270648256.4422278,
+   "ganancia": 268427500.0,
+   "auc": 0.9135642629939094
+  },
+  "cambio": {
+   "meseta": 269629727.7639235,
+   "ganancia": 269894166.6666667,
+   "auc": 0.9129600171797626
+  }
+ },
+ "vs_vigente": {
+  "screening": {
+   "meseta": {
+    "delta": -1018528.6783042451,
+    "por_mes": {
+     "201907": -897830.4239401817,
+     "201908": -685099.7506234348,
+     "201909": -1472655.8603491187
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -1329875.3117206872,
+     "se": 1185076.9793349379,
+     "ganadas": 2,
+     "n": 5
+    }
+   },
+   "ganancia": {
+    "delta": 1466666.6666666667,
+    "por_mes": {
+     "201907": 0.0,
+     "201908": 0.0,
+     "201909": 4400000.0
+    },
+    "meses_ganados": 1,
+    "pareado": {
+     "media": 733333.3333333333,
+     "se": 1056356.4213317817,
+     "ganadas": 4,
+     "n": 5
+    }
+   },
+   "auc": {
+    "delta": -0.0006042458141467533,
+    "por_mes": {
+     "201907": -0.0011246768736795643,
+     "201908": -0.00042004532874573286,
+     "201909": -0.0002680152400149627
+    },
+    "meses_ganados": 0,
+    "pareado": {
+     "media": -0.0005685638970932994,
+     "se": 0.0002282771836650333,
+     "ganadas": 0,
+     "n": 5
+    }
+   }
+  }
+ }
+}
